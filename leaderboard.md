@@ -65,4 +65,4 @@ entry to <code>baselines/leaderboard.json</code> — see the
 [benchmark repo](https://github.com/klusai) for the adapter contract and reproduction
 steps. Entries without reproducible provenance are not listed.
 
-<script src="{{ '/assets/js/sort-table.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/sort-table.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
