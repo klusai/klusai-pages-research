@@ -74,6 +74,9 @@
   --cta-hover: var(--coral-600);
   --shadow: 0 1px 2px rgba(2, 6, 23, 0.04), 0 4px 12px rgba(2, 6, 23, 0.05);
   --header-bg: rgba(248, 250, 252, 0.8);
+  --nav-link: var(--mist-800);
+  --nav-cta-bg: var(--klusai-50);
+  --nav-cta-text: var(--klusai-600);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -92,6 +95,9 @@
     --cta-hover: var(--coral-400);
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
     --header-bg: rgba(2, 6, 23, 0.6);
+    --nav-link: var(--mist-300);
+    --nav-cta-bg: color-mix(in oklab, var(--klusai-500) 22%, transparent);
+    --nav-cta-text: var(--klusai-400);
   }
 }
 
@@ -143,10 +149,9 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
   border-bottom: 1px solid var(--border);
 }
 .nav-row {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 1rem; height: 66px;
+  display: flex; align-items: center; gap: 1rem; height: 72px;
 }
-.brand-lockup { display: inline-flex; align-items: center; gap: 0.1rem; }
+.brand-lockup { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 0.1rem; }
 .brand-lockup:hover { text-decoration: none; }
 .brand-lockup img { height: 26px; width: auto; }
 /* qualified with img to beat `.brand-lockup img` specificity */
@@ -161,13 +166,21 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
   color: var(--accent); margin-left: 0.6rem; padding-left: 0.6rem;
   border-left: 1px solid var(--border);
 }
-.site-nav { display: flex; align-items: center; gap: 1.35rem; }
-.site-nav a { font-weight: 500; font-size: 0.94rem; color: var(--text-secondary); }
-.site-nav a:hover { color: var(--text); text-decoration: none; }
-.site-nav .nav-cta { color: var(--link); }
+.site-nav {
+  flex: 1 1 auto; display: flex; align-items: center;
+  justify-content: center; gap: 1.7rem;
+}
+.site-nav a { font-weight: 500; font-size: 0.94rem; color: var(--nav-link); }
+.site-nav a:hover { color: var(--accent); text-decoration: none; }
+.nav-right { flex: 0 0 auto; }
+.nav-cta.btn {
+  padding: 0.5rem 1rem; background: var(--nav-cta-bg);
+  color: var(--nav-cta-text); border-color: transparent;
+}
+.nav-cta.btn:hover { filter: brightness(0.97); }
 @media (max-width: 720px) {
-  .site-nav .hide-sm { display: none; }
-  .site-nav { gap: 1rem; }
+  .hide-sm { display: none; }
+  .site-nav { gap: 1.1rem; justify-content: flex-end; }
 }
 
 /* ---- Buttons (pill) ---- */
