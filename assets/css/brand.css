@@ -149,9 +149,22 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
   border-bottom: 1px solid var(--border);
 }
 .nav-row {
+  position: relative;
   display: flex; align-items: center; gap: 1rem; height: 72px;
 }
 .brand-lockup { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 0.1rem; }
+/* wrapper is transparent on desktop so its children act as direct flex items */
+.nav-menu { display: contents; }
+.nav-toggle {
+  display: none; margin-left: auto; flex: 0 0 auto;
+  width: 42px; height: 42px; padding: 0; cursor: pointer;
+  align-items: center; justify-content: center;
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-radius: 11px;
+}
+.nav-toggle .i-close { display: none; }
+.nav-row.open .nav-toggle .i-bars { display: none; }
+.nav-row.open .nav-toggle .i-close { display: block; }
 .brand-lockup:hover { text-decoration: none; }
 .brand-lockup img { height: 26px; width: auto; }
 /* qualified with img to beat `.brand-lockup img` specificity */
@@ -178,9 +191,34 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
   color: var(--nav-cta-text); border-color: transparent;
 }
 .nav-cta.btn:hover { filter: brightness(0.97); }
-@media (max-width: 720px) {
-  .hide-sm { display: none; }
-  .site-nav { gap: 1.1rem; justify-content: flex-end; }
+
+@media (max-width: 760px) {
+  .nav-toggle { display: inline-flex; }
+  .nav-menu {
+    display: none; position: absolute; top: calc(100% + 1px); left: 0; right: 0;
+    flex-direction: column; align-items: stretch; gap: 0;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow); padding: 0.4rem 0;
+  }
+  .nav-row.open .nav-menu { display: flex; }
+  .nav-menu .site-nav {
+    flex: initial; flex-direction: column; align-items: stretch;
+    justify-content: flex-start; gap: 0;
+  }
+  .nav-menu .site-nav a {
+    padding: 0.85rem 1.5rem; font-size: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .nav-menu .site-nav a:first-child { border-top: none; }
+  .nav-menu .nav-right { padding: 0.9rem 1.5rem 0.6rem; }
+  .nav-menu .nav-cta.btn { width: 100%; justify-content: center; }
+
+  .wrap { padding: 0 1.15rem; }
+  .hero { padding: 2.75rem 0 2rem; }
+  .hero .lead { font-size: 1.08rem; }
+  .section { padding: 2rem 0; }
+  body { font-size: 16px; }
+  .card { padding: 1.15rem 1.2rem; }
 }
 
 /* ---- Buttons (pill) ---- */
