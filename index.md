@@ -22,7 +22,9 @@ clinical text.
 
 The headline finding: models advertising **96–97% F1** on English PII drop to
 **0.44–0.61 F1** once you hold them to a unified European taxonomy across
-languages. → **[See the live leaderboard](/leaderboard/)**
+languages.
+
+<p><a class="btn" href="{{ '/leaderboard/' | relative_url }}">See the live leaderboard →</a></p>
 
 ## Artifacts
 

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/svg+xml" href="{{ '/assets/brand/icon-only.svg' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/brand.css' | relative_url }}">
+  {%- feed_meta -%}
+  {%- seo -%}
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand-lockup" href="{{ '/' | relative_url }}" aria-label="KlusAI Research home">
+        <img class="logo-light" src="{{ '/assets/brand/logo-horizontal.svg' | relative_url }}" alt="KlusAI">
+        <img class="logo-dark"  src="{{ '/assets/brand/logo-horizontal-white.svg' | relative_url }}" alt="KlusAI">
+        <span class="brand-sub">Research</span>
+      </a>
+      <nav class="site-nav">
+        <a href="{{ '/leaderboard/' | relative_url }}">Leaderboard</a>
+        <a href="{{ '/about/' | relative_url }}">About</a>
+        <a href="https://huggingface.co/klusai">Hugging&nbsp;Face</a>
+        <a href="https://github.com/klusai">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      {{ content }}
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      © {{ site.time | date: "%Y" }} KlusAI Labs SRL ·
+      <a href="https://klusai.com">klusai.com</a> ·
+      <a href="https://github.com/klusai">GitHub</a> ·
+      <a href="{{ '/feed.xml' | relative_url }}">RSS</a>
+      <br>Applied Research · AI Services · Ventures
+    </div>
+  </footer>
+</body>
+</html>

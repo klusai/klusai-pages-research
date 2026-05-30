@@ -6,25 +6,15 @@ url: "https://research.klusai.com"
 author:
   name: KlusAI
   email: research@klusai.com
-
-header_pages:
-  - index.md
-  - leaderboard.md
-  - about.md
+lang: en
 
 show_excerpts: true
 
+# Self-contained custom layouts (assets/css/brand.css mirrors the klusai.com
+# brand system) — no remote theme, so Pages builds without a Sass dependency.
 plugins:
-  - jekyll-remote-theme
   - jekyll-feed
   - jekyll-seo-tag
-
-remote_theme: jekyll/minima
-minima:
-  skin: auto
-  social_links:
-    - { platform: github, user_url: "https://github.com/klusai" }
-    - { platform: x, user_url: "https://x.com/klusai" }
 
 # Program-wide links reused across pages
 klusai:

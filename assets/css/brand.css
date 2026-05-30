@@ -1,0 +1,192 @@
+---
+---
+/* ============================================================================
+   KlusAI Research — brand styles (mirrors klusai-webos brand system v1.1)
+   Fonts: Familjen Grotesk (display) + Inter (body). Palette: Mist neutrals,
+   Klusai Blue (brand/links), Research Teal (accent), Coral (CTA).
+   ============================================================================ */
+
+/* ---- Fonts (self-hosted woff2 from the brand kit) ---- */
+@font-face {
+  font-family: "Familjen Grotesk";
+  src: url("{{ '/assets/fonts/FamiljenGrotesk-SemiBold.woff2' | relative_url }}") format("woff2");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("{{ '/assets/fonts/Inter-Regular.woff2' | relative_url }}") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("{{ '/assets/fonts/Inter-Medium.woff2' | relative_url }}") format("woff2");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+
+/* ---- Brand tokens ---- */
+:root {
+  --font-display: "Familjen Grotesk", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+
+  /* Mist neutrals (cool-toned; never generic grays) */
+  --mist-50:  oklch(98.7% 0.002 197.1);
+  --mist-100: oklch(96.3% 0.002 197.1);
+  --mist-200: oklch(92.5% 0.005 214.3);
+  --mist-300: oklch(87.2% 0.007 219.6);
+  --mist-400: oklch(72.3% 0.014 214.4);
+  --mist-500: oklch(56%   0.021 213.5);
+  --mist-600: oklch(45%   0.017 213.2);
+  --mist-700: oklch(37.8% 0.015 216);
+  --mist-800: oklch(27.5% 0.011 216.9);
+  --mist-900: oklch(21.8% 0.008 223.9);
+  --mist-950: oklch(14.8% 0.004 228.8);
+
+  --klusai-400: oklch(70%   0.17 259);
+  --klusai-500: oklch(64.5% 0.18 259);   /* #488eff logo blue */
+  --klusai-600: oklch(55%   0.17 259);
+  --klusai-700: oklch(46%   0.15 259);
+
+  --research-400: oklch(70% 0.18 175);
+  --research-500: oklch(62% 0.18 175);   /* #14b8a6 research teal */
+  --research-600: oklch(52% 0.16 175);
+  --research-700: oklch(44% 0.14 175);
+
+  --coral-500: oklch(65% 0.20 25);
+  --coral-600: oklch(58% 0.18 25);
+
+  /* Semantic (light mode) */
+  --bg: var(--mist-50);
+  --surface: #fff;
+  --surface-alt: var(--mist-100);
+  --text: var(--mist-950);
+  --text-secondary: var(--mist-600);
+  --border: var(--mist-200);
+  --link: var(--klusai-600);
+  --accent: var(--research-600);
+  --cta: var(--coral-600);
+  --logo-light-display: inline;
+  --logo-dark-display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: var(--mist-950);
+    --surface: var(--mist-900);
+    --surface-alt: var(--mist-800);
+    --text: #fff;
+    --text-secondary: var(--mist-400);
+    --border: var(--mist-800);
+    --link: var(--klusai-400);
+    --accent: var(--research-400);
+    --cta: var(--coral-500);
+    --logo-light-display: none;
+    --logo-dark-display: inline;
+  }
+}
+
+/* ---- Base ---- */
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 1.25rem; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text);
+  margin: 2rem 0 0.75rem;
+}
+h1 { font-size: 2.1rem; letter-spacing: -0.02em; }
+h2 { font-size: 1.5rem; letter-spacing: -0.01em; }
+h3 { font-size: 1.2rem; }
+
+p, ul, ol { margin: 0 0 1rem; }
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+strong { font-weight: 500; }
+code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 0.85em;
+  background: var(--surface-alt);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+/* ---- Header / nav ---- */
+.site-header {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky; top: 0; z-index: 10;
+  backdrop-filter: saturate(180%) blur(6px);
+}
+.site-header .wrap {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+.brand-lockup { display: inline-flex; align-items: center; }
+.brand-lockup img { height: 28px; width: auto; display: block; }
+.logo-light { display: var(--logo-light-display); }
+.logo-dark  { display: var(--logo-dark-display); }
+.brand-sub {
+  font-family: var(--font-display); font-weight: 600;
+  color: var(--accent); font-size: 0.95rem; margin-left: 0.6rem;
+  padding-left: 0.6rem; border-left: 1px solid var(--border);
+}
+.site-nav a {
+  font-weight: 500; color: var(--text-secondary);
+  margin-left: 1.25rem; font-size: 0.95rem;
+}
+.site-nav a:hover { color: var(--link); text-decoration: none; }
+
+/* ---- Content / posts ---- */
+main { padding: 2.5rem 0 3rem; }
+.post-list { list-style: none; padding: 0; }
+.post-list li { margin-bottom: 1.5rem; }
+.post-list .post-meta { color: var(--text-secondary); font-size: 0.85rem; }
+.post-list h3 { margin: 0.1rem 0 0.2rem; }
+.post-meta { color: var(--text-secondary); font-size: 0.9rem; }
+
+table {
+  width: 100%; border-collapse: collapse; margin: 1rem 0;
+}
+table th, table td {
+  padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--border); text-align: left;
+}
+table thead th { border-bottom: 2px solid var(--border); }
+
+/* ---- Buttons / CTA ---- */
+.btn {
+  display: inline-block; background: var(--cta); color: #fff;
+  font-weight: 500; padding: 0.55rem 1rem; border-radius: 8px;
+}
+.btn:hover { filter: brightness(1.05); text-decoration: none; }
+
+/* ---- Footer ---- */
+.site-footer {
+  border-top: 1px solid var(--border);
+  color: var(--text-secondary); font-size: 0.85rem;
+  padding: 2rem 0; margin-top: 2rem;
+}
+.site-footer a { color: var(--text-secondary); }
+
+/* ---- Leaderboard table ---- */
+table.lb { font-size: 0.9rem; }
+table.lb th, table.lb td { text-align: right; }
+table.lb th:nth-child(-n+4), table.lb td:nth-child(-n+4) { text-align: left; }
+table.lb thead th { white-space: nowrap; cursor: pointer; }
+table.lb th[data-asc="true"]::after  { content: " \25B2"; color: var(--accent); }
+table.lb th[data-asc="false"]::after { content: " \25BC"; color: var(--accent); }
+table.lb td.f1, table.lb th.f1 { font-weight: 600; color: var(--accent); }
+.lb-meta { font-size: 0.8rem; color: var(--text-secondary); }
