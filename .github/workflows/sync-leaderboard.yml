@@ -1,0 +1,43 @@
+# Pulls the latest leaderboard.json from the europriv-bench repo and commits it
+# so the site re-renders with fresh numbers. Runs on a schedule and on demand.
+#
+# Requires a repo secret EUROPRIV_TOKEN (a PAT or fine-grained token with
+# read access to klusai/europriv-bench) while that repo is private. Once the
+# benchmark repo is public, you can drop the token and use the raw URL directly.
+name: sync-leaderboard
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * *" # daily 06:00 UTC
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch leaderboard from europriv-bench
+        env:
+          GH_TOKEN: ${{ secrets.EUROPRIV_TOKEN }}
+        run: |
+          gh api \
+            repos/klusai/europriv-bench/contents/baselines/leaderboard.json \
+            -H "Accept: application/vnd.github.raw" \
+            > _data/leaderboard.json
+          python3 -c "import json; json.load(open('_data/leaderboard.json'))"
+
+      - name: Commit if changed
+        run: |
+          if ! git diff --quiet -- _data/leaderboard.json; then
+            git config user.name "klusai-bot"
+            git config user.email "research@klusai.com"
+            git add _data/leaderboard.json
+            git commit -m "chore: sync EuroPriv-Bench leaderboard"
+            git push
+          else
+            echo "No leaderboard changes."
+          fi
