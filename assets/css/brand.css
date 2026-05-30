@@ -41,18 +41,20 @@
   --mist-900: oklch(21.8% 0.008 223.9);
   --mist-950: oklch(14.8% 0.004 228.8);
 
-  --klusai-400: oklch(70%   0.17 259);
-  --klusai-500: oklch(64.5% 0.18 259);   /* #488eff logo blue */
-  --klusai-600: oklch(55%   0.17 259);
-  --klusai-700: oklch(46%   0.15 259);
+  /* Brand accents — authoritative hex from the brand guidelines */
+  --klusai-400: #60A5FA;
+  --klusai-500: #488EFF;   /* logo blue */
+  --klusai-600: #3B82F6;
+  --klusai-700: #2563EB;
 
-  --research-400: oklch(70% 0.18 175);
-  --research-500: oklch(62% 0.18 175);   /* #14b8a6 research teal */
-  --research-600: oklch(52% 0.16 175);
-  --research-700: oklch(44% 0.14 175);
+  --research-400: #2DD4BF;
+  --research-500: #14B8A6;  /* research teal */
+  --research-600: #0D9488;
+  --research-700: #0F766E;
 
-  --coral-500: oklch(65% 0.20 25);
-  --coral-600: oklch(58% 0.18 25);
+  --coral-400: #FB923C;
+  --coral-500: #F97316;     /* CTA orange */
+  --coral-600: #EA580C;
 
   /* Semantic (light mode) */
   --bg: var(--mist-50);
@@ -63,9 +65,8 @@
   --border: var(--mist-200);
   --link: var(--klusai-600);
   --accent: var(--research-600);
-  --cta: var(--coral-600);
-  --logo-light-display: inline;
-  --logo-dark-display: none;
+  --cta: var(--coral-500);
+  --cta-hover: var(--coral-600);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -79,8 +80,7 @@
     --link: var(--klusai-400);
     --accent: var(--research-400);
     --cta: var(--coral-500);
-    --logo-light-display: none;
-    --logo-dark-display: inline;
+    --cta-hover: var(--coral-400);
   }
 }
 
@@ -137,8 +137,11 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 }
 .brand-lockup { display: inline-flex; align-items: center; }
 .brand-lockup img { height: 28px; width: auto; display: block; }
-.logo-light { display: var(--logo-light-display); }
-.logo-dark  { display: var(--logo-dark-display); }
+.logo-dark { display: none; }
+@media (prefers-color-scheme: dark) {
+  .logo-light { display: none; }
+  .logo-dark  { display: block; }
+}
 .brand-sub {
   font-family: var(--font-display); font-weight: 600;
   color: var(--accent); font-size: 0.95rem; margin-left: 0.6rem;
@@ -171,7 +174,7 @@ table thead th { border-bottom: 2px solid var(--border); }
   display: inline-block; background: var(--cta); color: #fff;
   font-weight: 500; padding: 0.55rem 1rem; border-radius: 8px;
 }
-.btn:hover { filter: brightness(1.05); text-decoration: none; }
+.btn:hover { background: var(--cta-hover); text-decoration: none; }
 
 /* ---- Footer ---- */
 .site-footer {
