@@ -6,13 +6,26 @@ permalink: /leaderboard/
 
 # EuroPriv-Bench Leaderboard
 
+<style>
+table.lb { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 1rem 0 0.5rem; }
+table.lb th, table.lb td { padding: 0.4rem 0.6rem; border-bottom: 1px solid #e8e8e8; text-align: right; }
+table.lb th:nth-child(-n+4), table.lb td:nth-child(-n+4) { text-align: left; }
+table.lb thead th { border-bottom: 2px solid #ccc; white-space: nowrap; cursor: pointer; }
+table.lb th[data-asc="true"]::after { content: " \25B2"; }
+table.lb th[data-asc="false"]::after { content: " \25BC"; }
+table.lb td.f1, table.lb th.f1 { font-weight: 600; }
+table.lb code { font-size: 0.82rem; background: rgba(0,0,0,0.04); padding: 0 0.25rem; }
+.lb-meta { font-size: 0.8rem; color: #777; }
+</style>
+
 Entity-level scores on the [`klusai/europriv-bench`](https://huggingface.co/datasets/klusai/europriv-bench)
 test split, by model and language. Higher is better. Click a column header to sort.
 
+{% assign bench_v = "" %}{% for kv in site.data.leaderboard.entries %}{% if bench_v == "" %}{% assign bench_v = kv[1][0].europriv_bench_version %}{% assign tax_v = kv[1][0].taxonomy_version %}{% endif %}{% endfor %}
 <p class="lb-meta">
   Schema v{{ site.data.leaderboard.schema }} ·
-  Benchmark v{% assign first = site.data.leaderboard.entries.first %}{{ first[1][0].europriv_bench_version }} ·
-  Taxonomy v{{ first[1][0].taxonomy_version }}
+  Benchmark v{{ bench_v }} ·
+  Taxonomy v{{ tax_v }}
 </p>
 
 <table id="leaderboard" class="lb">
