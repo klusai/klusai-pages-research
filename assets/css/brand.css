@@ -148,11 +148,13 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
 }
 .brand-lockup { display: inline-flex; align-items: center; gap: 0.1rem; }
 .brand-lockup:hover { text-decoration: none; }
-.brand-lockup img { height: 26px; width: auto; display: block; }
-.logo-dark { display: none; }
+.brand-lockup img { height: 26px; width: auto; }
+/* qualified with img to beat `.brand-lockup img` specificity */
+.brand-lockup img.logo-light { display: block; }
+.brand-lockup img.logo-dark  { display: none; }
 @media (prefers-color-scheme: dark) {
-  .logo-light { display: none; }
-  .logo-dark  { display: block; }
+  .brand-lockup img.logo-light { display: none; }
+  .brand-lockup img.logo-dark  { display: block; }
 }
 .brand-sub {
   font-family: var(--font-display); font-weight: 600; font-size: 0.95rem;
@@ -198,7 +200,11 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
 
 /* ---- Layout sections ---- */
 main { display: block; }
-.hero { text-align: center; padding: 4rem 0 2.5rem; }
+.hero {
+  text-align: center; padding: 4.5rem 0 3rem;
+  background: radial-gradient(115% 80% at 50% -20%,
+    color-mix(in oklab, var(--accent) 10%, transparent), transparent 65%);
+}
 .hero h1 { font-size: clamp(2.3rem, 5.2vw, 3.3rem); margin: 0.9rem 0 0; }
 .hero .lead {
   font-size: 1.18rem; line-height: 1.6; color: var(--text-secondary);
