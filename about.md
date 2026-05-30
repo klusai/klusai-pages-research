@@ -4,6 +4,8 @@ title: "About"
 permalink: /about/
 ---
 
+<p class="eyebrow">About</p>
+
 **KlusAI Research** is the open-science arm of [KlusAI](https://klusai.com). We build
 **privacy-focused language models** for European languages — detection and anonymization
 of personal data (PII/PHI), privacy classification, and leakage evaluation — across the

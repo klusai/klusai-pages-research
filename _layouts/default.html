@@ -10,7 +10,7 @@
 </head>
 <body>
   <header class="site-header">
-    <div class="wrap">
+    <div class="wrap nav-row">
       <a class="brand-lockup" href="{{ '/' | relative_url }}" aria-label="KlusAI Research home">
         <img class="logo-light" src="{{ '/assets/brand/logo-horizontal.svg' | relative_url }}" alt="KlusAI">
         <img class="logo-dark"  src="{{ '/assets/brand/logo-horizontal-white.svg' | relative_url }}" alt="KlusAI">
@@ -19,16 +19,15 @@
       <nav class="site-nav">
         <a href="{{ '/leaderboard/' | relative_url }}">Leaderboard</a>
         <a href="{{ '/about/' | relative_url }}">About</a>
-        <a href="https://huggingface.co/klusai">Hugging&nbsp;Face</a>
-        <a href="https://github.com/klusai">GitHub</a>
+        <a class="hide-sm" href="https://huggingface.co/klusai">Hugging&nbsp;Face</a>
+        <a class="hide-sm" href="https://github.com/klusai">GitHub</a>
+        <a class="btn btn-ghost nav-cta" href="https://klusai.com">klusai.com&nbsp;↗</a>
       </nav>
     </div>
   </header>
 
   <main>
-    <div class="wrap">
-      {{ content }}
-    </div>
+    {{ content }}
   </main>
 
   <footer class="site-footer">
@@ -36,8 +35,9 @@
       © {{ site.time | date: "%Y" }} KlusAI Labs SRL ·
       <a href="https://klusai.com">klusai.com</a> ·
       <a href="https://github.com/klusai">GitHub</a> ·
+      <a href="https://huggingface.co/klusai">Hugging Face</a> ·
       <a href="{{ '/feed.xml' | relative_url }}">RSS</a>
-      <br>Applied Research · AI Services · Ventures
+      <div class="foot-tag">Applied Research · AI Services · Ventures</div>
     </div>
   </footer>
 </body>

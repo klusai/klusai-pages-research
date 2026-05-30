@@ -4,6 +4,8 @@ title: "Leaderboard"
 permalink: /leaderboard/
 ---
 
+<p class="eyebrow">Flagship benchmark</p>
+
 # EuroPriv-Bench Leaderboard
 
 Entity-level scores on the [`klusai/europriv-bench`](https://huggingface.co/datasets/klusai/europriv-bench)
@@ -16,6 +18,7 @@ test split, by model and language. Higher is better. Click a column header to so
   Taxonomy v{{ tax_v }}
 </p>
 
+<div class="table-card">
 <table id="leaderboard" class="lb">
   <thead>
     <tr>
@@ -46,6 +49,7 @@ test split, by model and language. Higher is better. Click a column header to so
   {% endfor %}
   </tbody>
 </table>
+</div>
 
 <p class="lb-meta">
   Each row reports entity-level precision / recall / F1 (×100) under the unified KlusAI
