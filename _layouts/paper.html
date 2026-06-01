@@ -37,6 +37,11 @@ layout: default
                              font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
   @media (max-width: 760px) {
     .arxiv .arxiv-body table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+    /* drop the abstract's desktop inset (it compounds with the page padding on phones) */
+    .arxiv .arxiv-abstract { padding: 0; }
+    /* justify + auto-hyphenation reads as cramped in a narrow column — go left/ragged on phones */
+    .arxiv .arxiv-abstract p, .arxiv .arxiv-body p, .arxiv .arxiv-body li {
+      text-align: left; hyphens: none; -webkit-hyphens: none; }
   }
   .arxiv .arxiv-body th, .arxiv .arxiv-body td { border: 1px solid var(--border); padding: 0.3rem 0.5rem; text-align: right; white-space: nowrap; }
   .arxiv .arxiv-body th:first-child, .arxiv .arxiv-body td:first-child { text-align: left; white-space: normal; }

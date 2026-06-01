@@ -213,7 +213,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
   .nav-menu .nav-right { padding: 0.9rem 1.5rem 0.6rem; }
   .nav-menu .nav-cta.btn { width: 100%; justify-content: center; }
 
-  .wrap { padding: 0 1.15rem; }
+  .wrap { padding: 0 1.35rem; }
   .hero { padding: 2.75rem 0 2rem; }
   .hero .lead { font-size: 1.08rem; }
   .section { padding: 2rem 0; }
