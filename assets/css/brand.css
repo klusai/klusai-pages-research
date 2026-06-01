@@ -329,3 +329,16 @@ table.lb th[data-asc="true"]::after  { content: " \25B2"; color: var(--accent); 
 table.lb th[data-asc="false"]::after { content: " \25BC"; color: var(--accent); }
 table.lb td.f1, table.lb th.f1 { font-weight: 600; color: var(--accent); }
 .lb-meta { font-size: 0.8rem; color: var(--text-secondary); }
+
+/* ---- Leaderboard governance badges (schema 3: contamination + config_status) ---- */
+.lb-badge {
+  display: inline-block; border-radius: 999px; white-space: nowrap;
+  padding: 0.16rem 0.6rem; font-size: 0.72rem; font-weight: 600; line-height: 1.4;
+}
+/* Contamination */
+.lb-badge.contam-clean   { background: var(--accent-soft-bg); color: var(--accent-soft-text); }
+.lb-badge.contam-in      { background: color-mix(in oklab, var(--cta) 18%, transparent); color: var(--cta-hover); }
+.lb-badge.contam-unknown { background: var(--surface-alt); color: var(--text-secondary); }
+/* Validation (config_status). "citable" only ever rendered when config_status == citable-validated. */
+.lb-badge.status-citable { background: var(--accent-soft-bg); color: var(--accent-soft-text); }
+.lb-badge.status-dev     { background: var(--surface-alt); color: var(--text-secondary); }
