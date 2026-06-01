@@ -189,7 +189,7 @@ the result as "F1 does not track CNP protection," and explain *why* below — no
 The strongest detector on this track, GLiNER (F1 0.85), leaks 30.2% of CNPs; tabularisai leaks the
 most (35.4%) at high precision; while the *weakest* detector, privacy-filter (F1 0.36), leaks the least
 (1.4%). Its low leak-rate is earned, not accidental: of the 1,123 CNPs, privacy-filter flags 1,107,
-labelling **96% (1,456) as account numbers** and 3% as phone numbers[^labeldump] — and a flagged span is redacted
+labelling **~96% as account numbers** and ~3% as phone numbers[^labeldump] — and a flagged span is redacted
 regardless of type.
 
 This is the mechanism behind the dissociation, and it is specific. The leak metric rewards *coverage*
