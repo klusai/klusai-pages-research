@@ -10,6 +10,11 @@ lang: en
 
 show_excerpts: true
 
+# Papers collection — each _papers/*.md renders at its own permalink (set per-file)
+collections:
+  papers:
+    output: true
+
 # Self-contained custom layouts (assets/css/brand.css mirrors the klusai.com
 # brand system) — no remote theme, so Pages builds without a Sass dependency.
 plugins:
