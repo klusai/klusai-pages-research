@@ -184,8 +184,10 @@ are different objectives**, and detection F1 measures only the latter. (GLiNER i
 depends on the label prompt — a confound for any cross-system F1 comparison, and a further reason we
 rest the claim on the per-model leak-rate intervals rather than on F1 rankings.) The one clean
 statistical separation is privacy-filter's: its Wilson 95% interval (0.7–1.8%) does not overlap any
-other model's. The three type-accurate detectors overlap pairwise (Table 2), so among them we make no
-significance claim — the sharp, significant contrast is the blanket redactor versus everything else.
+other model's. The three type-accurate detectors are not all mutually separable — OpenMed–GLiNER and
+GLiNER–tabularisai overlap (though OpenMed and tabularisai do not), so they form a connected chain
+through GLiNER rather than a clean ordering — so among them we make no graded significance claim. The
+sharp, significant contrast is the blanket redactor versus everything else.
 
 On the synthetic track leakage is ≤1.9% for all models (OpenMed
 1.9%, privacy-filter 0.1%, GLiNER and tabularisai 0%): templated CNPs are trivially caught, which is
@@ -213,8 +215,9 @@ structure — we measure a *synthetic-context vs real-context* gap, not a synthe
 model (privacy-filter); we do not treat it as an effect estimate. The claim rests instead on
 privacy-filter's leak-rate, whose Wilson 95% interval is separated from every other model's
 (non-overlapping, Table 2), and on the coverage-vs-type mechanism in §5 — the three type-accurate
-detectors are *not* all mutually separable (their intervals overlap pairwise), so the protective
-effect we report is privacy-filter's blanket coverage, not a graded one across detectors. (iii) OpenMed and tabularisai
+detectors are *not* all mutually separable (the adjacent pairs overlap through GLiNER; only OpenMed
+and tabularisai separate), so the protective effect we report is privacy-filter's blanket coverage,
+not a graded one across detectors. (iii) OpenMed and tabularisai
 were trained on AI4Privacy, the source of our general-text gold, so part of their general-text lead
 reflects in-distribution advantage — the Romanian track, which no baseline has seen, is the cleaner
 signal. (iv) The re-identification finding rests on one identifier type (the Romanian CNP) in one
