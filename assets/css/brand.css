@@ -266,7 +266,7 @@ main { display: block; }
 .section { padding: 2.75rem 0; border-top: 1px solid var(--border); }
 .section .section-head { margin-bottom: 1.4rem; }
 .section .section-head h2 { margin: 0.15rem 0 0; }
-.page-pad { padding: 2.5rem 0 1rem; }
+.page-pad { padding-top: 2.5rem; padding-bottom: 1rem; }
 
 /* ---- Cards ---- */
 .card-grid { display: grid; gap: 1rem; }
