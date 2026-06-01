@@ -1,0 +1,33 @@
+# Shared bibliography for papers. Cite with {% include cite.html key="tab" %}.
+# Each paper lists the keys it uses, in citation order, in its front-matter `cite_order`.
+# `text` is the fully-formatted reference (inline HTML allowed: <em>, <code>, <a>).
+
+tab:
+  text: 'Pilán, Lison, Øvrelid, Papadopoulou, Sánchez, Batet. "The Text Anonymization Benchmark (TAB): A Dedicated Corpus and Evaluation Framework for Text Anonymization." <em>Computational Linguistics</em> 48(4), 2022. doi:10.1162/coli_a_00458.'
+
+ai4privacy:
+  text: 'AI4Privacy. "OpenPII Masking" datasets (CC-BY-4.0). Hugging Face, <code>ai4privacy/open-pii-masking-500k-ai4privacy</code>. Accessed June 2026.'
+
+mapa:
+  text: 'Ajausks et al. "The Multilingual Anonymisation Toolkit for Public Administrations (MAPA)." EAMT 2020; CEF Telecom project 2019-EU-IA-0045. Code: <code>github.com/MAPA-Consortium</code>; models on Hugging Face under <code>BSC-LT/</code>. Accessed June 2026.'
+
+multigrascco:
+  text: '"MultiGraSCCo: A Multilingual Anonymization Benchmark with Annotations of Personal Identifiers." 2026 preprint (German GraSCCo corpus machine-translated into further languages); builds on Modersohn et al., "GraSCCo," 2022. We were unable to resolve a stable DOI/arXiv locator at access time (June 2026).'
+
+meddocan:
+  text: 'Marimon et al. "MEDDOCAN: Medical Document Anonymization track (Spanish)." IberLEF, 2019.'
+
+openai:
+  text: 'OpenAI. "Privacy Filter" (<code>openai/privacy-filter</code>). Hugging Face, 2026. Accessed June 2026.'
+
+openmed:
+  text: 'OpenMed. "privacy-filter-multilingual" (<code>OpenMed/privacy-filter-multilingual</code>), 16 languages / 54 types. Hugging Face, 2026. Accessed June 2026.'
+
+tabularisai:
+  text: 'tabularisai. "eu-pii-safeguard" (<code>tabularisai/eu-pii-safeguard</code>), XLM-R, 26 EU languages. Hugging Face. Accessed June 2026.'
+
+gliner:
+  text: 'Zaratiana, Tomeh, Holat, Charnois. "GLiNER: Generalist Model for NER" (<code>urchade/gliner_multi_pii-v1</code>). 2023. arXiv:2311.08526.'
+
+piiranha:
+  text: 'iiiorg. "Piiranha-v1" (mDeBERTa-v3), license CC-BY-NC-ND-4.0. Hugging Face, 2024.'

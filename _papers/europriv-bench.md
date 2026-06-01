@@ -11,6 +11,7 @@ status: "Working paper · preliminary results (n = 1,500 docs/config) · not pee
 data: "https://huggingface.co/datasets/klusai/europriv-bench"
 code: "https://github.com/klusai/europriv-bench"
 leaderboard: "/leaderboard/"
+cite_order: [tab, ai4privacy, mapa, multigrascco, meddocan, openai, openmed, tabularisai, gliner, piiranha]
 abstract: >-
   Privacy-focused NLP for European languages is served by fragmented resources: the Text
   Anonymization Benchmark provides privacy–utility metrics but is English- and legal-only;
@@ -39,13 +40,13 @@ abstract: >-
 Models advertising 94–97% F1 on English PII benchmarks tell us little about how they behave on
 Dutch clinical notes or Romanian court decisions under a European privacy taxonomy. Yet the public
 de-identification literature is fragmented along the axes that matter for EU deployment. The Text
-Anonymization Benchmark (TAB) [<a href="#ref-1">1</a>] introduced privacy–utility metrics, but only
-for English ECHR legal text. AI4Privacy [<a href="#ref-2">2</a>] provides cross-lingual European
-detection data, but scores detection F1 only. MAPA [<a href="#ref-3">3</a>] covers all 24 official
+Anonymization Benchmark (TAB) {% include cite.html key="tab" %} introduced privacy–utility metrics, but only
+for English ECHR legal text. AI4Privacy {% include cite.html key="ai4privacy" %} provides cross-lingual European
+detection data, but scores detection F1 only. MAPA {% include cite.html key="mapa" %} covers all 24 official
 EU languages across legal and clinical text, but ships as a detection toolkit, not a comparative
-leaderboard. MultiGraSCCo [<a href="#ref-4">4</a>] is multilingual and GDPR-aware but clinical-only
+leaderboard. MultiGraSCCo {% include cite.html key="multigrascco" %} is multilingual and GDPR-aware but clinical-only
 and produced by machine translation. And the privacy-filter model lineage — OpenAI's `privacy-filter`
-[<a href="#ref-6">6</a>] and OpenMed's multilingual finetune [<a href="#ref-7">7</a>] — ships capable
+{% include cite.html key="openai" %} and OpenMed's multilingual finetune {% include cite.html key="openmed" %} — ships capable
 systems for which we found **no standardized public privacy-risk evaluation** as of June 2026.
 
 No single artifact unifies (a) European cross-lingual breadth, (b) general and domain
@@ -110,7 +111,7 @@ false positive (something harmless redacted).
 **Re-identification leakage.** Our headline metric. The Romanian CNP is not an opaque string: its
 first digit encodes sex and birth-century, digits 2–7 the date of birth, and digits 8–9 the county of
 registration. A single un-redacted CNP therefore discloses at least three quasi-identifiers at
-once.<sup><a href="#fn-1" id="fnref-1">1</a></sup> We decode the structure directly and report, over
+once.[^cnp] We decode the structure directly and report, over
 all gold CNPs, the fraction left unflagged (`leak_rate`) and the total quasi-identifiers thereby
 exposed. **A CNP counts as protected iff the model flags at least one token overlapping its span as
 PII of *any* type** — it would be redacted regardless of the predicted label; if every token of the
@@ -124,9 +125,9 @@ full CNP spans, so it is unaffected by this caveat.)
 
 ## Baselines and Results
 
-We evaluate four public systems: OpenAI `privacy-filter` [<a href="#ref-6">6</a>], OpenMed
-`privacy-filter-multilingual` [<a href="#ref-7">7</a>], `tabularisai/eu-pii-safeguard`
-[<a href="#ref-8">8</a>], and zero-shot GLiNER `gliner_multi_pii-v1` [<a href="#ref-9">9</a>]. All
+We evaluate four public systems: OpenAI `privacy-filter` {% include cite.html key="openai" %}, OpenMed
+`privacy-filter-multilingual` {% include cite.html key="openmed" %}, `tabularisai/eu-pii-safeguard`
+{% include cite.html key="tabularisai" %}, and zero-shot GLiNER `gliner_multi_pii-v1` {% include cite.html key="gliner" %}. All
 numbers are entity-F1 at n = 1,500 docs per configuration, taxonomy v0.2.0; the full F1/F2 table is on
 the live leaderboard.
 
@@ -171,7 +172,7 @@ the result as "F1 does not track CNP protection," and explain *why* below — no
 The strongest detector on this track, GLiNER (F1 0.85), leaks 22.3% of CNPs; tabularisai leaks the
 most (26.1%) at high precision; while the *weakest* detector, privacy-filter (F1 0.36), leaks the least
 (1.1%). Its low leak-rate is earned, not accidental: of the 1,520 CNPs, privacy-filter flags 1,503,
-labelling **96% (1,456) as account numbers** and 3% as phone numbers<sup><a href="#fn-2" id="fnref-2">2</a></sup> — and a flagged span is redacted
+labelling **96% (1,456) as account numbers** and 3% as phone numbers[^labeldump] — and a flagged span is redacted
 regardless of type.
 
 This is the mechanism behind the dissociation, and it is specific. The leak metric rewards *coverage*
@@ -196,13 +197,13 @@ why a realistic-context gold is necessary to see the effect at all.
 ## Related Work
 
 EuroPriv-Bench is designed to subsume, not compete with, prior resources, re-using their splits and
-metrics where applicable. TAB [<a href="#ref-1">1</a>] contributes the privacy–utility framing
-(English, legal). AI4Privacy [<a href="#ref-2">2</a>] supplies the cross-lingual general substrate.
-MAPA [<a href="#ref-3">3</a>] and MEDDOCAN [<a href="#ref-5">5</a>] anchor the legal/clinical and
-Spanish-clinical settings. MultiGraSCCo [<a href="#ref-4">4</a>] is the closest multilingual prior
+metrics where applicable. TAB {% include cite.html key="tab" %} contributes the privacy–utility framing
+(English, legal). AI4Privacy {% include cite.html key="ai4privacy" %} supplies the cross-lingual general substrate.
+MAPA {% include cite.html key="mapa" %} and MEDDOCAN {% include cite.html key="meddocan" %} anchor the legal/clinical and
+Spanish-clinical settings. MultiGraSCCo {% include cite.html key="multigrascco" %} is the closest multilingual prior
 benchmark; it is clinical-only and, per its own description, produced by machine-translating a German
 corpus into other languages — localized native generation avoids the structurally invalid identifiers
-(e.g. checksum-invalid national IDs) that translation produces. Piiranha [<a href="#ref-10">10</a>] is
+(e.g. checksum-invalid national IDs) that translation produces. Piiranha {% include cite.html key="piiranha" %} is
 included by citation only, as its CC-BY-NC-ND license precludes redistribution or use as a base model.
 
 ## Limitations
@@ -233,21 +234,8 @@ intervals are computed from the published per-model CNP miss counts. GLiNER is z
 prompts are part of the configuration (in the code). The CNP-protection rule is the harness
 definition stated in §4. Re-running `europriv run` against the published configs reproduces Tables 1–2.
 
-<h2 class="unnumbered" id="references">References</h2>
+{% include references.html %}
 
-<ol>
-<li id="ref-1">Pilán, Lison, Øvrelid, Papadopoulou, Sánchez, Batet. "The Text Anonymization Benchmark (TAB): A Dedicated Corpus and Evaluation Framework for Text Anonymization." <em>Computational Linguistics</em> 48(4), 2022. doi:10.1162/coli_a_00458.</li>
-<li id="ref-2">AI4Privacy. "OpenPII Masking" datasets (CC-BY-4.0). Hugging Face, <code>ai4privacy/open-pii-masking-500k-ai4privacy</code>. Accessed June 2026.</li>
-<li id="ref-3">Ajausks et al. "The Multilingual Anonymisation Toolkit for Public Administrations (MAPA)." EAMT 2020; CEF Telecom project 2019-EU-IA-0045. Code: <code>github.com/MAPA-Consortium</code>; models on Hugging Face under <code>BSC-LT/</code>. Accessed June 2026.</li>
-<li id="ref-4">"MultiGraSCCo: A Multilingual Anonymization Benchmark with Annotations of Personal Identifiers." 2026 preprint (German GraSCCo corpus machine-translated into further languages); builds on Modersohn et al., "GraSCCo," 2022. We were unable to resolve a stable DOI/arXiv locator at access time (June 2026).</li>
-<li id="ref-5">Marimon et al. "MEDDOCAN: Medical Document Anonymization track (Spanish)." IberLEF, 2019.</li>
-<li id="ref-6">OpenAI. "Privacy Filter" (<code>openai/privacy-filter</code>). Hugging Face, 2026. Accessed June 2026.</li>
-<li id="ref-7">OpenMed. "privacy-filter-multilingual" (<code>OpenMed/privacy-filter-multilingual</code>), 16 languages / 54 types. Hugging Face, 2026. Accessed June 2026.</li>
-<li id="ref-8">tabularisai. "eu-pii-safeguard" (<code>tabularisai/eu-pii-safeguard</code>), XLM-R, 26 EU languages. Hugging Face. Accessed June 2026.</li>
-<li id="ref-9">Zaratiana, Tomeh, Holat, Charnois. "GLiNER: Generalist Model for NER" (<code>urchade/gliner_multi_pii-v1</code>). 2023. arXiv:2311.08526.</li>
-<li id="ref-10">iiiorg. "Piiranha-v1" (mDeBERTa-v3), license CC-BY-NC-ND-4.0. Hugging Face, 2024.</li>
-</ol>
+[^cnp]: We hold the per-CNP quasi-identifier count at three (date of birth, sex, county) as a conservative lower bound; the first digit jointly encodes sex and birth-century, and digits 8–9 encode the county of *registration* (with reserved codes for Bucharest sectors), not necessarily of residence.
 
-<hr>
-<p class="arxiv-fn"><a id="fn-1"></a><sup>1</sup> We hold the per-CNP quasi-identifier count at three (date of birth, sex, county) as a conservative lower bound; the first digit jointly encodes sex and birth-century, and digits 8–9 encode the county of <em>registration</em> (with reserved codes for Bucharest sectors), not necessarily of residence. <a href="#fnref-1">↩</a></p>
-<p class="arxiv-fn"><a id="fn-2"></a><sup>2</sup> The per-predicted-label breakdown (1,456 ACCOUNT_ID, 47 phone) is not a scored leaderboard metric; it comes from the harness's per-label prediction dump for privacy-filter on this config (regenerated by <code>europriv run --dump-predictions</code>), and is internally consistent with the 1,503/1,520 flagged and 17 missed. <a href="#fnref-2">↩</a></p>
+[^labeldump]: The per-predicted-label breakdown (1,456 ACCOUNT_ID, 47 phone) is not a scored leaderboard metric; it comes from the harness's per-label prediction dump for privacy-filter on this config (regenerated by `europriv run --dump-predictions`), and is internally consistent with the 1,503/1,520 flagged and 17 missed.

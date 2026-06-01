@@ -1,0 +1,9 @@
+{%- comment -%}Auto-generated References list from page.cite_order + _data/bib.yml. Numbered in cite_order; ids ref-<key> match cite.html links.{%- endcomment -%}
+<h2 class="unnumbered" id="references">References</h2>
+
+<ol class="references">
+{%- for key in page.cite_order %}
+  {%- assign ref = site.data.bib[key] %}
+  <li id="ref-{{ key }}">{% if ref %}{{ ref.text }}{% else %}<strong style="color:#c00">Missing bib entry: {{ key }}</strong>{% endif %}</li>
+{%- endfor %}
+</ol>
