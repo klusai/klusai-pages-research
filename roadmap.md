@@ -28,16 +28,17 @@ This is a living plan organized into three horizons: **H1 (~0–3 months, now)**
 **✓ Shipped (H1)**
 - **Benchmark** — the re-identification-risk metric is generalized to national IDs for **RO (CNP), PL (PESEL), IT (codice fiscale** via the Belfiore code), with **ES (DNI/NIF) handled as coverage-only**; every leak-rate now carries a harness-emitted **Wilson confidence interval**; the leaderboard is **schema 3** with contamination + citable-status badges; the taxonomy is a versioned `conf/taxonomy.yaml` under a `GOVERNANCE.md` stability contract; and an **externally-contributable submission CI** with a reproduction gate makes the board open to outside models.
 - **Datasets** — the reusable **LocalePack** (RO/EN/PL; checksum-valid identifiers, offset-correct-by-construction gold) and the first **three open datasets on Hugging Face**: `ds-kp-general-{ro,en,pl}-50k` (50,000 documents each, CC-BY).
-- **Models** — the first **`kp-deid-mdeberta-280m`** is published, and **Mac-GPU (Metal/MPS) training** is enabled — ~7.7× faster than CPU on the M3 Ultra, so full finetunes run on-device.
+- **Models** — the first **`kp-deid-mdeberta-280m`** is published **and now featured on the public [leaderboard](/leaderboard/)** — the first kp-deid model on the board, and the **best protector at 0% CNP leak-rate** (entity-F1 0.74), trained on-device on the M3 Ultra. **Mac-GPU (Metal/MPS) training** is enabled — ~7.7× faster than CPU on the M3 Ultra, so full finetunes run on-device.
 - **Papers** — the submission + artifact-evaluation protocol is written, and a fresh prior-art rescan re-confirmed the **"first unified"** position (citing concurrent work such as RAT-Bench honestly).
 
 **▶ In progress**
-- The full multilingual `kp-deid` finetune on the Mac GPU — to be featured on the public [leaderboard](/leaderboard/) when it lands.
+- Hardening `ro-realskeleton-v1` into validated citable gold (documented RO native-speaker + IAA sign-off) so the kp-deid board row can be promoted from `dev` to `citable-validated`.
 
 **→ Up next**
-- The H1 retrospective (re-baselining H2 from real results), an MLX-native encoder training path, then H2: the anonymization + downstream-utility track and legal/clinical synthesis.
+- The H1 retrospective (re-baselining H2 from real results), an MLX-native encoder training path, then H2: XLM-R-560m / kp-deid breadth across the T1 languages, the anonymization + downstream-utility track, and legal/clinical synthesis.
 
 **Updates log**
+- **2026-06-01** — First KlusAI model on the public [leaderboard](/leaderboard/): the full-run `kp-deid-mdeberta-280m` lands on the contamination-free RO real-skeleton track (`ro-realskeleton-v1`) at **entity-F1 0.74** with a **0% CNP leak-rate (1520/1520, Wilson CI 0.000–0.0025)** — the **best protector** on the board, an open head-to-head delta on the contamination-free track. Trained on-device on the M3 Ultra; row carries full provenance (`contamination=clean_held_out`, `config_status=dev`).
 - **2026-06-01** — Kickoff wave shipped: the benchmark's re-id metric + confidence intervals + schema-3 board + open submission CI; the first open `ds-kp` datasets; the first `kp-deid` model with on-device Mac-GPU training; and the [first progress post](/blog/). Compute confirmed **Mac-first** (M3 Ultra), with cloud GPU as burst-only.
 
 ## At a glance
