@@ -12,6 +12,10 @@ data: "https://huggingface.co/datasets/klusai/europriv-bench"
 code: "https://github.com/klusai/europriv-bench"
 leaderboard: "/leaderboard/"
 cite_order: [tab, ai4privacy, mapa, multigrascco, meddocan, openai, openmed, tabularisai, gliner, piiranha]
+cover_title: "EuroPriv-Bench"
+cover_sub: "Pan-European de-identification benchmark · 7 languages · re-identification-risk metric"
+tldr: "Detection F1 doesn't predict privacy: the weakest PII detector leaks the fewest Romanian national IDs (1.1%), while the strongest leak 19–26%. A unified, openly-licensed pan-European de-identification benchmark that scores re-identification risk — not just detection F1."
+tags: [De-identification, Re-identification risk, Romanian CNP, GDPR taxonomy, 7 languages]
 abstract: >-
   Privacy-focused NLP for European languages is served by fragmented resources: the Text
   Anonymization Benchmark provides privacy–utility metrics but is English- and legal-only;
