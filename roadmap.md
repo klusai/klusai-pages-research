@@ -9,7 +9,7 @@ status: "Living plan · updated 2026-06-01"
 
 ## North star
 
-EuroPriv-Bench aims to become the neutral, open scorekeeper of European privacy NLP — the unified, reproducible, fully-redistributable yardstick that every PII/PHI/de-identification system gets ranked on, across European languages and the legal + clinical domains. The program does not try to win as "another multilingual PII model." It wins by owning the canonical yardstick (the role HELM and lm-eval-harness play for general LLMs), and by reframing the field's default metric: the published, reproducible finding that **detection-F1 does not track re-identification protection** — the best detector is not the best protector.
+EuroPriv-Bench aims to become the neutral, open scorekeeper of European privacy NLP — the unified, reproducible, fully-redistributable yardstick that every PII/PHI/de-identification system gets ranked on, with **complete coverage of all 24 EU official languages** (plus 4 strategic non-EU European languages — uk/ru/tr/sr — for 28 total) across the legal + clinical domains. This is the unified-pan-European completeness claim: EU-24 parity with MAPA on language breadth, won on a contamination-controlled, re-id-aware footing no F1-only suite has. The 8 EU-completeness languages (the Baltic set et/lv/lt, the Western-Balkan-EU set hr/sl/sk, plus Maltese mt and Irish ga) are exactly the under-served-language wedge the program is built to own — small national languages that mainstream PII tooling neglects. The program does not try to win as "another multilingual PII model." It wins by owning the canonical yardstick (the role HELM and lm-eval-harness play for general LLMs), and by reframing the field's default metric: the published, reproducible finding that **detection-F1 does not track re-identification protection** — the best detector is not the best protector.
 
 That reframing is the program's sharpest asset. On the contamination-free Romanian real-skeleton track, a blanket-coverage system (openai/privacy-filter) leaks ~1.1% of Romanian national IDs (CNP) while type-accurate detectors leak 19–26% at much higher detection-F1. No F1-only benchmark can surface that. EuroPriv-Bench is built to measure it, openly and reproducibly, and to extend it carefully — only where an identifier's structure justifies a re-identification claim.
 
@@ -25,9 +25,9 @@ This is a living plan organized into three horizons: **H1 (~0–3 months, now)**
 
 | Axis | H1 (0–3 mo) | H2 (3–9 mo) | H3 (9–24 mo) |
 |---|---|---|---|
-| **Benchmark** | Generalize re-id metric (PESEL/PL, codice-fiscale/IT); contamination flag (schema 3); GOVERNANCE + versioned taxonomy YAML; submission CI v1 (public configs, no-secrets sandbox) | Track C (anonymization+utility); legal track; gated-eval behind proven sandbox; per-track UI | Track D (MIA) if unblocked; 20 langs; subsume TAB/MEDDOCAN/MAPA splits; v1.0 + DOI |
+| **Benchmark** | Generalize re-id metric (PESEL/PL, codice-fiscale/IT); contamination flag (schema 3); GOVERNANCE + versioned taxonomy YAML; submission CI v1 (public configs, no-secrets sandbox) | Track C (anonymization+utility); legal track; gated-eval behind proven sandbox; per-track UI | Track D (MIA) if unblocked; EU-24 + 4 non-EU (28); subsume TAB/MEDDOCAN/MAPA splits; v1.0 + DOI |
 | **Models** | MLX path (mDeBERTa-280m + LoRA) default; KpModelAdapter; SDK `extract_pii`; first kp rows on RO real-skeleton | XLM-R-560m (GPU-burst gated); coverage-aware "protector" objective; T1 langs; kp-anon + SDK full | T2/T3 under-served langs; decision-gated from-scratch; clinical on credentialed gold |
-| **Datasets** | LocalePack refactor; `synthetic.generate()` stage-A; release_dataset.py + license CI gate; 3 (ro/en/pl) 50k **general-domain** slugs | Drift metric; stage-B narrative gen; legal + clinical synthesis; real-skeleton for 3 more langs; T2 packs | T3 packs (20 total); drift reported across 20 langs (transfer-gap delta with CIs); contributable locale-pack path |
+| **Datasets** | LocalePack refactor; `synthetic.generate()` stage-A; release_dataset.py + license CI gate; 3 (ro/en/pl) 50k **general-domain** slugs | Drift metric; stage-B narrative gen; legal + clinical synthesis; real-skeleton for 3 more langs; T2 packs | T3-EU + T4 packs (EU-24 + 4 non-EU = 28); drift reported across the EU-24 (transfer-gap delta with CIs); contributable locale-pack path |
 | **Papers** | Paper 1 → arXiv + Zenodo DOI; submission protocol doc; Paper 2 skeleton | Paper 1 → venue; Paper 2 → arXiv/dataset venue; Paper 3 draft (gated on models) | Paper 1 + 3 accepted; Paper 4 (utility+MIA) → PETS; Paper 5 (position) as flex buffer |
 
 ---
@@ -43,6 +43,8 @@ This is a living plan organized into three horizons: **H1 (~0–3 months, now)**
 ### H1
 
 - **Generalize `cnp_leakage` into a careful re-identification-risk metric.** Lead with the only listed IDs whose structure actually encodes quasi-identifiers: **PESEL (PL)** and **codice fiscale (IT)** (both carry DOB + sex; codice fiscale also encodes **place/comune of birth via the Belfiore code**, not "region"). Make `national_id_leakage` a **country-dispatched (RO/PL/IT) row-metric** that folds in / aliases `cnp_leakage` so the board carries a single re-id-risk metric family; register it in `ROW_REGISTRY`. **DNI/NIF (ES) is explicitly a coverage-only validator (no quasi-ID decode)** — it encodes nothing, so it is never reported as a re-id-risk number, only as detection coverage.
+- **Staged EU-completeness re-id extensions (after RO/PL/IT land).** As the country-keyed registry grows, add the next **decode-bearing** national IDs whose structure encodes quasi-identifiers: **EE isikukood** (DOB + sex + century), **LT asmens kodas** (DOB + sex), **SI EMŠO** (DOB + sex + region), and **SK/CZ rodné číslo** (DOB + sex). These are reported as re-id-risk numbers exactly like RO CNP / PL PESEL / IT codice fiscale. Sequence: RO/PL/IT first per the existing plan, then EE/LT/SI/SK as the EU-completeness re-id wins.
+- **Coverage-only validators (encode nothing → detection coverage, never a re-id number, like ES DNI/NIF):** **HR OIB**, **MT ID card**, **IE PPS**. **LV personal code is split:** the pre-2017 format encoded DOB (decode that legacy format as re-id-bearing), but codes issued since 2017 are randomized and encode nothing (treat the new format as coverage-only) — the validator must distinguish the two and never emit a re-id number for a post-2017 code. Keep decode-bearing and coverage-only IDs cleanly separated in the registry and on the board.
 - **Contamination flag, machine-readable.** Bump leaderboard to `schema 3` with a per-`(model,config)` `contamination` enum; seed the known OpenMed/tabularisai-trained-on-Ai4Privacy cases; render an in-distribution vs clean-held-out marker on the site.
 - **Governance + versioned taxonomy.** Move the full crosswalk out of the `taxonomy.py` docstring into a loaded `conf/taxonomy.yaml` (keep `TAXONOMY_VERSION` in sync); add a contract test against `bioes_labels()`; write `GOVERNANCE.md` (immutable config names, version-comparability rules, metric-stability contract, CHANGELOG).
 - **Config-status field on the leaderboard schema.** Add a per-`(model,config)` `config_status` enum (`dev` | `citable-validated`) to the `schema 3` rows and document it in `GOVERNANCE.md`; a config is `citable-validated` **only** when the Datasets H1 native-speaker/IAA sign-off is recorded in the dataset card (see Datasets H1). The site never renders a config as citable without it.
@@ -63,15 +65,15 @@ This is a living plan organized into three horizons: **H1 (~0–3 months, now)**
 
 **Acceptance:** detection + anonymization run end-to-end with real metrics (no `NotImplementedError` on populated tracks), each with ≥1 published row + CIs; a privacy-utility tradeoff figure (re-id risk vs downstream utility) reproducible for ≥2 anonymizer baselines; external models scored against gated gold **via the proven sandbox** without exposing the gold; ≥3 external submissions live.
 **Agent tasks:** implement `metrics.utility_after_redaction` + redaction-consistency; add a Presidio `BaseAdapter.anonymize`; build the trusted-runner Action (HF token, `klusai-webos/tools/do-cli` burst, aggregate-only writeback) **after** the sandbox boundary is documented and tested; wire the legal YAML into the runner; wire the curated MEDDOCAN gold config into the runner as a citable clinical config.
-**Targets:** ≥16 of 20 languages with detection baselines; both a legal and a clinical config citable (validated, contamination-controlled).
+**Targets:** ≥16 of 24 EU languages with detection baselines; both a legal and a clinical config citable (validated, contamination-controlled).
 
 ### H3
 
 - **Track D — membership-inference** (LiRA/shadow-model), **deferred from H2** because it stacks three unbuilt/unfunded dependencies (a KlusAI model trained on sensitive text, GPU-burst budget, a credentialed sensitive corpus). Lead the "beyond F1" thesis on **Track B (re-id) + Track C (utility)** until those clear.
-- **Complete 20 languages + both domains across all four tracks; freeze v1.0** with a Zenodo DOI and a contamination-audit report.
+- **Complete all 24 EU official + 4 non-EU languages (28) + both domains across all four tracks; freeze v1.0** with a Zenodo DOI and a contamination-audit report. Per the feasibility staging, the EU-24 long tail is met by detection baselines + the re-id metric (where the national ID decodes quasi-identifiers) + checksum-valid synthetic packs — not deep four-track-by-two-domain coverage for all 24; deep coverage stays T1(+RO), extending to T2 as capacity allows.
 - **Subsume prior art operationally:** re-host and score TAB (EN-legal), MEDDOCAN (ES-clinical), a MAPA-derived split inside the harness, each reporting its native metric alongside KP metrics. **Claim subsumption only once the split actually runs** (re-hosting is unbuilt and partly licensing-gated).
 
-**Acceptance:** 20/20 languages + legal & clinical with citable, contamination-controlled gold and baselines across populated tracks; v1.0 tagged + DOI; TAB/MEDDOCAN/a MAPA split runnable in-harness reporting both metrics; ≥10 distinct external models scored, incl. ≥1 commercial API where testable.
+**Acceptance:** all 24 EU official + 4 non-EU languages (28) + legal & clinical with citable, contamination-controlled gold and baselines across populated tracks (EU-24 long tail via detection + re-id + checksum-valid packs; deep multi-track stays T1(+RO)→T2); v1.0 tagged + DOI; TAB/MEDDOCAN/a MAPA split runnable in-harness reporting both metrics; ≥10 distinct external models scored, incl. ≥1 commercial API where testable.
 **Targets:** ≥1 external group cites EuroPriv-Bench numbers or submits a model; every site number reproducible against a pinned `(harness, taxonomy, dataset-rev)` triple.
 
 ---
@@ -109,12 +111,12 @@ This is a living plan organized into three horizons: **H1 (~0–3 months, now)**
 
 ### H3
 
-- Scale kp-deid to T2/T3 under-served languages (el/cs/sv/hu/da/fi/bg + uk/ru/tr/sr) — the defensible breadth wedge.
+- Scale kp-deid breadth across the under-served wedge — **primary: the EU-completeness tier (T3-EU: hr/et/lv/lt/sk/sl/mt/ga)** plus the T2 set (pt/el/cs/sv/hu/da/fi/bg); **bonus: the non-EU strategic set (uk/ru/tr/sr)**. The EU-completeness Baltic + Western-Balkan-EU + Maltese/Irish languages are the defensible breadth wedge mainstream tooling neglects. Deep own-finetunes stay staged/feasible (T1-focused +RO, extending to T2 as capacity allows); for much of T3-EU the EU-24 commitment is met by detection baselines + the re-id metric + checksum-valid packs, with finetunes only where a head-to-head win is reachable.
 - **From-scratch is decision-gated and DROP-by-default:** ship only if continue-finetuning measurably plateaus AND a defensible novelty exists (candidate: an MLX-native, structured-identifier-aware encoder). Otherwise formally drop with the plateau evidence recorded.
 - Clinical models on credentialed gold (if access secured); MIA evaluation of kp-anon on the leakage track; `klusai-privacy` v1.0 + Presidio-recognizer plugin.
 
-**Acceptance:** head-to-head CI-backed wins on ≥6 under-served languages vs the best open competitor per language; from-scratch model either ships with a measured advantage or is formally dropped with evidence; clinical kp-deid competitive on a credentialed PHI set or the dependency is documented as the blocker.
-**Targets:** open, head-to-head wins on ≥6 under-served languages; Presidio-recognizer plugin shipped.
+**Acceptance:** head-to-head CI-backed wins on ≥6 under-served languages (drawn primarily from the EU-completeness tier T3-EU + T2) vs the best open competitor per language; from-scratch model either ships with a measured advantage or is formally dropped with evidence; clinical kp-deid competitive on a credentialed PHI set or the dependency is documented as the blocker.
+**Targets:** open, head-to-head wins on ≥6 under-served languages (EU-completeness tier prioritized); Presidio-recognizer plugin shipped.
 
 ---
 
@@ -122,17 +124,21 @@ This is a living plan organized into three horizons: **H1 (~0–3 months, now)**
 
 **Vision.** The cleanest, largest, most rigorously-validated openly-redistributable PII/PHI corpora for European text, built as **legal synthesis + clinical via curated open-synthetic gold (MEDDOCAN) + credentialed clinical eval-only** — gold spans emitted at generation time (zero annotation cost). The research contribution is two under-explored things: a quantified **synthetic-context-to-real-context drift** metric, and **multilingual legal** synthesis (thinner in the literature than clinical). **H1 is deliberately a general-domain bring-up of the generation/release machinery; legal/clinical synthesis begins H2.**
 
-**Volume & tier targets (cross-referenced to the Models tiers so they cannot drift):**
+**Canonical coverage set & volume/tier targets (THE single source of truth — every other mention in this roadmap references this table so counts cannot drift). EU total = 2 + 6 + 8 + 8 = 24 (all EU official languages); non-EU bonus = 4; grand total = 28:**
 
-| Tier | Languages | Target docs per (tier, domain) |
+| Tier | Languages | Target docs / depth per lang |
 |---|---|---|
-| T1 | de · fr · es · it · nl · pl | ≥50k general + ≥20k legal + ≥20k clinical / lang |
-| T2 | pt · el · cs · sv · hu · da · fi · bg | ≥20k general / lang |
-| T3 | uk · ru · tr · sr | ≥10k general / lang |
+| Anchor (H1) | ro · en (EU) | ≥50k general; full deep multi-track (RO leads) |
+| T1 (deep: general+legal+clinical) | de · fr · es · it · nl · pl (EU) | ≥50k general + ≥20k legal + ≥20k clinical |
+| T2 (general, +legal/clinical where justified) | pt · el · cs · sv · hu · da · fi · bg (EU) | ≥20k general; legal/clinical where justified |
+| T3-EU (EU completeness wedge: detection + re-id + checksum pack; deep only where justified) | hr · et · lv · lt · sk · sl · mt · ga (EU) | ≥10k general + checksum-valid pack |
+| T4 (non-EU strategic bonus: detection baselines) | uk · ru · tr · sr | ≥10k general |
 
-A locale **PACK** (generator + checksum self-test) is distinct from a released **SLUG** (a volume of validated docs); pack-count milestones (16 packs / 20 packs) carry the slug-volume acceptance above so a "pack" count never stands in for delivered volume.
+**Feasibility staging (keeps the small-team constraint credible).** The EU-24 commitment is met primarily via (a) detection baselines run through the harness, (b) the re-identification-risk metric where the national ID decodes quasi-identifiers, and (c) checksum-valid synthetic locale packs — **not** deep own-finetunes, legal/clinical synthesis, or native-speaker-validated citable gold for all 24. The expensive deep work (kp-* finetunes, legal+clinical synthesis, native-speaker-validated gold) stays **T1-focused (+RO)** and extends to **T2 as capacity allows**. The long tail (T3-EU + T4) is **breadth (coverage), not depth**; coverage is staged T1→T2→T3-EU→T4.
 
-**World-class bar.** Match **Ai4Privacy** (open-pii-masking-500k, CC-BY) and **MAPA** (24 EU langs) on scale/docs, and beat both on checksum-VALID locale identifiers (Faker/MT-projected sets emit invalid IDs), offset-correct-by-construction gold spans, a published drift score, and full-provenance HF cards. **Cleanly-licensed-only** is a hard CI gate (excludes Piiranha CC-BY-NC-ND, Ai4Privacy Llama-bound tiers, LegalNERo NC-ND, MoNERo/MARCELL copyleft).
+A locale **PACK** (generator + checksum self-test) is distinct from a released **SLUG** (a volume of validated docs); pack-count milestones carry the slug-volume acceptance above so a "pack" count never stands in for delivered volume.
+
+**World-class bar.** **Match MAPA on EU-24 coverage** (all 24 EU official languages) — the unified-pan-European completeness claim — and match **Ai4Privacy** (open-pii-masking-500k, CC-BY) on scale/docs, while **beating both** on checksum-VALID locale identifiers (Faker/MT-projected sets emit invalid IDs), offset-correct-by-construction gold spans, a published drift score, and full-provenance HF cards. **Cleanly-licensed-only** is a hard CI gate (excludes Piiranha CC-BY-NC-ND, Ai4Privacy Llama-bound tiers, LegalNERo NC-ND, MoNERo/MARCELL copyleft).
 
 **Verified starting state.** Generators are RO-only (`ro_generators.py`/`ro_documents.py`/`ro_skeletons.py`); `synthetic.generate()` is a stub. `make_ro_review.py` is a review-*prep* script — **no documented native-speaker sign-off / IAA exists yet**, even for RO.
 
@@ -162,11 +168,11 @@ A locale **PACK** (generator + checksum self-test) is distinct from a released *
 
 ### H3
 
-- T3 packs (uk/ru/tr/sr) → 20 total; credentialed clinical (i2b2/n2c2/MIMIC) under DUA **as eval-only gated configs where redistribution is forbidden (MIMIC)** — explicitly off the critical path; per-domain slugs; contributable external locale-pack path.
+- **T3-EU packs (hr/et/lv/lt/sk/sl/mt/ga)** completing the EU-24 — detection + re-id baselines + checksum-valid synthetic packs (deep work only where justified) — **plus T4 non-EU bonus packs (uk/ru/tr/sr)** as detection baselines, bringing the canonical set to 28; credentialed clinical (i2b2/n2c2/MIMIC) under DUA **as eval-only gated configs where redistribution is forbidden (MIMIC)** — explicitly off the critical path; per-domain slugs; contributable external locale-pack path.
 - The 1M-doc and 500k aggregates are **opportunistic stretch goals, not acceptance criteria** (stage-B at that scale may exceed the Mac Studio budget).
 
-**Acceptance:** all 20 languages have a checksum-valid pack + ≥1 released slug; drift reported across 20 langs; ≥1 non-KlusAI locale pack passes all gates.
-**Targets:** 20 packs; aggregate validation report published.
+**Acceptance:** all 24 EU official languages have a checksum-valid pack + ≥1 released slug + a detection baseline; the re-id metric is live for every decode-bearing national ID; + 4 non-EU bonus packs (28 total); drift reported across the EU-24; ≥1 non-KlusAI locale pack passes all gates.
+**Targets:** EU-24 + 4 non-EU bonus packs (28); aggregate validation report published.
 
 ---
 
@@ -243,7 +249,7 @@ The hard ordering, with the red-team's corrections applied:
 2. **Citations/endorsement:** first external citation in H2; co-citation by a TAB/MAPA/Ai4Privacy-adjacent author as a leading indicator.
 3. **Reproducibility/trust:** number of independently-published competitor numbers the harness reproduces within tolerance (≥2 by H1) + measurable HF dataset traffic.
 4. **Model SOTA wins:** `(language × domain)` cells where a kp-deid model beats the best public baseline at span-F1 with significance — ≥3 under-served-language wins (the escalate trigger) by H2.
-5. **Suite completeness:** languages with citable native-validated gold × domains × live privacy tasks — from 6+1RO toward 10+ languages and ≥2 tracks beyond detection by H3.
+5. **Suite completeness:** **EU-24 official-language coverage with ≥1 live privacy task each by H3** (detection + re-id + checksum-valid pack for the long tail) plus 4 non-EU bonus languages (28 total); **deep multi-track (T1) for ≥7 languages** (the deep-tier wins, citable native-validated gold × ≥2 domains × ≥2 tracks beyond detection), staged T1(+RO)→T2.
 
 **Credibility-win sequencing.** H1: convert shipped artifacts into public credibility — one-command reproduction of Tables 1–2, reproduce two independently-published competitor numbers, arXiv preprint, documented submission flow; lead all messaging with "detection F1 does not track re-identification protection." Ship only the MLX mDeBERTa-280m kp-deid baseline on the contamination-free RO real-skeleton; hold XLM-R/MoE and breadth models for H2. H2: turn the referee position into a network effect (first third-party submission, first external citation), harden RO real-skeleton into validated citable gold and replicate in one more language, **then** finetune kp-deid breadth (XLM-R/MoE, T1 langs) and chase the escalate trigger. H3: complete the suite (utility + MIA), add a clinical track once credentialed data lands, expand toward 10+ languages; arrival signal = external adoption as the default eval + a clinical/legal/EU-funded partner.
 
@@ -261,7 +267,7 @@ The hard ordering, with the red-team's corrections applied:
 - **Stale ground truth poisoning the plan.** The "repos private / push blocked" memory note is stale. *Mitigation:* memory file corrected before publishing this roadmap; H1 re-baselined; the real admin items (Pages HTTPS, Actions secrets) tracked under Benchmark H1.
 - **Re-id metric doesn't generalize the way the headline needs.** Quasi-ID disclosure is identifier-specific: PESEL encodes DOB+sex, codice fiscale encodes DOB+sex + place/comune of birth (Belfiore code); DNI/NIF encodes nothing. *Mitigation:* per-identifier classification — report "re-identification risk" only where the encoding justifies it, "coverage" elsewhere; lead with PL/IT.
 - **Contamination invalidating rankings.** OpenMed/tabularisai trained on Ai4Privacy (our general-text gold source); the publicly-rendered general-text table currently mixes contaminated and clean systems with no marker. *Mitigation:* the machine-readable contamination flag (schema 3) is an H1, not a nicety; lead all fair comparisons on the contamination-free RO real-skeleton track.
-- **Four-track × 20-lang × 2-domain matrix is large for a small team.** *Mitigation:* sequence T1→T2→T3; do one new language deeply in H1 (PL); defer Track D to H3; treat mega-aggregate datasets as stretch goals.
+- **Four-track × 28-language × 2-domain matrix is large for a small team.** *Mitigation:* the long tail (T3-EU + T4) is **detection / re-id-baseline breadth only** (detection baselines + the re-id metric where the national ID decodes quasi-identifiers + checksum-valid synthetic packs); the deep four-track × 2-domain work stays **T1(+RO)**, extending to T2 as capacity allows. Coverage is staged **T1→T2→T3-EU→T4 with a per-tier kill option** (stop after any tier if capacity runs out — EU-24 breadth before non-EU bonus). Do one new language deeply in H1 (PL); defer Track D to H3; treat mega-aggregate datasets as stretch goals.
 - **Submission-CI security.** Running untrusted adapter code with access to a gold-bearing token is an exfiltration vector. *Mitigation:* sandbox first (no-secrets public-config scoring in H1); gated-gold scoring only behind a proven trust boundary in H2.
 - **Native-speaker validation asserted but not evidenced (including RO).** *Mitigation:* documented protocol with named/sourced reviewers (or a contractor budget line) as a hard precondition for any "validated gold" label.
 
