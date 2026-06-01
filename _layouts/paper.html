@@ -4,6 +4,8 @@ layout: default
 <style>
   .arxiv { max-width: 760px; margin: 0 auto; font-family: Georgia, "Times New Roman", Cambria, serif;
            color: var(--text); line-height: 1.6; }
+  /* clear the sticky site header when jumping to a citation/footnote/section anchor */
+  .arxiv [id] { scroll-margin-top: 5rem; }
   .arxiv .arxiv-head { text-align: center; padding: 1.5rem 0 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
   .arxiv .arxiv-tag { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.72rem;
                       letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary); margin: 0 0 0.6rem; }
@@ -42,7 +44,8 @@ layout: default
   .arxiv .arxiv-body .caption { font-family: Georgia, serif; font-size: 0.82rem; color: var(--text-secondary); text-align: center;
                                 margin: 0.3rem auto 1.4rem; max-width: 90%; }
   .arxiv .arxiv-body code { font-size: 0.85em; background: var(--surface-alt); padding: 0.05rem 0.3rem; border-radius: 3px; }
-  .arxiv .arxiv-body ol li { margin: 0.3rem 0; }
+  /* references: left-align (justified short reference lines look gappy) */
+  .arxiv .arxiv-body ol li { margin: 0.3rem 0; text-align: left; hyphens: none; -webkit-hyphens: none; }
   .arxiv .arxiv-body sup a { text-decoration: none; }
   .arxiv .arxiv-body .arxiv-fn { font-size: 0.82rem; color: var(--text-secondary); text-align: left; }
 </style>
