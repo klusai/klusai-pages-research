@@ -31,3 +31,24 @@ gliner:
 
 piiranha:
   text: 'iiiorg. "Piiranha-v1" (mDeBERTa-v3), license CC-BY-NC-ND-4.0. Hugging Face, 2024.'
+
+ratbench:
+  text: 'Krčo, Yao, Meeus, de Montjoye. "RAT-Bench: A Comprehensive Benchmark for Text Anonymization." 2026. arXiv:2602.12806. Concurrent, independent re-identification-risk leaderboard over synthetic text on U.S. demographics (English/Spanish/Chinese); no legal text, no GDPR-aligned taxonomy.'
+
+gliner2pii:
+  text: 'Zaratiana, Lewis, Hurn-Maloney. "GLiNER2-PII: A Multilingual Model for Personally Identifiable Information Extraction." 2026. arXiv:2605.09973. A 0.3B multilingual PII extractor over a 42-type taxonomy; a model, not a leaderboard.'
+
+spy:
+  text: 'Savkin, Ionov, Konovalov. "SPY: Enhancing Privacy with Synthetic PII Detection Dataset." NAACL 2025 (SRW), pp. 236–246. English-only synthetic PII benchmark with legal and clinical items.'
+
+medprivbench:
+  text: 'Guan, Zhai, Kwok, Du, Feng, Li, Qin, Hui. "MedPriv-Bench: Benchmarking the Privacy-Utility Trade-off of Large Language Models in Medical Open-End Question Answering." 2026. arXiv:2603.14265. Clinical-only LLM-QA privacy-utility benchmark.'
+
+privacibench:
+  text: 'Li, Hu, Jing, Chen, Hu, Han, Chu, Hu, Song. "PrivaCI-Bench: Evaluating Privacy with Contextual Integrity and Legal Compliance." ACL 2025. arXiv:2502.17041. Contextual-integrity / legal-compliance evaluation, not span-level de-identification.'
+
+piibench:
+  text: 'Jha. "PIIBench: A Unified Multi-Source Benchmark Corpus for Personally Identifiable Information Detection." 2026. arXiv:2604.15776. Consolidates ten public PII datasets for detection only.'
+
+deusser:
+  text: 'Deußer, Sparrenberg, Berger, Hahnbück, Bauckhage, Sifa. "A Survey on Current Trends and Recent Advances in Text Anonymization." IEEE DSAA 2025. arXiv:2508.21587. Flags the absence of a standardized multilingual de-identification benchmark.'

@@ -11,7 +11,7 @@ status: "Working paper · preliminary results (n = 1,500 docs/config) · not pee
 data: "https://huggingface.co/datasets/klusai/europriv-bench"
 code: "https://github.com/klusai/europriv-bench"
 leaderboard: "/leaderboard/"
-cite_order: [tab, ai4privacy, mapa, multigrascco, meddocan, openai, openmed, tabularisai, gliner, piiranha]
+cite_order: [tab, ai4privacy, mapa, multigrascco, meddocan, openai, openmed, tabularisai, gliner, piiranha, ratbench, gliner2pii, spy, medprivbench, privacibench, piibench, deusser]
 cover_title: "EuroPriv-Bench"
 cover_sub: "Pan-European de-identification benchmark · 7 languages · re-identification-risk metric"
 tldr: "Detection F1 doesn't predict privacy: the weakest PII detector leaks the fewest Romanian national IDs (1.1%), while the strongest leak 19–26%. A unified, openly-licensed pan-European de-identification benchmark that scores re-identification risk — not just detection F1."
@@ -21,11 +21,17 @@ abstract: >-
   Anonymization Benchmark provides privacy–utility metrics but is English- and legal-only;
   AI4Privacy offers cross-lingual European detection data without re-identification metrics;
   MAPA covers 24 EU languages and both legal and clinical text but as a detection toolkit, not a
-  comparative leaderboard; and the privacy-filter model lineage ships strong systems for which we
-  found no standardized public evaluation. We introduce EuroPriv-Bench, the first benchmark to
-  unify (a) European cross-lingual breadth, (b) general and Romanian legal/clinical text, (c) one
-  harmonized GDPR-aligned entity taxonomy, and (d) a re-identification-risk metric alongside
-  detection F1, in one reproducible, openly-licensed, leaderboard-style suite. We build on the
+  comparative leaderboard; and MultiGraSCCo is multilingual but clinical-only and translation-based.
+  Concurrent, independent work — RAT-Bench — contributes a hosted re-identification-risk benchmark
+  but is built on U.S. demographics (English/Spanish/Chinese), with no legal text and no
+  GDPR-aligned taxonomy; recent PII models such as GLiNER2-PII ship strong systems with no
+  standardized European evaluation, and a 2025 survey of the field flags exactly this missing
+  standardized multilingual benchmark. We introduce EuroPriv-Bench, the first unified,
+  openly-licensed leaderboard for European cross-lingual legal and clinical de-identification with a
+  harmonized GDPR-aligned entity taxonomy and a re-identification-risk metric. It unifies
+  (a) European cross-lingual breadth, (b) both legal and clinical text, (c) one harmonized
+  GDPR-aligned entity taxonomy, and (d) a re-identification-risk metric alongside detection F1, in
+  one reproducible, openly-licensed, leaderboard-style suite. We build on the
   prior art rather than replacing it, re-using its label schemes through a documented crosswalk.
   Evaluating four public systems on realistic Romanian documents, we find that detection F1 does
   not track national-identifier (CNP) protection: the best detector is not the best protector.
@@ -49,13 +55,20 @@ for English ECHR legal text. AI4Privacy {% include cite.html key="ai4privacy" %}
 detection data, but scores detection F1 only. MAPA {% include cite.html key="mapa" %} covers all 24 official
 EU languages across legal and clinical text, but ships as a detection toolkit, not a comparative
 leaderboard. MultiGraSCCo {% include cite.html key="multigrascco" %} is multilingual and GDPR-aware but clinical-only
-and produced by machine translation. And the privacy-filter model lineage — OpenAI's `privacy-filter`
+and produced by machine translation. Concurrent, independent work — RAT-Bench {% include cite.html key="ratbench" %} —
+contributes a hosted re-identification-risk benchmark, but is built on U.S. demographics
+(English/Spanish/Chinese), with no legal text and no GDPR-aligned taxonomy. Recent PII models such as
+GLiNER2-PII {% include cite.html key="gliner2pii" %} ship strong systems with **no standardized European
+evaluation**, and a 2025 survey of the field {% include cite.html key="deusser" %} flags exactly this missing
+standardized multilingual benchmark. And the privacy-filter model lineage — OpenAI's `privacy-filter`
 {% include cite.html key="openai" %} and OpenMed's multilingual finetune {% include cite.html key="openmed" %} — ships capable
 systems for which we found **no standardized public privacy-risk evaluation** as of June 2026.
 
-No single artifact unifies (a) European cross-lingual breadth, (b) general and domain
-(legal/clinical) text, (c) one harmonized GDPR-aligned taxonomy, and (d) a re-identification-risk
-metric, in a reproducible, openly-licensed leaderboard. EuroPriv-Bench is the first to do so. Our
+EuroPriv-Bench is, to our knowledge, the first unified, openly-licensed leaderboard for European
+cross-lingual legal *and* clinical de-identification with a harmonized GDPR-aligned entity taxonomy
+and a re-identification-risk metric. No single prior artifact unifies (a) European cross-lingual
+breadth, (b) both legal and clinical text, (c) one harmonized GDPR-aligned taxonomy, and (d) a
+re-identification-risk metric, in a reproducible, openly-licensed leaderboard. Our
 claim is explicitly "first *unified*", not "first": we re-use and subsume the prior art (§6). We
 contribute a harmonized taxonomy with a documented crosswalk to six external schemes (§2); a
 cleanly-licensed, reproducible benchmark over six European languages and a Romanian legal/clinical
@@ -201,14 +214,61 @@ why a realistic-context gold is necessary to see the effect at all.
 ## Related Work
 
 EuroPriv-Bench is designed to subsume, not compete with, prior resources, re-using their splits and
-metrics where applicable. TAB {% include cite.html key="tab" %} contributes the privacy–utility framing
-(English, legal). AI4Privacy {% include cite.html key="ai4privacy" %} supplies the cross-lingual general substrate.
-MAPA {% include cite.html key="mapa" %} and MEDDOCAN {% include cite.html key="meddocan" %} anchor the legal/clinical and
-Spanish-clinical settings. MultiGraSCCo {% include cite.html key="multigrascco" %} is the closest multilingual prior
-benchmark; it is clinical-only and, per its own description, produced by machine-translating a German
-corpus into other languages — localized native generation avoids the structurally invalid identifiers
-(e.g. checksum-invalid national IDs) that translation produces. Piiranha {% include cite.html key="piiranha" %} is
-included by citation only, as its CC-BY-NC-ND license precludes redistribution or use as a base model.
+metrics where applicable. We position it against the closest prior and concurrent artifacts along six
+axes: (a) EU cross-lingual coverage, (b) legal text, (c) clinical text, (d) a harmonized GDPR-aligned
+entity taxonomy, (e) a re-identification-risk metric, and (f) an open, reproducible leaderboard.
+Table 3 summarizes coverage: every prior artifact is missing at least two of these axes, and
+EuroPriv-Bench is the first to fill all six in a single suite.
+
+| Artifact | (a) EU x-ling | (b) legal | (c) clinical | (d) GDPR tax. | (e) re-id metric | (f) leaderboard |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| TAB {% include cite.html key="tab" %} | ✗ | ✓ | ✗ | ✗ | ✓ | ✗ |
+| AI4Privacy {% include cite.html key="ai4privacy" %} | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| MAPA {% include cite.html key="mapa" %} | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ |
+| MultiGraSCCo {% include cite.html key="multigrascco" %} | ✓ | ✗ | ✓ | ✗ | ✗ | ✗ |
+| MEDDOCAN {% include cite.html key="meddocan" %} | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ |
+| RAT-Bench {% include cite.html key="ratbench" %} | ✗ | ✗ | ✓ | ✗ | ✓ | ✓ |
+| GLiNER2-PII {% include cite.html key="gliner2pii" %} | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| SPY {% include cite.html key="spy" %} | ✗ | ✓ | ✓ | ✗ | ✗ | ✗ |
+| MedPriv-Bench {% include cite.html key="medprivbench" %} | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ |
+| PrivaCI-Bench {% include cite.html key="privacibench" %} | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ |
+| PIIBench {% include cite.html key="piibench" %} | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| **EuroPriv-Bench (ours)** | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+
+<p class="caption">Table 3. Coverage of related and concurrent artifacts. Columns: (a) EU cross-lingual, (b) legal-domain de-identification text, (c) clinical-domain de-identification text, (d) harmonized GDPR taxonomy, (e) span/document-level re-identification-risk metric, (f) open reproducible leaderboard. Every prior row is missing ≥2 columns; only EuroPriv-Bench fills all six.</p>
+
+The closest EU-breadth, dual-domain prior art is MAPA {% include cite.html key="mapa" %} (24 EU languages,
+legal *and* clinical), but it is a detection toolkit with no re-identification metric and no open
+leaderboard. The legal-domain re-identification lineage is anchored by TAB {% include cite.html key="tab" %},
+which pairs a privacy–utility / re-identification framing with legal text but is English-only.
+AI4Privacy {% include cite.html key="ai4privacy" %} contributes cross-lingual European detection data without
+a re-identification metric or a GDPR-aligned taxonomy. MultiGraSCCo {% include cite.html key="multigrascco" %} is
+the closest multilingual prior benchmark; it is clinical-only and, per its own description, produced by
+machine-translating a German corpus into other languages — localized native generation avoids the
+structurally invalid identifiers (e.g. checksum-invalid national IDs) that translation produces.
+MEDDOCAN {% include cite.html key="meddocan" %} is a clinical de-identification track but Spanish-only.
+EuroPriv-Bench is best understood as the unification of what MAPA (EU breadth + dual domain) and TAB
+(legal text + re-identification metric) each establish in isolation, under one harmonized GDPR-aligned
+taxonomy.
+
+RAT-Bench {% include cite.html key="ratbench" %} is concurrent and independent work: a 2026 hosted
+re-identification-risk leaderboard. It is complementary rather than overlapping — it is built on U.S.
+demographic statistics over English, Spanish, and Chinese, contains no legal text, and uses no
+GDPR-aligned taxonomy, so it does not address the European legal/clinical de-identification setting
+EuroPriv-Bench targets. Recent PII models and corpora are similarly partial: GLiNER2-PII
+{% include cite.html key="gliner2pii" %} is a strong multilingual (seven-language, 42-type) PII model but ships
+no benchmark, no re-identification metric, and no legal or clinical coverage; the SPY benchmark
+{% include cite.html key="spy" %} does contain legal and clinical de-identification text, but it is English-only
+synthetic data with no EU cross-lingual breadth, no GDPR-aligned taxonomy, and no re-identification-risk
+metric; MedPriv-Bench {% include cite.html key="medprivbench" %} is a clinical-only LLM-QA privacy-utility
+benchmark; PrivaCI-Bench {% include cite.html key="privacibench" %} evaluates contextual integrity and legal
+compliance rather than span-level de-identification; and PIIBench {% include cite.html key="piibench" %}
+consolidates ten public PII datasets for detection only. A 2025 survey of text anonymization
+{% include cite.html key="deusser" %} explicitly flags the absence of a standardized multilingual
+de-identification benchmark — the gap EuroPriv-Bench is built to close.
+
+Piiranha {% include cite.html key="piiranha" %} is included by citation only, as its CC-BY-NC-ND license
+precludes redistribution or use as a base model.
 
 ## Limitations
 
