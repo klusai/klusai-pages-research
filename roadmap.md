@@ -1,0 +1,246 @@
+---
+layout: roadmap
+title: "Research Roadmap"
+permalink: /roadmap/
+eyebrow: "Privacy Models Program"
+lede: "How EuroPriv-Bench becomes the neutral, open scorekeeper of European privacy NLP — across benchmark, models, datasets, and papers."
+status: "Living plan · updated 2026-06-01"
+---
+
+## North star
+
+EuroPriv-Bench aims to become the neutral, open scorekeeper of European privacy NLP — the unified, reproducible, fully-redistributable yardstick that every PII/PHI/de-identification system gets ranked on, across European languages and the legal + clinical domains. The program does not try to win as "another multilingual PII model." It wins by owning the canonical yardstick (the role HELM and lm-eval-harness play for general LLMs), and by reframing the field's default metric: the published, reproducible finding that **detection-F1 does not track re-identification protection** — the best detector is not the best protector.
+
+That reframing is the program's sharpest asset. On the contamination-free Romanian real-skeleton track, a blanket-coverage system (openai/privacy-filter) leaks ~1.1% of Romanian national IDs (CNP) while type-accurate detectors leak 19–26% at much higher detection-F1. No F1-only benchmark can surface that. EuroPriv-Bench is built to measure it, openly and reproducibly, and to extend it carefully — only where an identifier's structure justifies a re-identification claim.
+
+The position is defensible for a small, agent-augmented team because a leaderboard's value compounds with submissions and citations, not headcount, and a neutral referee is a seat a vendor-aligned competitor structurally cannot take. The claim discipline throughout is **"first *unified*, not first"**: we subsume and re-host TAB / Ai4Privacy / MAPA / MEDDOCAN / MultiGraSCCo through a documented GDPR-aligned crosswalk rather than competing with them, and we ship models only where head-to-head, CI-backed wins exist on under-served languages and domains no baseline was trained on.
+
+## How to read this roadmap
+
+This is a living plan organized into three horizons: **H1 (~0–3 months, now)**, **H2 (~3–9 months)**, **H3 (~9–24 months)**. Every deliverable carries a measurable **Acceptance** line, an **Agent tasks** sub-list (concrete repo/file-level actions), and a **Targets** line. Each axis lives in a specific repo: **Benchmark & Leaderboard** in [`europriv-bench`](https://github.com/klusai/europriv-bench) (+ the leaderboard UI in [`klusai.github.io`](https://github.com/klusai/klusai.github.io)); **Models** in [`klusai-models`](https://github.com/klusai/klusai-models); **Datasets** in [`klusai-datasets`](https://github.com/klusai/klusai-datasets); **Papers** in [`klusai-papers`](https://github.com/klusai/klusai-papers). `europriv-bench` is the single source of truth for the taxonomy and span logic (`TAXONOMY_VERSION 0.2.0`, `bioes_labels()`, `char_spans_to_bioes`, `national_id`); the dataset and model repos *import* it and never copy. Agents must respect cleanly-licensed-only sourcing, the MLX-first + DigitalOcean-GPU-burst compute model, and the rule that every published number ships with provenance (harness version, taxonomy version, dataset config/revision, model_id, timestamp) and a confidence interval.
+
+> **Ground-truth note (verified 2026-06-01):** All four GitHub repos are **public and in sync with `origin/main`**, and the HF dataset `klusai/europriv-bench` is **public** (8 configs live). The earlier "repos private / push blocked" memory note is **stale** and has been corrected; H1 is re-baselined against actual state. The genuinely-open admin items are narrower (Pages "Enforce HTTPS" UI checkbox; org-level Actions secrets/permissions for submission CI) and are tracked under Benchmark H1.
+
+## At a glance
+
+| Axis | H1 (0–3 mo) | H2 (3–9 mo) | H3 (9–24 mo) |
+|---|---|---|---|
+| **Benchmark** | Generalize re-id metric (PESEL/PL, codice-fiscale/IT); contamination flag (schema 3); GOVERNANCE + versioned taxonomy YAML; submission CI v1 (public configs, no-secrets sandbox) | Track C (anonymization+utility); legal track; gated-eval behind proven sandbox; per-track UI | Track D (MIA) if unblocked; 20 langs; subsume TAB/MEDDOCAN/MAPA splits; v1.0 + DOI |
+| **Models** | MLX path (mDeBERTa-280m + LoRA) default; KpModelAdapter; SDK `extract_pii`; first kp rows on RO real-skeleton | XLM-R-560m (GPU-burst gated); coverage-aware "protector" objective; T1 langs; kp-anon + SDK full | T2/T3 under-served langs; decision-gated from-scratch; clinical on credentialed gold |
+| **Datasets** | LocalePack refactor; `synthetic.generate()` stage-A; release_dataset.py + license CI gate; 3 (ro/en/pl) 50k slugs | Drift metric; stage-B narrative gen; real-skeleton for 3 more langs; T2 packs | T3 packs (20 total); drift closed + reported; contributable locale-pack path |
+| **Papers** | Paper 1 → arXiv + Zenodo DOI; submission protocol doc; Paper 2 skeleton | Paper 1 → venue; Paper 2 → arXiv/dataset venue; Paper 3 draft (gated on models) | Paper 1 + 3 accepted; Paper 4 (utility+MIA) → PETS; Paper 5 (position) as flex buffer |
+
+---
+
+## Benchmark & Leaderboard — the neutral scorer
+
+**Vision.** EuroPriv-Bench becomes the openly-licensed, reproducible suite the European privacy-NLP field gets ranked on: four tracks (detection; re-identification/leakage; anonymization-utility; membership-inference), a versioned GDPR-aligned taxonomy, a contributable public leaderboard with automated eval CI, and contamination-controlled citable gold.
+
+**World-class bar.** Operational + methodological parity with **HELM** (multi-metric, reproducible per-scenario runs), **lm-eval-harness / Open-LLM-Leaderboard** (one-command reproducibility, model-agnostic adapters, automated submission CI), and **BIG-bench** (versioned tasks, contamination control). On privacy specifically: include and beat **Presidio** as a pipeline baseline; cite **Private AI / Tonic Textual** and score where an API is testable; subsume **Ai4Privacy**, **TAB**, **MAPA**, **MEDDOCAN**, **MultiGraSCCo**. The open seam none of the privacy prior art has: a working external submission flow with contamination guards.
+
+**Verified starting state.** Detection (Track A) is wired and strong. The other three tracks are `NotImplementedError` and `runner.run_spec` hard-raises for all non-`DETECTION` tasks ("Phase 4"). `national_id.py` is RO-only (101 lines; CNP decodes sex + county + DOB). Leaderboard is `schema 2`, 4 baseline models × 8 specs (= 6 general languages + 2 RO configs).
+
+### H1
+
+- **Generalize `cnp_leakage` into a careful re-identification-risk metric.** Lead with the only listed IDs whose structure actually encodes quasi-identifiers: **PESEL (PL)** and **codice fiscale (IT)** (both carry DOB + sex; codice fiscale also region). Register `national_id_leakage` in `ROW_REGISTRY`. **DNI/NIF (ES) is explicitly a coverage-only validator (no quasi-ID decode)** — it encodes nothing, so it is never reported as a re-id-risk number, only as detection coverage.
+- **Contamination flag, machine-readable.** Bump leaderboard to `schema 3` with a per-`(model,config)` `contamination` enum; seed the known OpenMed/tabularisai-trained-on-Ai4Privacy cases; render an in-distribution vs clean-held-out marker on the site.
+- **Governance + versioned taxonomy.** Move the full crosswalk out of the `taxonomy.py` docstring into a loaded `conf/taxonomy.yaml` (keep `TAXONOMY_VERSION` in sync); add a contract test against `bioes_labels()`; write `GOVERNANCE.md` (immutable config names, version-comparability rules, metric-stability contract, CHANGELOG).
+- **Submission CI v1 — public configs only, no-secrets sandbox.** PR/issue template (HF model id + adapter scheme + model card), a GitHub Actions job that builds the adapter via `adapters.BUILDERS`, runs `europriv run` on **public** configs in a **no-secrets sandbox**, validates a filled model card, and appends a provenance-stamped row. Add a "reproduce a published number" CI gate (match privacy-filter's English F1 within tolerance).
+- **Resolve the real admin items:** Pages "Enforce HTTPS" checkbox; org-level Actions secrets/permissions for CI. (The "flip repos public" item is dropped — already done.)
+
+**Acceptance:** `europriv run` produces a non-stub re-identification-risk number for **PL and IT** with Wilson CIs, committed to `leaderboard.json` and rendered on research.klusai.com; every row carries a `contamination` flag and the site visibly separates in-distribution from clean held-out; `GOVERNANCE.md` + versioned taxonomy YAML merged with `make check` green; one external-style submission (e.g. a Presidio adapter) is scored end-to-end through the no-secrets CI and appears on the live board with a model card.
+**Agent tasks:** refactor `national_id.py` to a country-keyed validator registry, add PESEL/codice-fiscale (quasi-ID decode) + DNI-NIF (coverage-only), register `national_id_leakage`, mirror `tests/test_ro.py`; extend `runner.run_spec` output + `leaderboard.py` to `schema 3` with `contamination`; add `conf/taxonomy.yaml` + contract test; add `.github/ISSUE_TEMPLATE`/PR template + Actions workflow (no-secrets) + the privacy-filter-F1 reproduction gate; update the Liquid template in `klusai.github.io` to render the flag.
+**Targets:** ≥2 non-RO languages with a real re-id number; 100% of rows flagged for contamination (today 0%); 1 external-style submission through CI.
+
+### H2
+
+- **Track C — anonymization + downstream utility.** Wire `Task.ANONYMIZATION` in `run_spec` (remove the hard raise); implement `utility_after_redaction` (downstream-task accuracy + readability delta) and a redaction-consistency metric; ship a Presidio-redactor baseline + one LLM-based anonymizer.
+- **Build the gated-eval trust boundary as a *standalone, preceding* deliverable.** Public-config scoring stays in the no-secrets sandbox; only after the trust boundary is proven does a trusted runner score against **PRIVATE** gold (HF token), bursting heavy models to a DigitalOcean GPU droplet and writing back **only** the aggregate row.
+- **Multi-jurisdiction LEGAL track** (EUR-Lex / MultiEURLEX real-skeleton + synthetic PII across ≥3 languages); activate `evaluations/pii-detection-ro-legal.yaml` off `_planned`.
+- **Wire the MEDDOCAN gold config (curated in Datasets H2) into the runner as a citable clinical config.** Register the curated open-synthetic MEDDOCAN gold as a scored config so the clinical track is citable (validated, contamination-controlled) in H2, alongside the legal track.
+- **Leaderboard-as-product v2:** per-track tabs, per-language/per-domain sortable views, CI badges, per-row "reproduce this row" command.
+
+**Acceptance:** detection + anonymization run end-to-end with real metrics (no `NotImplementedError` on populated tracks), each with ≥1 published row + CIs; a privacy-utility tradeoff figure (re-id risk vs downstream utility) reproducible for ≥2 anonymizer baselines; external models scored against gated gold **via the proven sandbox** without exposing the gold; ≥3 external submissions live.
+**Agent tasks:** implement `metrics.utility_after_redaction` + redaction-consistency; add a Presidio `BaseAdapter.anonymize`; build the trusted-runner Action (HF token, `klusai-webos/tools/do-cli` burst, aggregate-only writeback) **after** the sandbox boundary is documented and tested; wire the legal YAML into the runner; wire the curated MEDDOCAN gold config into the runner as a citable clinical config.
+**Targets:** ≥16 of 20 languages with detection baselines; both a legal and a clinical config citable (validated, contamination-controlled).
+
+### H3
+
+- **Track D — membership-inference** (LiRA/shadow-model), **deferred from H2** because it stacks three unbuilt/unfunded dependencies (a KlusAI model trained on sensitive text, GPU-burst budget, a credentialed sensitive corpus). Lead the "beyond F1" thesis on **Track B (re-id) + Track C (utility)** until those clear.
+- **Complete 20 languages + both domains across all four tracks; freeze v1.0** with a Zenodo DOI and a contamination-audit report.
+- **Subsume prior art operationally:** re-host and score TAB (EN-legal), MEDDOCAN (ES-clinical), a MAPA-derived split inside the harness, each reporting its native metric alongside KP metrics. **Claim subsumption only once the split actually runs** (re-hosting is unbuilt and partly licensing-gated).
+
+**Acceptance:** 20/20 languages + legal & clinical with citable, contamination-controlled gold and baselines across populated tracks; v1.0 tagged + DOI; TAB/MEDDOCAN/a MAPA split runnable in-harness reporting both metrics; ≥10 distinct external models scored, incl. ≥1 commercial API where testable.
+**Targets:** ≥1 external group cites EuroPriv-Bench numbers or submits a model; every site number reproducible against a pinned `(harness, taxonomy, dataset-rev)` triple.
+
+---
+
+## Models — the KlusAI Privacy (kp-*) family
+
+**Vision.** Ship the open, research-grade, GDPR-aligned model family the leaderboard exists to crown — winning head-to-head where competitors are weak: under-served European languages (Romanian first), legal + clinical domains, and re-identification protection (coverage), not just detection-F1. Everything is continue-finetuning of proven open bases on MLX, with disposable DigitalOcean GPU bursts; every claim is a leaderboard delta with CIs.
+
+**World-class bar.** Beat **tabularisai**, **OpenMed**, **GLiNER-PII**, **openai/privacy-filter** at entity/span-F1 on EuroPriv configs no competitor trained on (RO real-skeleton first). Be Pareto-competitive on the F1-vs-leak frontier our own paper exposed. Match **Presidio / Private AI / Tonic** on SDK ergonomics. **Piiranha is eval-baseline-only (CC-BY-NC-ND) — never finetuned on or redistributed.**
+
+**Verified starting state.** `scripts/train.py` raises `NotImplementedError` ("Phase 3"); the SDK functions (`extract_pii`/`deidentify`/`pseudonymize`) are stubs; no kp-* weights exist yet.
+
+### H1
+
+- **Default to the MLX-fittable path** (mDeBERTa-280m token classifier + LoRA) as the committed H1 deliverable. The XLM-R-560m and MoE continue-finetune are **GPU-burst-gated** and move to H2 unless the DO budget (open question #6) is confirmed in H1 — see kill/pivot triggers.
+- Implement the device-agnostic backend behind `scripts/train.py` (mlx-lm + transformers/peft, dispatched on the `Backend` enum); wire `scripts/evaluate.py` to register a checkpoint as a EuroPriv adapter and shell out to `europriv run`.
+- Add `KpModelAdapter` to `europriv-bench` `adapters.py` (subclass `PrivacyFilterAdapter`, `scheme='kp'` identity crosswalk) and register in `BUILDERS`.
+- Implement SDK `extract_pii()` against the shipped kp model (CPU-default, 4-thread per the M3-Ultra perf finding); pip-installable `klusai-privacy`.
+
+**Acceptance:** `kp-deid-mdeberta-280m` v1 published (weights + `-mlx` variant + model card) and scored on RO real-skeleton with bootstrap CIs; `pip install klusai-privacy; extract_pii(text)` returns KP-typed spans reproducing the leaderboard row; `make check` green; every kp row carries full provenance. A SOTA-style claim is stated only as a CI-backed head-to-head delta on a contamination-free track — **framed as "open, head-to-head win on RO real-skeleton," not a naked "SOTA."**
+**Agent tasks:** implement `train.py:_run` backends + `push_to_hub(publish_id())`; wire `evaluate.py`→adapter; add `KpModelAdapter` to `BUILDERS`; implement `extract_pii()` in `klusai/privacy/sdk/__init__.py`.
+**Targets:** ≥1 kp-deid row on RO real-skeleton with non-overlapping CI vs at least one baseline; `extract_pii` shipped.
+
+### H2
+
+- **Protector objective (the headline research bet, not an engineering certainty).** Coverage-aware/recall-weighted loss + a numeric-span catch-all head so structured IDs (CNP/IBAN/CUI) are never dropped. **Guaranteed floor:** the catch-all + a leak-aware SDK decode mode matches privacy-filter's coverage without its 0.36-F1 collapse, even if the single-model Pareto win slips.
+- XLM-R-560m + MoE continue-finetunes (GPU-burst); extend kp-deid to T1 languages (de/fr/es/it/nl/pl); first RO-legal model.
+- `kp-anon-qwen3-1.7b-lora` v1 (checksum-valid locale-coherent surrogates via `ro_generators`); wire SDK `deidentify`/`pseudonymize`. `kp-sensitivity-mdeberta` document classifier.
+
+**Acceptance:** a kp-deid model sits on the leaderboard Pareto frontier on RO real-skeleton (target: CNP leak ≤2% with Wilson CI **AND** entity-F1 ≥0.80) **— stated as a target hypothesis, with the catch-all floor as the committed fallback**; kp-deid wins (non-overlapping CI) on ≥3 of 6 T1 configs + RO-legal; kp-anon beats a masking baseline on utility-after-redaction at equal-or-lower re-id risk; `klusai-privacy` v0.2 ships all three SDK functions.
+**Agent tasks:** design + train the recall-weighted loss + catch-all head; LoRA-tune `kp-anon` with consistent within-doc mapping; implement EuroPriv `anonymize`/`leakage_probe` adapter methods for kp-anon.
+**Targets:** ≥3 T1 head-to-head wins with significance (the escalate-investment trigger).
+
+### H3
+
+- Scale kp-deid to T2/T3 under-served languages (el/cs/sv/hu/da/fi/bg + uk/ru/tr/sr) — the defensible breadth wedge.
+- **From-scratch is decision-gated and DROP-by-default:** ship only if continue-finetuning measurably plateaus AND a defensible novelty exists (candidate: an MLX-native, structured-identifier-aware encoder). Otherwise formally drop with the plateau evidence recorded.
+- Clinical models on credentialed gold (if access secured); MIA evaluation of kp-anon on the leakage track; `klusai-privacy` v1.0 + Presidio-recognizer plugin.
+
+**Acceptance:** head-to-head CI-backed wins on ≥6 under-served languages vs the best open competitor per language; from-scratch model either ships with a measured advantage or is formally dropped with evidence; clinical kp-deid competitive on a credentialed PHI set or the dependency is documented as the blocker.
+**Targets:** open, head-to-head wins on ≥6 under-served languages; Presidio-recognizer plugin shipped.
+
+---
+
+## Datasets — clean, validated, redistributable corpora
+
+**Vision.** The cleanest, largest, most rigorously-validated openly-redistributable PII/PHI corpora for European legal + clinical text, with gold spans emitted at generation time (zero annotation cost). The research contribution is two under-explored things: a quantified **synthetic-context-to-real-context drift** metric, and **multilingual legal** synthesis (thinner in the literature than clinical).
+
+**World-class bar.** Match **Ai4Privacy** (open-pii-masking-500k, CC-BY) and **MAPA** (24 EU langs) on scale/docs, and beat both on checksum-VALID locale identifiers (Faker/MT-projected sets emit invalid IDs), offset-correct-by-construction gold spans, a published drift score, and full-provenance HF cards. **Cleanly-licensed-only** is a hard CI gate (excludes Piiranha CC-BY-NC-ND, Ai4Privacy Llama-bound tiers, LegalNERo NC-ND, MoNERo/MARCELL copyleft).
+
+**Verified starting state.** Generators are RO-only (`ro_generators.py`/`ro_documents.py`/`ro_skeletons.py`); `synthetic.generate()` is a stub. `make_ro_review.py` is a review-*prep* script — **no documented native-speaker sign-off / IAA exists yet**, even for RO.
+
+### H1
+
+- **LocalePack abstraction** extracted from the RO generators (keep the `_fill` splice + byte-equality assert + strict `char_spans_to_bioes` gate unchanged — it is the quality moat). Implement packs for **RO (refactor) + EN + PL only to depth in H1** (per the feasibility cut: one new language done deeply beats five done shallow), each with a checksum self-test; DE/FR/ES/IT/NL packs follow as capacity allows.
+- Fill the `synthetic.generate()` stub with **stage-A** (deterministic template/skeleton splice), sharded JSONL via the TinyFabulist pattern.
+- `scripts/release_dataset.py` with a 5-gate validator (checksum re-validate, span byte-equality, `bioes_labels()` contract, train/gold leakage, load round-trip) + `--validate-only`/`--private`; extend `conf/datasets.yaml` into a license registry with a **CI gate that hard-fails** on any non-allowlisted source.
+- **Produce documented RO native-speaker + IAA sign-off** before Paper 1 hits arXiv: exercise `make_ro_review.py`, obtain documented RO native-speaker review + inter-annotator agreement, and record the sign-off in the `ro-realskeleton-v1` card so the "validated" label can attach in H1.
+
+**Acceptance:** RO/EN/PL packs pass a checksum round-trip at 10k samples with 100% validity (0 structurally-invalid IDs); `synthetic.generate()` no longer raises and produces ≥50k validated docs/lang for ≥2 langs in one overnight MLX run; every released slug: 100% gold-span byte-equality, clean BIOES projection, label space == `bioes_labels()`, zero train/gold overlap, loads via `datasets.load_dataset`; documented RO native-speaker + IAA sign-off recorded in the `ro-realskeleton-v1` card.
+**Agent tasks:** refactor to `klusai/privacy/datasets/data/locales/{base.py,ro.py,en.py,pl.py}`; port `tinyfabulist-tf3/.../ds_generation/main.py` into stage-A; write `release_dataset.py` + the license-registry CI test; publish `ds-kp-general-{ro,en,pl}-50k` (private→public); run `make_ro_review.py` and record the documented RO native-speaker + IAA sign-off in the card.
+**Targets:** 3 checksum-valid locale packs; ≥3 `ds-kp-*` slugs with full provenance cards; documented RO native-speaker/IAA sign-off landed.
+
+### H2
+
+- **Drift-measurement module** (`drift.py`): surface stats + embedding distance (multilingual-E5 centroid + MAUVE) + cross-context-transfer-gap (model trained on synthetic, evaluated on real-skeleton), seeded by the existing RO synthetic-vs-real-skeleton gap.
+- **Stage-B LLM-authored generation** (narrative around pre-placed slots; spans recovered by the same splice) — GPU-burst dependency.
+- Real-skeleton tracks for ≥3 more languages (DE/FR/PL legal via EUR-Lex); T2 locale packs (pt/el/cs/sv/hu/da/fi/bg).
+- **MEDDOCAN is open-synthetic (no DUA needed)** — curate it as a gold config in H2; this corrects the earlier "pursue credentialed access" framing.
+
+**Acceptance:** one comparable drift score per `(lang,domain)`; stage-B reduces the transfer gap vs stage-A by a reported margin on ≥3 langs (reported as descriptive distances + transfer-gap delta with CIs — **never "we closed the gap" without a held-out real reference and stated margin**); 16 packs pass checksum + span gates; real-skeleton for ≥4 langs with **documented native-speaker sign-off recorded in the card**.
+**Agent tasks:** implement `drift.py`; build the scrub-then-inject real-skeleton pipeline as shared infra; release `ds-kp-legal-multi-*`.
+**Targets:** 16 locale packs; drift reported on legal in ≥2 langs.
+
+### H3
+
+- T3 packs (uk/ru/tr/sr) → 20 total; credentialed clinical (i2b2/n2c2/MIMIC) under DUA **as eval-only gated configs where redistribution is forbidden (MIMIC)** — explicitly off the critical path; per-domain slugs; contributable external locale-pack path.
+- The 1M-doc and 500k aggregates are **opportunistic stretch goals, not acceptance criteria** (stage-B at that scale may exceed the Mac Studio budget).
+
+**Acceptance:** all 20 languages have a checksum-valid pack + ≥1 released slug; drift reported across 20 langs; ≥1 non-KlusAI locale pack passes all gates.
+**Targets:** 20 packs; aggregate validation report published.
+
+---
+
+## Papers — credibility infrastructure
+
+**Vision.** A tight, compounding sequence of arXiv-first papers, each turning one shipped artifact into peer-reviewed credibility, so that by 2027 a reviewer cannot evaluate a new European de-id system without reporting EuroPriv-Bench numbers.
+
+**World-class bar.** The artifact+paper discipline of **HELM** and **lm-eval-harness** (living, versioned, contributable, DOI'd snapshots), the privacy-utility rigor of **TAB** (Computational Linguistics), and a venue mix of an ACL-family acceptance **plus** a PETS/PoPETs or CL-journal anchor for privacy rigor.
+
+### H1
+
+- Promote Paper 1 (EuroPriv-Bench) from technical report to **arXiv**, ingesting `baselines/leaderboard.json` via `make results`; cut a tagged harness + taxonomy v0.2.0 release and a pinned HF dataset revision, snapshot to **Zenodo for a DOI**; add `CITATION.cff`.
+- **Re-run the pre-submission prior-art rescan** (MultiGraSCCo/MedPriv-Bench/ASQ-PHI/Azure are fast-moving 2026 artifacts); document a dated comparison table; if any single artifact subsumes the intersection, **downgrade the "first unified" claim** per the pre-registered pivot.
+- Author the external submission-protocol doc + PR template (provenance JSON schema; CI validator rejecting stale `taxonomy_version`). Draft Paper 2 skeleton.
+
+**Acceptance:** arXiv preprint live with a stable ID used as the canonical citation on the HF card, leaderboard page, and research.klusai.com (cite the subdomain, never github.io); a Zenodo DOI resolves to a frozen harness tag + dataset revision; `europriv run` reproduces Paper 1 Tables 1–2 on a clean checkout in one command; dated rescan documented. Paper 1 ships the RO real-skeleton CNP finding under the **"KlusAI-authored real-document skeletons (validation in progress)"** label unless the documented RO native-speaker + IAA sign-off (Datasets H1) has landed, in which case it ships under the "validated" label.
+**Agent tasks:** wire `make results` ingestion + schema validation into `papers/europriv-bench/main.tex`; Zenodo-snapshot script + `CITATION.cff`; submission-protocol doc + PR template + CI validator.
+**Targets:** 1 arXiv preprint + 1 DOI; one-command Table 1–2 reproduction.
+
+### H2
+
+- Submit Paper 1 to an ACL-family venue (slot against the next CFP). **Paper 1's privacy-venue (PETS/CL) variant and Paper 5 move to flex-buffer, not firm commitments** (five papers across disjoint styles overruns a small team).
+- **Before any NLP-venue submission, extend the leak metric to a second structured EU national ID (PESEL/PL or codice-fiscale/IT)** so the dissociation finding rests on ≥2 identifiers, not the CNP alone.
+- Ship Paper 2 (synthetic-drift) to arXiv + a dataset/resources venue, backed by released `ds-kp-*` slugs and the real-skeleton protocol **with documented native-speaker validation**. Draft Paper 3 (under-served SOTA) gated on the first kp-deid checkpoints; every claim a leaderboard delta with bootstrap CI + McNemar, reporting **both** F1 and leak rate per model.
+
+**Acceptance:** Paper 1 has a venue submission ID citing the Zenodo DOI; Paper 2 on arXiv with loadable `ds-kp-*` datasets and a drift number on legal in ≥2 langs; every SOTA-style claim in the Paper 3 draft is a CI-backed leaderboard delta with a McNemar p-value and a reported leak rate.
+**Targets:** Paper 1 submitted; Paper 2 on arXiv; ≥1 ACL/EMNLP reproducibility-badge application.
+
+### H3
+
+- Land Paper 1 + Paper 3 at peer-reviewed venues; populate the utility + MIA tracks and ship **Paper 4** (privacy-utility + MIA) to PETS/PoPETs, **integrating** established MIA (PrivLM-Bench/MedPriv-Bench), not claiming it. Ship **Paper 5** (position/survey) as the low-compute schedule buffer.
+
+**Acceptance:** ≥2 KlusAI privacy papers peer-reviewed (≥1 NLP venue + ≥1 privacy venue/CL journal), each with a resolvable DOI + reproducible artifact; the public leaderboard shows ≥1 external submission + a versioned history; EuroPriv-Bench cited by ≥1 external artifact.
+**Targets:** 2 accepted papers; populated utility + MIA tracks with published CIs.
+
+---
+
+## Cross-axis dependencies & sequencing
+
+The hard ordering, with the red-team's corrections applied:
+
+- **Taxonomy is upstream of everything.** `europriv-bench` (`bioes_labels()`, `char_spans_to_bioes`, `national_id`) is the single source of truth; `klusai-datasets` and `klusai-models` import a pinned tag and never copy. Any `TAXONOMY_VERSION` bump updates `test_contract.py` in all consuming repos in lockstep.
+- **Datasets before Models before Papers.** `ds-kp-legal-ro` and synthetic legal/clinical slugs must exist before the RO-legal and clinical finetunes; kp-deid checkpoints must exist before Paper 3; the EuroPriv anonymization/leakage adapter methods must be wired before kp-anon/kp-sensitivity can be scored (Paper 4).
+- **Re-baseline H1 off real state, not the stale blocker.** "Flip repos/dataset public" is **done** — drop it. Replace it with the actually-open admin items (Pages HTTPS checkbox; org Actions secrets/permissions for CI).
+- **Sandbox precedes gated eval.** The no-secrets public-config CI ships in H1; the trusted-runner gated-gold path (HF token + DO burst) ships in H2 **only after** the trust boundary is built and proven. Never co-schedule the feature and its security control.
+- **Native-speaker validation gates every "citable validated gold" label — including RO.** Sequence: exercise `make_ro_review.py` → obtain documented RO native-speaker + IAA sign-off → only then label `ro-realskeleton-v1` "validated" anywhere public. Until then the site/paper language is "KlusAI-authored real-document skeletons (validation in progress)." This gates Papers 2 and 3 and all T1/T2/T3 breadth.
+- **Models GPU dependency is a precondition, not a parallel assumption.** XLM-R-560m + MoE finetunes need DO-GPU burst; resolving open-question #6 (budget + per-run cost cap) is an explicit H1 precondition. If unresolved, the committed H1 model deliverable is MLX-only (mDeBERTa-280m + LoRA).
+- **Re-id metric ordering:** lead with PESEL/PL + codice-fiscale/IT (encode DOB+sex+region); DNI/ES is coverage-only. The mechanism is identifier-specific, not nationally-general.
+- **Paper 2 depends on ≥1 `ds-kp-*` release + validated RO real-skeleton; Paper 3 depends entirely on kp-deid checkpoints; Paper 4 depends on the H2/H3 benchmark tracks + (for clinical) MEDDOCAN/credentialed access.**
+
+## Positioning & KPIs
+
+**Moat.** Be the neutral, open, fully-redistributable scorekeeper of European privacy NLP — the canonical yardstick competitors get ranked on — anchored by the published, reproducible re-identification-risk finding that no F1-only benchmark can surface. A leaderboard's value compounds with submissions and citations, not headcount; a neutral referee is a seat a vendor-aligned competitor cannot occupy.
+
+**Differentiation (named).**
+- **vs openai/privacy-filter, OpenMed, tabularisai:** they ship weights with no published eval and optimize English-primary F1; EuroPriv-Bench is the multilingual, re-id-aware evaluation they get ranked on. Ship kp-* models only where head-to-head CI-backed wins exist (under-served langs + multi-jurisdiction legal).
+- **vs Piiranha:** cited as a baseline, excluded from the suite by its CC-BY-NC-ND license — the contrast is "the benchmark you can actually redistribute and build on."
+- **vs Presidio:** an orchestration framework, not an evaluation — a baseline integration target and downstream consumer (a Presidio recognizer wrapping kp-* models), not a rival.
+- **vs Private AI / Tonic / John Snow Labs:** they win on breadth/SLAs; differentiate on open + reproducible + research-grade + the neutral leaderboard they can be benchmarked on. Never claim "first multilingual anonymization."
+- **vs TAB / MAPA / MultiGraSCCo / MEDDOCAN:** **subsume, not compete** — re-host splits/metrics through the documented crosswalk; the differentiation is *unification* (the intersection none cover at once) + the re-id metric + locale-native (not MT-projected) generation. The survivable claim is **"first *unified*, not first."**
+
+**KPIs proving arrival.**
+1. **Leaderboard adoption (the moat metric):** distinct models scored, split KlusAI-run vs externally-submitted. Target ≥15 total with ≥3 third-party submissions by end-H2.
+2. **Citations/endorsement:** first external citation in H2; co-citation by a TAB/MAPA/Ai4Privacy-adjacent author as a leading indicator.
+3. **Reproducibility/trust:** number of independently-published competitor numbers the harness reproduces within tolerance (≥2 by H1) + measurable HF dataset traffic.
+4. **Model SOTA wins:** `(language × domain)` cells where a kp-deid model beats the best public baseline at span-F1 with significance — ≥3 under-served-language wins (the escalate trigger) by H2.
+5. **Suite completeness:** languages with citable native-validated gold × domains × live privacy tasks — from 6+1RO toward 10+ languages and ≥2 tracks beyond detection by H3.
+
+**Credibility-win sequencing.** H1: convert shipped artifacts into public credibility — one-command reproduction of Tables 1–2, reproduce two independently-published competitor numbers, arXiv preprint, documented submission flow; lead all messaging with "detection F1 does not track re-identification protection." Ship only the MLX mDeBERTa-280m kp-deid baseline on the contamination-free RO real-skeleton; hold XLM-R/MoE and breadth models for H2. H2: turn the referee position into a network effect (first third-party submission, first external citation), harden RO real-skeleton into validated citable gold and replicate in one more language, **then** finetune kp-deid breadth (XLM-R/MoE, T1 langs) and chase the escalate trigger. H3: complete the suite (utility + MIA), add a clinical track once credentialed data lands, expand toward 10+ languages; arrival signal = external adoption as the default eval + a clinical/legal/EU-funded partner.
+
+## Kill / pivot triggers & risks
+
+**Kill / pivot triggers (decide explicitly, don't drift):**
+- **No third-party submission by end-H2** → freeze leaderboard-as-product investment; pivot effort to the model track.
+- **kp-deid Pareto win (good detector AND good protector) fails to materialize by mid-H2** → formally fall back to the numeric-span catch-all + leak-aware SDK decode (the guaranteed floor) and **drop the single-model Pareto claim from papers**.
+- **DO-GPU budget denied (open-question #6 = no)** → the MLX-only degraded path (mDeBERTa-280m + LoRA) becomes the committed H1 model deliverable; XLM-R-560m + MoE explicitly deferred.
+- **A single artifact subsumes the unified intersection at the pre-submission rescan** → pre-registered pivot: downgrade "first unified" and lead with under-served-language SOTA instead.
+- **Native-speaker validation capacity not secured** → keep "validated citable gold" claims to RO only; breadth papers wait.
+
+**Top risks + mitigations.**
+- **Stale ground truth poisoning the plan.** The "repos private / push blocked" memory note is stale. *Mitigation:* memory file corrected before publishing this roadmap; H1 re-baselined; the real admin items (Pages HTTPS, Actions secrets) tracked under Benchmark H1.
+- **Re-id metric doesn't generalize the way the headline needs.** Quasi-ID disclosure is identifier-specific: PESEL/codice-fiscale encode DOB+sex(+region); DNI/NIF encodes nothing. *Mitigation:* per-identifier classification — report "re-identification risk" only where the encoding justifies it, "coverage" elsewhere; lead with PL/IT.
+- **Contamination invalidating rankings.** OpenMed/tabularisai trained on Ai4Privacy (our general-text gold source); the publicly-rendered general-text table currently mixes contaminated and clean systems with no marker. *Mitigation:* the machine-readable contamination flag (schema 3) is an H1, not a nicety; lead all fair comparisons on the contamination-free RO real-skeleton track.
+- **Four-track × 20-lang × 2-domain matrix is large for a small team.** *Mitigation:* sequence T1→T2→T3; do one new language deeply in H1 (PL); defer Track D to H3; treat mega-aggregate datasets as stretch goals.
+- **Submission-CI security.** Running untrusted adapter code with access to a gold-bearing token is an exfiltration vector. *Mitigation:* sandbox first (no-secrets public-config scoring in H1); gated-gold scoring only behind a proven trust boundary in H2.
+- **Native-speaker validation asserted but not evidenced (including RO).** *Mitigation:* documented protocol with named/sourced reviewers (or a contractor budget line) as a hard precondition for any "validated gold" label.
+
+**Overclaim discipline.** No naked "first" or "SOTA": use "first *unified*" and "open, head-to-head, CI-backed win on [config]." The detector-and-protector Pareto target is a stated **hypothesis** with a committed fallback floor, not an engineering guarantee. Subsumption of TAB/MEDDOCAN/MAPA is claimed only once the split runs in-harness. Public language distinguishes **7 languages (6 general + RO)**, not "8" (8 = config count). MEDDOCAN is **open-synthetic (no DUA)**; credentialed clinical (i2b2/MIMIC) stays off the critical path and ships eval-only where redistribution is forbidden.
+
+## Status & provenance
+
+This is a **living plan, dated 2026-06-01**, maintained against verified repo state and revised each horizon. Every deliverable resolves to a measurable acceptance criterion; every published number traces to a pinned `(harness version, taxonomy version, dataset config/revision, model_id, timestamp)` triple with a confidence interval. Repos: [europriv-bench](https://github.com/klusai/europriv-bench) · [klusai-datasets](https://github.com/klusai/klusai-datasets) · [klusai-models](https://github.com/klusai/klusai-models) · [klusai-papers](https://github.com/klusai/klusai-papers) · [klusai.github.io](https://github.com/klusai/klusai.github.io). Dataset hub: `klusai/europriv-bench` on Hugging Face. Canonical citation: the EuroPriv-Bench arXiv ID + the research.klusai.com handle (never the github.io URL). Compute model: MLX-first on the Mac Studio + disposable DigitalOcean GPU bursts. Sourcing invariant: cleanly-licensed-only; Piiranha eval-baseline-only.

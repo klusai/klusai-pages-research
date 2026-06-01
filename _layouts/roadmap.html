@@ -1,0 +1,64 @@
+---
+layout: default
+---
+<style>
+  .roadmap { max-width: 900px; margin: 0 auto; color: var(--text); line-height: 1.62; }
+  .roadmap-head { padding: 0.5rem 0 1.25rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+  .roadmap-head .eyebrow { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.72rem;
+                           letter-spacing: 0.08em; text-transform: uppercase; color: #14B8A6; margin: 0 0 0.4rem; }
+  .roadmap-head h1 { font-size: 2rem; line-height: 1.15; margin: 0 0 0.5rem; }
+  .roadmap-head .lede { font-size: 1.05rem; color: var(--text-secondary); margin: 0 0 0.8rem; max-width: 60ch; }
+  .roadmap-head .meta { font-size: 0.8rem; color: var(--text-secondary); }
+  .roadmap-head .meta a { margin-right: 0.6rem; }
+
+  .roadmap h2 { font-size: 1.4rem; font-weight: 700; margin: 2.2rem 0 0.7rem; padding-bottom: 0.25rem;
+                border-bottom: 2px solid var(--border); }
+  /* horizon sub-headers (### H1/H2/H3) get an accent pill */
+  .roadmap h3 { font-size: 0.95rem; font-weight: 700; margin: 1.4rem 0 0.5rem; display: inline-block;
+                font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 0.03em;
+                color: #0f766e; background: color-mix(in oklch, #14B8A6 14%, transparent);
+                border: 1px solid color-mix(in oklch, #14B8A6 35%, transparent);
+                border-radius: 6px; padding: 0.12rem 0.6rem; }
+  .roadmap h4 { font-size: 1rem; font-weight: 700; margin: 1.1rem 0 0.4rem; }
+
+  .roadmap p, .roadmap li { font-size: 0.95rem; }
+  .roadmap ul, .roadmap ol { padding-left: 1.3rem; }
+  .roadmap li { margin: 0.28rem 0; }
+  .roadmap li::marker { color: var(--text-secondary); }
+  .roadmap strong { color: var(--text); }
+  .roadmap a { color: #488EFF; }
+
+  .roadmap code { font-size: 0.85em; background: var(--surface-alt); padding: 0.05rem 0.3rem; border-radius: 3px;
+                  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+  /* responsive tables */
+  .roadmap table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin;
+                   max-width: 100%; border-collapse: collapse; width: 100%; font-size: 0.85rem; margin: 0.8rem 0 1rem; }
+  .roadmap th, .roadmap td { border: 1px solid var(--border); padding: 0.4rem 0.6rem; text-align: left; vertical-align: top; }
+  .roadmap thead th { background: var(--surface-alt); border-bottom: 2px solid var(--border); white-space: nowrap; }
+
+  .roadmap blockquote { border-left: 3px solid #14B8A6; background: var(--surface-alt); margin: 1rem 0;
+                        padding: 0.6rem 0.9rem; border-radius: 0 6px 6px 0; }
+  .roadmap blockquote p { margin: 0.2rem 0; font-size: 0.9rem; }
+
+  .roadmap hr { border: 0; border-top: 1px solid var(--border); margin: 1.8rem 0; }
+</style>
+
+<div class="wrap page-pad">
+  <article class="roadmap">
+    <header class="roadmap-head">
+      <p class="eyebrow">{{ page.eyebrow | default: "Research Program" }}</p>
+      <h1>{{ page.title }}</h1>
+      {%- if page.lede %}<p class="lede">{{ page.lede }}</p>{%- endif %}
+      <p class="meta">
+        {%- if page.status %}{{ page.status }} · {% endif -%}
+        <a href="https://github.com/klusai/europriv-bench" target="_blank" rel="noopener">europriv-bench ↗</a>
+        <a href="https://github.com/klusai/klusai-datasets" target="_blank" rel="noopener">datasets ↗</a>
+        <a href="https://github.com/klusai/klusai-models" target="_blank" rel="noopener">models ↗</a>
+        <a href="https://github.com/klusai/klusai-papers" target="_blank" rel="noopener">papers ↗</a>
+      </p>
+    </header>
+
+    {{ content }}
+  </article>
+</div>
