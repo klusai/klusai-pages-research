@@ -10,7 +10,7 @@ list_title: "Latest posts"
     <p class="lead">
       The open research hub of KlusAI — benchmarks, datasets, models and papers for
       PII/PHI detection, anonymization, and re-identification-risk evaluation across
-      20 European languages, spanning the legal and clinical domains.
+      European languages (7 live, scaling to 20), spanning the legal and clinical domains.
     </p>
     <div class="cta-row">
       <a class="btn btn-primary" href="{{ '/leaderboard/' | relative_url }}">See the live leaderboard →</a>
@@ -27,12 +27,13 @@ list_title: "Latest posts"
       EuroPriv-Bench is the first <em>unified</em> pan-European de-identification benchmark.
       Unlike prior work that reports only detection-F1 on English, it measures
       <strong>privacy-utility / re-identification risk</strong> on a single GDPR-aligned
-      taxonomy across 20 European languages, spanning legal and clinical text.
+      taxonomy across European languages (7 live, scaling to 20), spanning legal and clinical text.
     </p>
     <p>
-      The headline finding: models advertising <strong>96–97% F1</strong> on English PII drop
-      to <strong>0.44–0.61 F1</strong> once you hold them to a unified European taxonomy across
-      languages — the gap the benchmark exists to expose.
+      The headline finding: <strong>detection-F1 is not privacy</strong>. On realistic-structure
+      Romanian documents, the model with the <em>best</em> detection F1 leaks the <em>most</em>
+      national IDs — and each un-redacted Romanian CNP discloses a person's date of birth, sex,
+      and county. A high F1 score does not mean a model protects privacy.
     </p>
   </div>
 </section>

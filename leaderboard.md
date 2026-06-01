@@ -58,6 +58,49 @@ test split, by model and language. Higher is better. Click a column header to so
   <a href="https://github.com/klusai">source repository</a>.
 </p>
 
+## Re-identification leakage — the metric that matters
+
+Detection F1 is not privacy. EuroPriv-Bench also measures **re-identification leakage**: on the
+Romanian configs, a missed (un-redacted) **CNP** deterministically discloses the person's
+**date of birth + sex + county**. The table counts, per model, the CNPs left un-redacted and the
+quasi-identifiers thereby leaked (lower is better).
+
+<div class="table-card">
+<table id="leakage" class="lb">
+  <thead>
+    <tr>
+      <th data-type="text">Model</th>
+      <th data-type="text">Track</th>
+      <th data-type="num">Leak rate %</th>
+      <th data-type="num">CNPs missed</th>
+      <th data-type="num">Quasi-identifiers leaked</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for kv in site.data.leaderboard.entries %}
+    {% for row in kv[1] %}
+    {% if row.scores.cnp_leakage %}
+    <tr>
+      <td>{{ row.adapter }}</td>
+      <td><code>{{ row.dataset.config }}</code></td>
+      <td>{{ row.scores.cnp_leakage.leak_rate | times: 100 | round: 1 }}</td>
+      <td>{{ row.scores.cnp_leakage.cnp_missed | round: 0 }}</td>
+      <td>{{ row.scores.cnp_leakage.leaked_quasi_identifiers | round: 0 }}</td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<p class="lb-meta">
+  The dissociation is the point: on realistic-structure Romanian documents
+  (<code>ro-realskeleton-v1</code>) the model with the <em>best</em> detection F1 leaks the
+  <em>most</em> CNPs, while a model with lower F1 redacts nearly all of them. A high F1 score
+  does not mean a model protects privacy — which is why this benchmark leads with leakage.
+</p>
+
 ## How to submit
 
 EuroPriv-Bench is open. Run the harness against your model and open a PR adding your
