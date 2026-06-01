@@ -1,6 +1,6 @@
 ---
 layout: paper
-title: "EuroPriv-Bench: A Unified Pan-European De-identification Benchmark with Re-identification-Risk Metrics"
+title: "EuroPriv-Bench: A Unified Pan-European De-identification Benchmark with Re-identification Risk Metrics"
 permalink: /papers/europriv-bench/
 date: 2026-06-01
 venue: "KlusAI Technical Report"
@@ -22,15 +22,15 @@ abstract: >-
   harmonized GDPR-aligned entity taxonomy, and (d) a re-identification-risk metric alongside
   detection F1, in one reproducible, openly-licensed, leaderboard-style suite. We build on the
   prior art rather than replacing it, re-using its label schemes through a documented crosswalk.
-  Evaluating four public systems on realistic Romanian documents, we find detection F1 fails to
-  predict re-identification protection: across the four systems it is positively — not negatively —
-  correlated with national-identifier (CNP) leakage (Spearman ρ = +0.80, Pearson r = 0.89;
-  descriptive, four systems). The most accurate detector on this track, GLiNER (F1 0.853), still
-  leaks 22.3% of CNPs and tabularisai leaks the most (26.1%, 95% CI 24.0–28.4%), while the weakest
-  detector, OpenAI privacy-filter (0.363), leaks the least (1.1%, 0.7–1.8%) — because it labels 96%
-  of CNPs as account numbers and redacts them regardless of type. On this evidence detection F1 is
-  an unsafe proxy for re-identification protection, at least for national identifiers. We release
-  the benchmark, harness, and data so the gap is measurable.
+  Evaluating four public systems on realistic Romanian documents, we find that detection F1 does
+  not track national-identifier (CNP) protection: the best detector is not the best protector.
+  OpenAI privacy-filter — the weakest detector (F1 0.36) — leaks only 1.1% of CNPs (95% CI 0.7–1.8)
+  because it labels 96% of them as account numbers and redacts them regardless of type, whereas the
+  three type-accurate detectors all leak 19–26% (non-overlapping intervals): GLiNER, the most
+  accurate at F1 0.85, leaks 22.3%, and tabularisai leaks the most, 26.1% (24.0–28.4). Coverage-based
+  redaction and type-accurate detection are different objectives — F1 measures the latter, protection
+  needs the former — so detection F1 is an unsafe proxy for re-identification protection, at least for
+  national identifiers. We release the benchmark, harness, configs, and data so the gap is measurable.
 ---
 
 ## Introduction
@@ -89,10 +89,11 @@ release two Romanian configs. `ro-synthetic-v1` is a development track of templa
 documents. `ro-realskeleton-v1` is the citable track: documents that reproduce the *structure* of
 real Romanian official document types (a CNAS discharge letter, a services contract, a sworn
 declaration, an administrative letter) populated with procedurally-generated identifiers —
-valid-checksum CNPs with consistent dates of birth, RO IBAN/CUI/CI, county addresses. Romanian
-official document *types* are excluded from copyright by Law 8/1996 art. 9(b); our skeletons are
-original KlusAI-authored reproductions of their functional structure, released under the suite's open
-license. Because all identifiers are synthetic, no real data subject is present.
+valid-checksum CNPs with consistent dates of birth, RO IBAN/CUI/CI, county addresses. The skeletons
+are original KlusAI-authored documents that imitate the *functional layout* of these document types
+(headings, field order, boilerplate) without copying any source text; for genuinely official texts,
+Law 8/1996 art. 9(b) additionally places them outside copyright. They are released under the suite's
+open license. No identifier is derived from a real data subject; all are procedurally generated.
 
 **Provenance.** Every result row records the harness version, taxonomy version, dataset config and
 split, model id, and timestamp, so any number traces to an exact configuration. Synthetic training
@@ -139,20 +140,22 @@ the live leaderboard.
 | Romanian (synthetic) | 0.58 | 0.74 | 0.88 | 0.81 |
 | Romanian (real-skeleton) | 0.36 | 0.58 | 0.75 | 0.85 |
 
-<p class="caption">Table 1. Entity-level detection F1 by configuration (n = 1,500 docs/config; taxonomy v0.2.0). OpenMed leads the general-text average (0.598) narrowly over tabularisai (0.589); the Romanian tracks are led by tabularisai (synthetic) and GLiNER (real-skeleton). The general-text ranking is confounded — OpenMed and tabularisai were trained on AI4Privacy (this gold's source), GLiNER and privacy-filter were not — so it mixes in- and out-of-distribution systems; the Romanian real-skeleton track, which no baseline has seen, is the fair comparison.</p>
+<p class="caption">Table 1. Entity-level detection F1 by configuration (n = 1,500 docs/config; taxonomy v0.2.0). OpenMed and tabularisai are statistically indistinguishable on the general-text average (0.598 vs 0.589, a 0.009 gap we report without a confidence interval); the Romanian tracks are led by tabularisai (synthetic) and GLiNER (real-skeleton). The general-text ranking is confounded — OpenMed and tabularisai were trained on AI4Privacy (this gold's source), GLiNER and privacy-filter were not — so it mixes in- and out-of-distribution systems; the Romanian real-skeleton track, which no baseline has seen, is the fair comparison.</p>
 
 A model claiming 96–97% F1 on English PII drops to 0.41–0.63 across general European text under a
 GDPR-aligned taxonomy, with recall the weak point throughout: recall-weighted F2 is lower than F1 in
 every cell (English, for instance: privacy-filter 0.41→0.35, OpenMed 0.60→0.57, tabularisai
-0.51→0.46, GLiNER 0.50→0.45). No system dominates — OpenMed leads the general-text average, tabularisai
-and GLiNER the Romanian tracks — and the gap between synthetic and realistic Romanian context is stark
+0.51→0.46, GLiNER 0.50→0.45). No system dominates — OpenMed and tabularisai are level on the general-text average,
+tabularisai and GLiNER lead the Romanian tracks — and the gap between synthetic and realistic Romanian context is stark
 (tabularisai 0.88→0.75; privacy-filter 0.58→0.36).
 
 **The dissociation.** On `ro-realskeleton-v1` (1,500 documents, 1,520 gold CNPs), detection accuracy
-fails to predict protection: across the four systems detection F1 is positively — not negatively —
-correlated with CNP leak-rate (Spearman ρ = **+0.80**, Pearson r = 0.89). The relationship is positive
-but noisy over four points — the top detector by F1 (GLiNER) is *not* the worst leaker (tabularisai
-is) — so we read it as "F1 does not track protection," not as a clean monotonic law.
+does not predict protection: **the best detector is not the best protector.** The per-model contrast
+is the evidence — and it is significant, because the Wilson 95% intervals on leak-rate separate the
+systems (Table 2). With only four systems we do *not* lean on a correlation coefficient: the rank
+order happens to run positive (Spearman ρ = +0.80), but over four points that is a descriptive
+observation, not an estimate, and it is not statistically significant (p = 0.20). We therefore read
+the result as "F1 does not track CNP protection," and explain *why* below — not as a monotonic law.
 
 | Model | Detection F1 | CNP leak-rate (95% CI) | Quasi-IDs leaked |
 |---|---|---|---|
@@ -161,15 +164,27 @@ is) — so we read it as "F1 does not track protection," not as a clean monotoni
 | GLiNER | **0.85** | 22.3% (20.3–24.5) | 1,017 |
 | tabularisai | 0.75 | 26.1% (24.0–28.4) | 1,191 |
 
-<p class="caption">Table 2. Detection F1 vs CNP re-identification leakage on ro-realskeleton-v1 (1,520 gold CNPs; Wilson 95% confidence intervals on leak-rate; quasi-identifiers = missed CNPs × 3).</p>
+<p class="caption">Table 2. Detection F1 vs CNP re-identification leakage on ro-realskeleton-v1 (1,520 gold CNPs; Detection F1 is the contamination-free real-skeleton F1 from Table 1, which no baseline was trained on; Wilson 95% confidence intervals on leak-rate). "Quasi-IDs leaked" is a deterministic exposure tally — exactly 3 × missed CNPs, since each un-redacted CNP discloses sex, date of birth, and county — not an inferential estimate.</p>
 
 The strongest detector on this track, GLiNER (F1 0.85), leaks 22.3% of CNPs; tabularisai leaks the
 most (26.1%) at high precision; while the *weakest* detector, privacy-filter (F1 0.36), leaks the least
 (1.1%). Its low leak-rate is earned, not accidental: of the 1,520 CNPs, privacy-filter flags 1,503,
 labelling **96% (1,456) as account numbers** and 3% as phone numbers — and a flagged span is redacted
-regardless of type. The leak-rate differences are individually significant (the Wilson 95% intervals
-for privacy-filter and every other model do not overlap); the F1–leakage correlation itself is
-descriptive over four systems (§7). On the synthetic track leakage is ≤1.9% for all models (OpenMed
+regardless of type.
+
+This is the mechanism behind the dissociation, and it is specific. The leak metric rewards *coverage*
+(any-overlap redaction) while F1 rewards *exact span and type*, so a blanket redactor like
+privacy-filter maximizes protection while scoring worst on typed F1. The effect is carried by that one
+model: among the three systems that actually *type* CNPs (OpenMed, GLiNER, tabularisai), leak-rate is
+flat-to-rising in F1 and all leak 19.5–26.1% — no dissociation among them. The finding is therefore
+not "better detectors leak more"; it is that **coverage-based redaction and type-accurate detection
+are different objectives**, and detection F1 measures only the latter. (GLiNER is zero-shot, so its F1
+depends on the label prompt — a confound for any cross-system F1 comparison, and a further reason we
+rest the claim on the per-model leak-rate intervals rather than on F1 rankings.) The leak-rate
+differences themselves are individually significant: the Wilson 95% intervals for privacy-filter and
+every other model do not overlap.
+
+On the synthetic track leakage is ≤1.9% for all models (OpenMed
 1.9%, privacy-filter 0.1%, GLiNER and tabularisai 0%): templated CNPs are trivially caught, which is
 why a realistic-context gold is necessary to see the effect at all.
 
@@ -190,9 +205,11 @@ included by citation only, as its CC-BY-NC-ND license precludes redistribution o
 These are preliminary results. (i) The general-text gold is itself synthetic (AI4Privacy); the only
 realistic-context track is Romanian, and even there the identifiers are synthetic injected into real
 structure — we measure a *synthetic-context vs real-context* gap, not a synthetic-to-real-data gap.
-(ii) The F1–leakage anti-correlation is **descriptive over four systems** (Spearman ρ = +0.80;
-underpowered for an inferential significance claim); the per-model leak-rate differences, however, are
-individually significant (non-overlapping Wilson 95% intervals, Table 2). (iii) OpenMed and tabularisai
+(ii) The cross-system F1–leakage rank correlation is **descriptive over four systems** (Spearman
+ρ = +0.80, not significant, p = 0.20) and is largely carried by one blanket-redacting model
+(privacy-filter); we do not treat it as an effect estimate. The claim rests instead on the per-model
+leak-rate differences, which **are** individually significant (non-overlapping Wilson 95% intervals,
+Table 2), and on the coverage-vs-type mechanism in §5. (iii) OpenMed and tabularisai
 were trained on AI4Privacy, the source of our general-text gold, so part of their general-text lead
 reflects in-distribution advantage — the Romanian track, which no baseline has seen, is the cleaner
 signal. (iv) The re-identification finding rests on one identifier type (the Romanian CNP) in one
@@ -208,13 +225,13 @@ intervals are computed from the published per-model CNP miss counts. GLiNER is z
 prompts are part of the configuration (in the code). The CNP-protection rule is the harness
 definition stated in §4. Re-running `europriv run` against the published configs reproduces Tables 1–2.
 
-## References
+<h2 class="unnumbered" id="references">References</h2>
 
 <ol>
 <li id="ref-1">Pilán, Lison, Øvrelid, Papadopoulou, Sánchez, Batet. "The Text Anonymization Benchmark (TAB): A Dedicated Corpus and Evaluation Framework for Text Anonymization." <em>Computational Linguistics</em> 48(4), 2022. doi:10.1162/coli_a_00458.</li>
 <li id="ref-2">AI4Privacy. "OpenPII Masking" datasets (CC-BY-4.0). Hugging Face, <code>ai4privacy/open-pii-masking-500k-ai4privacy</code>. Accessed June 2026.</li>
-<li id="ref-3">MAPA Consortium. "Multilingual Anonymisation toolkit for Public Administrations," 24 EU languages (legal + medical), EU-funded, 2020–2022.</li>
-<li id="ref-4">"MultiGraSCCo: A Multilingual Anonymization Benchmark with Annotations of Personal Identifiers." 2026. (German GraSCCo machine-translated into further languages.) Accessed June 2026.</li>
+<li id="ref-3">Ajausks et al. "The Multilingual Anonymisation Toolkit for Public Administrations (MAPA)." EAMT 2020; CEF Telecom project 2019-EU-IA-0045. Code: <code>github.com/MAPA-Consortium</code>; models on Hugging Face under <code>BSC-LT/</code>. Accessed June 2026.</li>
+<li id="ref-4">"MultiGraSCCo: A Multilingual Anonymization Benchmark with Annotations of Personal Identifiers." 2026 preprint (German GraSCCo corpus machine-translated into further languages); builds on Modersohn et al., "GraSCCo," 2022. We were unable to resolve a stable DOI/arXiv locator at access time (June 2026).</li>
 <li id="ref-5">Marimon et al. "MEDDOCAN: Medical Document Anonymization track (Spanish)." IberLEF, 2019.</li>
 <li id="ref-6">OpenAI. "Privacy Filter" (<code>openai/privacy-filter</code>). Hugging Face, 2026. Accessed June 2026.</li>
 <li id="ref-7">OpenMed. "privacy-filter-multilingual" (<code>OpenMed/privacy-filter-multilingual</code>), 16 languages / 54 types. Hugging Face, 2026. Accessed June 2026.</li>
@@ -224,4 +241,4 @@ definition stated in §4. Re-running `europriv run` against the published config
 </ol>
 
 <hr>
-<p style="font-size:0.82rem;color:#6b7280;"><a id="fn-1"></a><sup>1</sup> We hold the per-CNP quasi-identifier count at three (date of birth, sex, county) as a conservative lower bound; the first digit jointly encodes sex and birth-century. <a href="#fnref-1">↩</a></p>
+<p class="arxiv-fn"><a id="fn-1"></a><sup>1</sup> We hold the per-CNP quasi-identifier count at three (date of birth, sex, county) as a conservative lower bound; the first digit jointly encodes sex and birth-century, and digits 8–9 encode the county of <em>registration</em> (with reserved codes for Bucharest sectors), not necessarily of residence. <a href="#fnref-1">↩</a></p>
