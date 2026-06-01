@@ -11,6 +11,14 @@ permalink: /leaderboard/
 Entity-level scores on the [`klusai/europriv-bench`](https://huggingface.co/datasets/klusai/europriv-bench)
 test split, by model and language. Higher is better. Click a column header to sort.
 
+Each row carries two governance markers. **Contamination** flags whether the model was trained on
+that config's source data — an <span class="lb-badge contam-in">in-distribution</span> score is
+inflated by train/eval overlap, while a <span class="lb-badge contam-clean">clean held-out</span>
+score is a fair test. **Validation** shows whether a config has passed native-speaker / IAA
+sign-off: only a <span class="lb-badge status-citable">citable</span> row may be cited as a
+validated result. Everything is currently <span class="lb-badge status-dev">dev</span> — not yet
+citable.
+
 {% assign bench_v = "" %}{% for kv in site.data.leaderboard.entries %}{% if bench_v == "" %}{% assign bench_v = kv[1][0].europriv_bench_version %}{% assign tax_v = kv[1][0].taxonomy_version %}{% endif %}{% endfor %}
 <p class="lb-meta">
   Schema v{{ site.data.leaderboard.schema }} ·
@@ -30,6 +38,8 @@ test split, by model and language. Higher is better. Click a column header to so
       <th data-type="num">Recall</th>
       <th data-type="num" class="f1">F1</th>
       <th data-type="num">n</th>
+      <th data-type="text">Contamination</th>
+      <th data-type="text">Validation</th>
     </tr>
   </thead>
   <tbody>
@@ -44,6 +54,15 @@ test split, by model and language. Higher is better. Click a column header to so
       <td>{{ row.scores.entity_f1.recall | times: 100 | round: 1 }}</td>
       <td class="f1">{{ row.scores.entity_f1.f1 | times: 100 | round: 1 }}</td>
       <td>{{ row.n }}</td>
+      <td>
+        {% if row.contamination == "in_distribution" %}<span class="lb-badge contam-in" title="Model was trained on this config's source data — score inflated by train/eval overlap">in-distribution</span>
+        {% elsif row.contamination == "clean_held_out" %}<span class="lb-badge contam-clean" title="No baseline was trained on this data — a fair held-out test">clean held-out</span>
+        {% else %}<span class="lb-badge contam-unknown" title="Train/eval overlap not established">unknown</span>{% endif %}
+      </td>
+      <td>
+        {% if row.config_status == "citable-validated" %}<span class="lb-badge status-citable" title="Passed native-speaker / inter-annotator-agreement sign-off — citable as a validated result">citable</span>
+        {% else %}<span class="lb-badge status-dev" title="Development config — not yet validated, must not be cited as a validated benchmark result">dev</span>{% endif %}
+      </td>
     </tr>
     {% endfor %}
   {% endfor %}
@@ -71,6 +90,7 @@ quasi-identifiers thereby leaked (lower is better).
     <tr>
       <th data-type="text">Model</th>
       <th data-type="text">Track</th>
+      <th data-type="text">Contamination</th>
       <th data-type="num">Leak rate %</th>
       <th data-type="num">CNPs missed</th>
       <th data-type="num">Quasi-identifiers leaked</th>
@@ -83,6 +103,11 @@ quasi-identifiers thereby leaked (lower is better).
     <tr>
       <td>{{ row.adapter }}</td>
       <td><code>{{ row.dataset.config }}</code></td>
+      <td>
+        {% if row.contamination == "in_distribution" %}<span class="lb-badge contam-in" title="Model was trained on this config's source data">in-distribution</span>
+        {% elsif row.contamination == "clean_held_out" %}<span class="lb-badge contam-clean" title="No baseline was trained on this data — a fair held-out test">clean held-out</span>
+        {% else %}<span class="lb-badge contam-unknown" title="Train/eval overlap not established">unknown</span>{% endif %}
+      </td>
       <td>{{ row.scores.cnp_leakage.leak_rate | times: 100 | round: 1 }}</td>
       <td>{{ row.scores.cnp_leakage.cnp_missed | round: 0 }}</td>
       <td>{{ row.scores.cnp_leakage.leaked_quasi_identifiers | round: 0 }}</td>
