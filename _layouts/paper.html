@@ -30,10 +30,12 @@ layout: default
   /* unnumbered back-matter (References, etc.) */
   .arxiv .arxiv-body h2.unnumbered::before, .arxiv .arxiv-body h2#references::before { counter-increment: none; content: ""; }
   .arxiv .arxiv-body p, .arxiv .arxiv-body li { text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
-  /* responsive tables: scroll horizontally on narrow screens */
-  .arxiv .arxiv-body table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin;
-                             max-width: 100%; border-collapse: collapse; width: 100%; font-size: 0.82rem; margin: 0.6rem 0 0.3rem;
+  /* tables span the full content column on desktop; scroll horizontally only when too narrow to fit */
+  .arxiv .arxiv-body table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin: 1rem 0 0.3rem;
                              font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  @media (max-width: 760px) {
+    .arxiv .arxiv-body table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+  }
   .arxiv .arxiv-body th, .arxiv .arxiv-body td { border: 1px solid var(--border); padding: 0.3rem 0.5rem; text-align: right; white-space: nowrap; }
   .arxiv .arxiv-body th:first-child, .arxiv .arxiv-body td:first-child { text-align: left; white-space: normal; }
   .arxiv .arxiv-body thead th { background: var(--surface-alt); border-bottom: 2px solid var(--border); }
