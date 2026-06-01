@@ -21,13 +21,24 @@ This is a living plan organized into three horizons: **H1 (~0–3 months, now)**
 
 > **Ground-truth note (verified 2026-06-01):** All four GitHub repos are **public and in sync with `origin/main`**, and the HF dataset `klusai/europriv-bench` is **public** (8 configs live). The earlier "repos private / push blocked" memory note is **stale** and has been corrected; H1 is re-baselined against actual state. The genuinely-open admin items are narrower (Pages "Enforce HTTPS" UI checkbox; org-level Actions secrets/permissions for submission CI) and are tracked under Benchmark H1.
 
-> **Progress — updated 2026-06-01** (execution tracked issue-by-issue in Linear; first H1 wave reviewed, merged, and shipped):
-> - **Benchmark:** the harness now emits **Wilson confidence intervals** on leakage metrics; the KP taxonomy + crosswalk is **externalized to `conf/taxonomy.yaml`** with a fail-loud version-sync check and a `GOVERNANCE.md` stability contract (immutable config names, version-comparability, the `dev` → `citable-validated` policy).
-> - **Datasets:** the **LocalePack** abstraction shipped — RO refactor (verified byte-identical) plus **EN and PL** packs with passing checksum self-tests (PESEL / NIP / REGON / IBAN-mod97 / Luhn); IDs with no real checksum are format-valid only, never faked.
-> - **Models:** spike result — **`mlx-lm` (the LLM toolkit) ships no encoder architectures**, so it can't train the token-classification family — but the **M3 Ultra GPU is fully usable** for it. The `kp-deid` encoder finetunes run on the **Mac GPU** (`transformers`+`peft` via Metal/MPS now; an MLX-native path in progress), whose large **unified memory** fits full multilingual runs on-device; a DigitalOcean GPU droplet is **burst-only, when the Mac isn't enough**. `mdeberta-v3-base` LoRA verified end-to-end. Dependency extras de-conflicted (`.[hf]`/`.[mlx]` each resolve to transformers ≥ 5.0).
-> - **Papers:** the external **submission protocol + artifact-evaluation plan** is documented (ARR/ACL reproducibility for NLP; ACM Artifact-Evaluation for PETS; pass criterion = Zenodo DOI + pinned harness/taxonomy/dataset triple + one-command reproduction).
-> - **Claim re-validated:** a 2026 prior-art rescan **green-lit "first unified"** — no single artifact covers EU cross-lingual + legal AND clinical + a harmonized GDPR taxonomy + a re-identification-risk metric in one reproducible open leaderboard. The closest concurrent artifact, **RAT-Bench** (Feb 2026), is a hosted re-id leaderboard but English/Spanish/Chinese on US demographics with no legal text and no GDPR taxonomy; it will be cited as concurrent work.
-> - **In flight:** the first `kp-deid-mdeberta-280m` baseline, the country-dispatched `national_id_leakage` (RO/PL/IT), leaderboard schema 3 (contamination + `config_status`), and the first general-domain `ds-kp-*` releases.
+## Status & updates
+
+*Live view — last updated 2026-06-01. The full plan is below; this section tracks what has shipped and what is next, and is refreshed as work lands.*
+
+**✓ Shipped (H1)**
+- **Benchmark** — the re-identification-risk metric is generalized to national IDs for **RO (CNP), PL (PESEL), IT (codice fiscale** via the Belfiore code), with **ES (DNI/NIF) handled as coverage-only**; every leak-rate now carries a harness-emitted **Wilson confidence interval**; the leaderboard is **schema 3** with contamination + citable-status badges; the taxonomy is a versioned `conf/taxonomy.yaml` under a `GOVERNANCE.md` stability contract; and an **externally-contributable submission CI** with a reproduction gate makes the board open to outside models.
+- **Datasets** — the reusable **LocalePack** (RO/EN/PL; checksum-valid identifiers, offset-correct-by-construction gold) and the first **three open datasets on Hugging Face**: `ds-kp-general-{ro,en,pl}-50k` (50,000 documents each, CC-BY).
+- **Models** — the first **`kp-deid-mdeberta-280m`** is published, and **Mac-GPU (Metal/MPS) training** is enabled — ~7.7× faster than CPU on the M3 Ultra, so full finetunes run on-device.
+- **Papers** — the submission + artifact-evaluation protocol is written, and a fresh prior-art rescan re-confirmed the **"first unified"** position (citing concurrent work such as RAT-Bench honestly).
+
+**▶ In progress**
+- The full multilingual `kp-deid` finetune on the Mac GPU — to be featured on the public [leaderboard](/leaderboard/) when it lands.
+
+**→ Up next**
+- The H1 retrospective (re-baselining H2 from real results), an MLX-native encoder training path, then H2: the anonymization + downstream-utility track and legal/clinical synthesis.
+
+**Updates log**
+- **2026-06-01** — Kickoff wave shipped: the benchmark's re-id metric + confidence intervals + schema-3 board + open submission CI; the first open `ds-kp` datasets; the first `kp-deid` model with on-device Mac-GPU training; and the [first progress post](/blog/). Compute confirmed **Mac-first** (M3 Ultra), with cloud GPU as burst-only.
 
 ## At a glance
 
