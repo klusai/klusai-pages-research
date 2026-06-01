@@ -26,8 +26,9 @@ abstract: >-
   not track national-identifier (CNP) protection: the best detector is not the best protector.
   OpenAI privacy-filter — the weakest detector (F1 0.36) — leaks only 1.1% of CNPs (95% CI 0.7–1.8)
   because it labels 96% of them as account numbers and redacts them regardless of type, whereas the
-  three type-accurate detectors all leak 19–26% (non-overlapping intervals): GLiNER, the most
-  accurate at F1 0.85, leaks 22.3%, and tabularisai leaks the most, 26.1% (24.0–28.4). Coverage-based
+  three detectors that type CNPs all leak 19–26% — privacy-filter's Wilson interval lies entirely
+  below all three (non-overlapping). GLiNER, the most accurate at F1 0.85, leaks 22.3%; tabularisai,
+  despite a lower F1 (0.75), leaks the most, 26.1% (24.0–28.4). Coverage-based
   redaction and type-accurate detection are different objectives — F1 measures the latter, protection
   needs the former — so detection F1 is an unsafe proxy for re-identification protection, at least for
   national identifiers. We release the benchmark, harness, configs, and data so the gap is measurable.
@@ -154,7 +155,8 @@ does not predict protection: **the best detector is not the best protector.** Th
 is the evidence — and it is significant, because the Wilson 95% intervals on leak-rate separate the
 systems (Table 2). With only four systems we do *not* lean on a correlation coefficient: the rank
 order happens to run positive (Spearman ρ = +0.80), but over four points that is a descriptive
-observation, not an estimate, and it is not statistically significant (p = 0.20). We therefore read
+observation, not an estimate, and it is not statistically significant (exact permutation p = 0.33).
+We therefore read
 the result as "F1 does not track CNP protection," and explain *why* below — not as a monotonic law.
 
 | Model | Detection F1 | CNP leak-rate (95% CI) | Quasi-IDs leaked |
@@ -169,7 +171,7 @@ the result as "F1 does not track CNP protection," and explain *why* below — no
 The strongest detector on this track, GLiNER (F1 0.85), leaks 22.3% of CNPs; tabularisai leaks the
 most (26.1%) at high precision; while the *weakest* detector, privacy-filter (F1 0.36), leaks the least
 (1.1%). Its low leak-rate is earned, not accidental: of the 1,520 CNPs, privacy-filter flags 1,503,
-labelling **96% (1,456) as account numbers** and 3% as phone numbers — and a flagged span is redacted
+labelling **96% (1,456) as account numbers** and 3% as phone numbers<sup><a href="#fn-2" id="fnref-2">2</a></sup> — and a flagged span is redacted
 regardless of type.
 
 This is the mechanism behind the dissociation, and it is specific. The leak metric rewards *coverage*
@@ -180,9 +182,10 @@ flat-to-rising in F1 and all leak 19.5–26.1% — no dissociation among them. T
 not "better detectors leak more"; it is that **coverage-based redaction and type-accurate detection
 are different objectives**, and detection F1 measures only the latter. (GLiNER is zero-shot, so its F1
 depends on the label prompt — a confound for any cross-system F1 comparison, and a further reason we
-rest the claim on the per-model leak-rate intervals rather than on F1 rankings.) The leak-rate
-differences themselves are individually significant: the Wilson 95% intervals for privacy-filter and
-every other model do not overlap.
+rest the claim on the per-model leak-rate intervals rather than on F1 rankings.) The one clean
+statistical separation is privacy-filter's: its Wilson 95% interval (0.7–1.8%) does not overlap any
+other model's. The three type-accurate detectors overlap pairwise (Table 2), so among them we make no
+significance claim — the sharp, significant contrast is the blanket redactor versus everything else.
 
 On the synthetic track leakage is ≤1.9% for all models (OpenMed
 1.9%, privacy-filter 0.1%, GLiNER and tabularisai 0%): templated CNPs are trivially caught, which is
@@ -206,10 +209,12 @@ These are preliminary results. (i) The general-text gold is itself synthetic (AI
 realistic-context track is Romanian, and even there the identifiers are synthetic injected into real
 structure — we measure a *synthetic-context vs real-context* gap, not a synthetic-to-real-data gap.
 (ii) The cross-system F1–leakage rank correlation is **descriptive over four systems** (Spearman
-ρ = +0.80, not significant, p = 0.20) and is largely carried by one blanket-redacting model
-(privacy-filter); we do not treat it as an effect estimate. The claim rests instead on the per-model
-leak-rate differences, which **are** individually significant (non-overlapping Wilson 95% intervals,
-Table 2), and on the coverage-vs-type mechanism in §5. (iii) OpenMed and tabularisai
+ρ = +0.80, not significant, exact permutation p = 0.33) and is largely carried by one blanket-redacting
+model (privacy-filter); we do not treat it as an effect estimate. The claim rests instead on
+privacy-filter's leak-rate, whose Wilson 95% interval is separated from every other model's
+(non-overlapping, Table 2), and on the coverage-vs-type mechanism in §5 — the three type-accurate
+detectors are *not* all mutually separable (their intervals overlap pairwise), so the protective
+effect we report is privacy-filter's blanket coverage, not a graded one across detectors. (iii) OpenMed and tabularisai
 were trained on AI4Privacy, the source of our general-text gold, so part of their general-text lead
 reflects in-distribution advantage — the Romanian track, which no baseline has seen, is the cleaner
 signal. (iv) The re-identification finding rests on one identifier type (the Romanian CNP) in one
@@ -242,3 +247,4 @@ definition stated in §4. Re-running `europriv run` against the published config
 
 <hr>
 <p class="arxiv-fn"><a id="fn-1"></a><sup>1</sup> We hold the per-CNP quasi-identifier count at three (date of birth, sex, county) as a conservative lower bound; the first digit jointly encodes sex and birth-century, and digits 8–9 encode the county of <em>registration</em> (with reserved codes for Bucharest sectors), not necessarily of residence. <a href="#fnref-1">↩</a></p>
+<p class="arxiv-fn"><a id="fn-2"></a><sup>2</sup> The per-predicted-label breakdown (1,456 ACCOUNT_ID, 47 phone) is not a scored leaderboard metric; it comes from the harness's per-label prediction dump for privacy-filter on this config (regenerated by <code>europriv run --dump-predictions</code>), and is internally consistent with the 1,503/1,520 flagged and 17 missed. <a href="#fnref-2">↩</a></p>
