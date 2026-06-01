@@ -22,14 +22,15 @@ abstract: >-
   harmonized GDPR-aligned entity taxonomy, and (d) a re-identification-risk metric alongside
   detection F1, in one reproducible, openly-licensed, leaderboard-style suite. We build on the
   prior art rather than replacing it, re-using its label schemes through a documented crosswalk.
-  Evaluating four public systems on realistic Romanian documents, we find detection accuracy and
-  privacy risk rise together: the rank correlation between detection F1 and national-identifier
-  (CNP) leak-rate across the four systems is +0.80 — better detectors leak more. The most accurate
-  Romanian detector, GLiNER (F1 0.853), leaks 22.3% of CNPs; tabularisai (0.747) leaks the most
-  (26.1%, 95% CI 24.0–28.4%); while the weakest detector, OpenAI privacy-filter (0.363), leaks the
-  least (1.1%, 0.7–1.8%) — because it labels 96% of CNPs as account numbers and redacts them
-  regardless of type. On this evidence detection F1 is an unsafe proxy for re-identification
-  protection. We release the benchmark, harness, and data so the gap is measurable.
+  Evaluating four public systems on realistic Romanian documents, we find detection F1 fails to
+  predict re-identification protection: across the four systems it is positively — not negatively —
+  correlated with national-identifier (CNP) leakage (Spearman ρ = +0.80, Pearson r = 0.89;
+  descriptive, four systems). The most accurate detector on this track, GLiNER (F1 0.853), still
+  leaks 22.3% of CNPs and tabularisai leaks the most (26.1%, 95% CI 24.0–28.4%), while the weakest
+  detector, OpenAI privacy-filter (0.363), leaks the least (1.1%, 0.7–1.8%) — because it labels 96%
+  of CNPs as account numbers and redacts them regardless of type. On this evidence detection F1 is
+  an unsafe proxy for re-identification protection, at least for national identifiers. We release
+  the benchmark, harness, and data so the gap is measurable.
 ---
 
 ## Introduction
@@ -114,6 +115,11 @@ PII of *any* type** — it would be redacted regardless of the predicted label; 
 CNP is predicted `O`, it is a leak. This is coverage, not labels — which is exactly the property
 detection F1 does not measure.
 
+The any-overlap rule is deliberately *conservative*: a model that flags even one token of a CNP is
+credited with protection, so `leak_rate` is a lower bound on real-world leakage — a redaction
+pipeline keying on exact spans or types could still expose digits. (privacy-filter, below, flags
+full CNP spans, so it is unaffected by this caveat.)
+
 ## Baselines and Results
 
 We evaluate four public systems: OpenAI `privacy-filter` [<a href="#ref-6">6</a>], OpenMed
@@ -124,7 +130,7 @@ the live leaderboard.
 
 | Config | privacy-filter | OpenMed | tabularisai | GLiNER |
 |---|---|---|---|---|
-| English (general) | 0.42 | 0.60 | 0.52 | 0.50 |
+| English (general) | 0.41 | 0.60 | 0.51 | 0.50 |
 | French (general) | 0.46 | 0.61 | 0.59 | 0.56 |
 | German (general) | 0.50 | 0.61 | 0.63 | 0.57 |
 | Italian (general) | 0.45 | 0.55 | 0.58 | 0.54 |
@@ -133,18 +139,20 @@ the live leaderboard.
 | Romanian (synthetic) | 0.58 | 0.74 | 0.88 | 0.81 |
 | Romanian (real-skeleton) | 0.36 | 0.58 | 0.75 | 0.85 |
 
-<p class="caption">Table 1. Entity-level detection F1 by configuration (n = 1,500 docs/config; taxonomy v0.2.0). OpenMed leads the general-text average (0.598) narrowly over tabularisai (0.589); the Romanian tracks are led by tabularisai (synthetic) and GLiNER (real-skeleton).</p>
+<p class="caption">Table 1. Entity-level detection F1 by configuration (n = 1,500 docs/config; taxonomy v0.2.0). OpenMed leads the general-text average (0.598) narrowly over tabularisai (0.589); the Romanian tracks are led by tabularisai (synthetic) and GLiNER (real-skeleton). The general-text ranking is confounded — OpenMed and tabularisai were trained on AI4Privacy (this gold's source), GLiNER and privacy-filter were not — so it mixes in- and out-of-distribution systems; the Romanian real-skeleton track, which no baseline has seen, is the fair comparison.</p>
 
-A model claiming 96–97% F1 on English PII drops to 0.42–0.63 across general European text under a
+A model claiming 96–97% F1 on English PII drops to 0.41–0.63 across general European text under a
 GDPR-aligned taxonomy, with recall the weak point throughout: recall-weighted F2 is lower than F1 in
-every cell (English, for instance: privacy-filter 0.42→0.35, OpenMed 0.60→0.57, tabularisai
-0.52→0.46, GLiNER 0.50→0.45). No system dominates — OpenMed leads the general-text average, tabularisai
+every cell (English, for instance: privacy-filter 0.41→0.35, OpenMed 0.60→0.57, tabularisai
+0.51→0.46, GLiNER 0.50→0.45). No system dominates — OpenMed leads the general-text average, tabularisai
 and GLiNER the Romanian tracks — and the gap between synthetic and realistic Romanian context is stark
 (tabularisai 0.88→0.75; privacy-filter 0.58→0.36).
 
-**The dissociation.** On `ro-realskeleton-v1` (1,520 gold CNPs), detection accuracy and privacy risk
-rise *together*: the Spearman rank correlation between detection F1 and CNP leak-rate across the four
-systems is **+0.80** — better detectors leak more.
+**The dissociation.** On `ro-realskeleton-v1` (1,500 documents, 1,520 gold CNPs), detection accuracy
+fails to predict protection: across the four systems detection F1 is positively — not negatively —
+correlated with CNP leak-rate (Spearman ρ = **+0.80**, Pearson r = 0.89). The relationship is positive
+but noisy over four points — the top detector by F1 (GLiNER) is *not* the worst leaker (tabularisai
+is) — so we read it as "F1 does not track protection," not as a clean monotonic law.
 
 | Model | Detection F1 | CNP leak-rate (95% CI) | Quasi-IDs leaked |
 |---|---|---|---|
@@ -155,8 +163,8 @@ systems is **+0.80** — better detectors leak more.
 
 <p class="caption">Table 2. Detection F1 vs CNP re-identification leakage on ro-realskeleton-v1 (1,520 gold CNPs; Wilson 95% confidence intervals on leak-rate; quasi-identifiers = missed CNPs × 3).</p>
 
-The strongest Romanian detector, GLiNER (F1 0.85), leaks 22.3% of CNPs; tabularisai leaks the most
-(26.1%) at high precision; while the *weakest* detector, privacy-filter (F1 0.36), leaks the least
+The strongest detector on this track, GLiNER (F1 0.85), leaks 22.3% of CNPs; tabularisai leaks the
+most (26.1%) at high precision; while the *weakest* detector, privacy-filter (F1 0.36), leaks the least
 (1.1%). Its low leak-rate is earned, not accidental: of the 1,520 CNPs, privacy-filter flags 1,503,
 labelling **96% (1,456) as account numbers** and 3% as phone numbers — and a flagged span is redacted
 regardless of type. The leak-rate differences are individually significant (the Wilson 95% intervals
