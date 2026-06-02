@@ -186,6 +186,14 @@ the result as "F1 does not track CNP protection," and explain *why* below — no
 
 <p class="caption">Table 2. Detection F1 vs CNP re-identification leakage on ro-realskeleton-v1 (1,123 gold CNPs; Detection F1 is the contamination-free real-skeleton F1 from Table 1, which no baseline was trained on; Wilson 95% confidence intervals on leak-rate). "Quasi-IDs leaked" is a deterministic exposure tally — exactly 3 × missed CNPs, since each un-redacted CNP discloses sex, date of birth, and county — not an inferential estimate.</p>
 
+<figure class="arxiv-figure">
+  <div class="arxiv-figure-frame">
+    <img src="{{ '/assets/papers/pareto_dissociation_ro_realskeleton.svg' | relative_url }}"
+         alt="Scatter of detection entity-F1 (x) against CNP re-identification leak-rate (y) on ro-realskeleton-v1, with Wilson 95% confidence-interval error bars. The blanket-redacting privacy-filter and the type-accurate kp-deid and Presidio systems sit at the bottom of the plot at near-zero leak-rate, off the protection–F1 frontier, while the higher-F1 detectors GLiNER, tabularisai, and OpenMed leak 26–35%." />
+  </div>
+  <figcaption>Figure 1. Detection–protection dissociation on <code>ro-realskeleton-v1</code> (n = 1,123 distinct CNP subjects). Horizontal axis: detection entity-F1; vertical axis: CNP re-identification leak-rate (the headline privacy metric), with Wilson 95% confidence-interval error bars. Re-identification protection does not track detection accuracy: GLiNER, the F1 leader (0.85), leaks the most among detectors that type CNPs (30.2%), while three systems sit at the bottom of the plot at ≈0% leak — the blanket redactor privacy-filter (F1 0.36, leak 1.4%) and the two systems that flag every CNP, kp-deid (F1 0.74, 0% leak) and Presidio (F1 0.47, 0% leak) — all off the detection-F1/protection frontier. Scope: development track (<code>config_status = dev</code>), contamination-controlled (clean held-out skeletons no baseline was trained on); the Romanian real-skeleton numbers are <strong>pending native-speaker review and inter-annotator-agreement validation</strong> and are not yet citable.</figcaption>
+</figure>
+
 The strongest detector on this track, GLiNER (F1 0.85), leaks 30.2% of CNPs; tabularisai leaks the
 most (35.4%) at high precision; while the *weakest* detector, privacy-filter (F1 0.36), leaks the least
 (1.4%). Its low leak-rate is earned, not accidental: of the 1,123 CNPs, privacy-filter flags 1,107,
@@ -206,6 +214,21 @@ other model's. The three type-accurate detectors are not all mutually separable 
 GLiNER–tabularisai overlap (though OpenMed and tabularisai do not), so they form a connected chain
 through GLiNER rather than a clean ordering — so among them we make no graded significance claim. The
 sharp, significant contrast is the blanket redactor versus everything else.
+
+**Item-paired significance.** The Wilson intervals above are unpaired; we additionally test the
+dissociation at the subject level, where each of the 1,123 distinct CNP subjects is scored as
+protected-or-leaked by both systems and the discordant pairs drive an exact (two-sided binomial)
+McNemar test. Against the F1 leader GLiNER, our reference de-identifier kp-deid (F1 0.74, 0% CNP
+leak) protects 339 CNP subjects that GLiNER leaks while GLiNER protects none that kp-deid leaks
+(b = 339, c = 0; p ≈ 1.8 × 10⁻¹⁰²) — detection-F1 and re-identification protection are statistically
+dissociated on item-paired data, not just on aggregate intervals. The contrast against the leaking
+protector privacy-filter is also significant in the same direction (b = 16, c = 0; p ≈ 3.05 × 10⁻⁵).
+We report the third comparison honestly as a **tie**: kp-deid and Presidio both flag every CNP, so
+their per-subject protection is identical (b = 0, c = 0; p = 1, not significant) — the test confirms
+no detectable difference where the leak-rates are equal (both 0%), which is the correct null result
+rather than evidence for either system. These tests share the per-subject CNP unit of the leak-rate
+metric and inherit its scope: <code>ro-realskeleton-v1</code>, development track, pending the
+native-speaker and inter-annotator-agreement validation noted above.
 
 On the synthetic track leakage is ≤1.9% for all models (OpenMed
 1.9%, privacy-filter 0.1%, GLiNER and tabularisai 0%): templated CNPs are trivially caught, which is
