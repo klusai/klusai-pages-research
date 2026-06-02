@@ -48,6 +48,14 @@ layout: default
   .arxiv .arxiv-body thead th { background: var(--surface-alt); border-bottom: 2px solid var(--border); }
   .arxiv .arxiv-body .caption { font-family: Georgia, serif; font-size: 0.82rem; color: var(--text-secondary); text-align: center;
                                 margin: 0.3rem auto 1.4rem; max-width: 90%; }
+  /* figures: matplotlib SVGs have a fixed white background, so frame them on a white
+     card with a light border — renders identically in light and dark themes */
+  .arxiv .arxiv-body figure.arxiv-figure { margin: 1.4rem 0 0.3rem; text-align: center; }
+  .arxiv .arxiv-body figure.arxiv-figure .arxiv-figure-frame { background: #fff; border: 1px solid var(--border);
+                                border-radius: 6px; padding: 0.8rem; }
+  .arxiv .arxiv-body figure.arxiv-figure img { display: block; width: 100%; height: auto; }
+  .arxiv .arxiv-body figure.arxiv-figure figcaption { font-family: Georgia, serif; font-size: 0.82rem;
+                                color: var(--text-secondary); text-align: center; margin: 0.5rem auto 0; max-width: 90%; }
   .arxiv .arxiv-body code { font-size: 0.85em; background: var(--surface-alt); padding: 0.05rem 0.3rem; border-radius: 3px; }
   /* references: left-align (justified short reference lines look gappy) */
   .arxiv .arxiv-body ol li { margin: 0.3rem 0; text-align: left; hyphens: none; -webkit-hyphens: none; }
