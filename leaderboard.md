@@ -79,10 +79,11 @@ citable.
 
 ## Re-identification leakage — the metric that matters
 
-Detection F1 is not privacy. EuroPriv-Bench also measures **re-identification leakage**: on the
-Romanian configs, a missed (un-redacted) **CNP** deterministically discloses the person's
-**date of birth + sex + county**. The table counts, per model, the CNPs left un-redacted and the
-quasi-identifiers thereby leaked (lower is better).
+Detection F1 is not privacy. EuroPriv-Bench also measures **re-identification leakage**: a missed
+(un-redacted) national ID deterministically discloses identifying attributes — on the Romanian
+configs a leaked **CNP** discloses **date of birth + sex + county**, and on the Polish track a
+leaked **PESEL** discloses **date of birth + sex**. The table counts, per model, the national IDs
+left un-redacted and the quasi-identifiers thereby leaked (lower is better).
 
 <div class="table-card">
 <table id="leakage" class="lb">
@@ -91,15 +92,19 @@ quasi-identifiers thereby leaked (lower is better).
       <th data-type="text">Model</th>
       <th data-type="text">Track</th>
       <th data-type="text">Contamination</th>
+      <th data-type="text">Validation</th>
       <th data-type="num">Leak rate %</th>
-      <th data-type="num">CNPs missed</th>
+      <th data-type="num">95% CI</th>
+      <th data-type="num">IDs missed</th>
       <th data-type="num">Quasi-identifiers leaked</th>
     </tr>
   </thead>
   <tbody>
   {% for kv in site.data.leaderboard.entries %}
     {% for row in kv[1] %}
-    {% if row.scores.cnp_leakage %}
+    {% assign leak = row.scores.cnp_leakage | default: row.scores.national_id_leakage %}
+    {% if leak %}
+    {% if row.scores.cnp_leakage %}{% assign ids_missed = leak.cnp_missed %}{% else %}{% assign ids_missed = leak.decode_bearing_missed %}{% endif %}
     <tr>
       <td>{{ row.adapter }}</td>
       <td><code>{{ row.dataset.config }}</code></td>
@@ -108,9 +113,14 @@ quasi-identifiers thereby leaked (lower is better).
         {% elsif row.contamination == "clean_held_out" %}<span class="lb-badge contam-clean" title="No baseline was trained on this data — a fair held-out test">clean held-out</span>
         {% else %}<span class="lb-badge contam-unknown" title="Train/eval overlap not established">unknown</span>{% endif %}
       </td>
-      <td>{{ row.scores.cnp_leakage.leak_rate | times: 100 | round: 1 }}</td>
-      <td>{{ row.scores.cnp_leakage.cnp_missed | round: 0 }}</td>
-      <td>{{ row.scores.cnp_leakage.leaked_quasi_identifiers | round: 0 }}</td>
+      <td>
+        {% if row.config_status == "citable-validated" %}<span class="lb-badge status-citable" title="Passed native-speaker / inter-annotator-agreement sign-off — citable as a validated result">citable</span>
+        {% else %}<span class="lb-badge status-dev" title="Development config — not yet validated, must not be cited as a validated benchmark result">dev</span>{% endif %}
+      </td>
+      <td>{{ leak.leak_rate | times: 100 | round: 1 }}</td>
+      <td>{{ leak.leak_rate_ci_low | times: 100 | round: 1 }}–{{ leak.leak_rate_ci_high | times: 100 | round: 1 }}</td>
+      <td>{{ ids_missed | round: 0 }}</td>
+      <td>{{ leak.leaked_quasi_identifiers | round: 0 }}</td>
     </tr>
     {% endif %}
     {% endfor %}
@@ -122,8 +132,12 @@ quasi-identifiers thereby leaked (lower is better).
 <p class="lb-meta">
   The dissociation is the point: on realistic-structure Romanian documents
   (<code>ro-realskeleton-v1</code>) the model with the <em>best</em> detection F1 leaks the
-  <em>most</em> CNPs, while a model with lower F1 redacts nearly all of them. A high F1 score
+  <em>most</em> CNPs, while a model with lower F1 redacts nearly all of them. The same pattern
+  repeats zero-shot on the Polish PESEL track (<code>pl-realskeleton-v1</code>). A high F1 score
   does not mean a model protects privacy — which is why this benchmark leads with leakage.
+  Both real-skeleton tracks are still <span class="lb-badge status-dev">dev</span> (pending
+  native-speaker / inter-annotator-agreement validation) — read their leak rates as strong early
+  signals, not yet validated headline results.
 </p>
 
 ## How to submit
