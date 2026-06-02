@@ -63,15 +63,15 @@ GLiNER again leads on the structural F1 you'd quote in a model card (0.825) and 
 than half of all PESELs** (57.8%). A model that was never shown Polish protects the Polish ID;
 a higher-F1 multilingual detector leaks the majority of them.
 
-**An honest caveat, because it matters.** This Polish track is early. It is `config_status=dev`,
-built from a single authored template family, and **not yet native-speaker- or IAA-validated**.
+**An honest caveat, because it matters.** This Polish track is early. It is still in development
+(`dev`), built from a single authored template family, and **not yet native-speaker- or IAA-validated**.
 Treat it as a strong early signal that the dissociation generalizes across languages and
 identifier schemes — **not** as a validated, citable headline. Full validation comes before we
 lean on it.
 
 ## What is and isn't a claim here
 
-The Romanian real-skeleton track is itself `config_status=dev`, pending native-speaker and
+The Romanian real-skeleton track is itself still in development (`dev`), pending native-speaker and
 inter-annotator-agreement validation. So the result above is a **measured, contamination-controlled
 delta** on held-out data — not yet a peer-reviewed, citable claim. We'd rather say that plainly
 than round it up.
