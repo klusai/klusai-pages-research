@@ -10,6 +10,11 @@ lang: en
 
 show_excerpts: true
 
+# Build posts dated "today" even when GitHub Pages builds in UTC and the local
+# publish date is already a day ahead (otherwise a post dated at local publish time
+# is treated as future-dated and silently excluded from the UTC build).
+future: true
+
 # Papers collection — each _papers/*.md renders at its own permalink (set per-file)
 collections:
   papers:
