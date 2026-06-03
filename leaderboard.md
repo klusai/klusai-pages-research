@@ -45,7 +45,7 @@ td.leakcell { min-width: 9.5rem; }
   flex: 1 1 auto; height: 0.62rem; min-width: 4rem; border-radius: 999px;
   background: var(--surface-alt); overflow: hidden;
 }
-.leakbar-fill { height: 100%; border-radius: 999px; }
+.leakbar-fill { display: block; height: 100%; border-radius: 999px; }
 .leakbar-fill.lvl-none { background: #1f9d6b; }      /* ~0% — protects */
 .leakbar-fill.lvl-low  { background: #4caf76; }
 .leakbar-fill.lvl-mid  { background: #d9a300; }      /* amber */
@@ -130,7 +130,7 @@ tiny/green ≈ protects); the table also counts national IDs left un-redacted an
 thereby leaked (lower is better).
 
 <div class="lb-breakout">
-<div class="table-card lb-tight lb-scroll">
+<div class="table-card lb-tight">
 <table id="leakage" class="lb">
   <thead>
     <tr>
