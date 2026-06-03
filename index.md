@@ -10,8 +10,8 @@ list_title: "Latest posts"
     <p class="lead">
       The open research hub of KlusAI — benchmarks, datasets, models and papers for
       PII/PHI detection, anonymization, and re-identification-risk evaluation across
-      European languages (8 published: ro, en, pl, de, fr, es, it, nl — scaling toward
-      EU-24), spanning the legal and clinical domains.
+      European languages (8 published datasets: ro, en, pl, de, fr, es, it, nl — scaling
+      toward EU-24), spanning the legal and clinical domains.
     </p>
     <div class="cta-row">
       <a class="btn btn-primary" href="{{ '/leaderboard/' | relative_url }}">See the live leaderboard →</a>
@@ -28,10 +28,10 @@ list_title: "Latest posts"
       EuroPriv-Bench is the first <em>unified</em> pan-European de-identification benchmark.
       Unlike prior work that reports only detection-F1 on English, it measures
       <strong>re-identification risk</strong> alongside detection on a single GDPR-aligned
-      taxonomy. Eight languages are published — ro, en, pl, de, fr, es, it, nl — with
-      general-text tracks plus contamination-controlled, decode-bearing real-skeleton tracks
-      for Romanian (CNP), Polish (PESEL), and Italian (codice fiscale), and the roadmap
-      scales toward the full EU-24.
+      taxonomy. Eight languages are published — ro, en, pl, de, fr, es, it, nl. Seven have
+      general-text tracks (de, en, es, fr, it, nl, ro), and three carry contamination-controlled,
+      decode-bearing real-skeleton tracks: Romanian (CNP), Polish (PESEL), and Italian (codice
+      fiscale). The roadmap scales toward the full EU-24.
     </p>
     <p>
       The headline finding: <strong>detection-F1 is not re-identification protection</strong>.
@@ -44,7 +44,7 @@ list_title: "Latest posts"
       board: spaCy, with no structured-ID recognizer, leaks <strong>89.0%</strong> of Romanian CNPs
       at a detection-F1 of just 0.14, while GLiNER — the strongest detector on the track (F1 0.85) —
       still leaks 30.2%. The contrast is KlusAI's reference de-identifier kp-deid, the
-      <strong>best protector on the board at 0% CNP leakage</strong>. These are measured,
+      <strong>strongest protector that still detects — 0% CNP leakage at detection-F1 0.74</strong>. These are measured,
       contamination-controlled signals on development-track gold (<code>config_status = dev</code>),
       pending native-speaker and inter-annotator-agreement validation — a finding, not yet a
       validated or citable claim.
@@ -75,8 +75,8 @@ list_title: "Latest posts"
         <div class="icon-tile">kp</div>
         <div>
           <h3>Models</h3>
-          <p>The KlusAI Privacy (kp-*) family — kp-deid-mdeberta-280m is the best protector on
-          the board at 0% CNP leakage.</p>
+          <p>The KlusAI Privacy (kp-*) family — kp-deid-mdeberta-280m is the strongest protector
+          that still detects (0% CNP leakage at detection-F1 0.74).</p>
           <div class="chip-row">
             <a class="chip chip-accent" href="https://huggingface.co/klusai/kp-deid-mdeberta-280m">Hugging Face ↗</a>
           </div>
