@@ -127,7 +127,7 @@ thereby leaked (lower is better).
     {% if row.scores.cnp_leakage %}{% assign ids_missed = leak.cnp_missed %}{% else %}{% assign ids_missed = leak.decode_bearing_missed %}{% endif %}
     {% assign leak_pct = leak.leak_rate | times: 100 %}
     <tr>
-      <td>{{ row.adapter }}</td>
+      <td><code>{{ row.model_id }}</code></td>
       <td><code>{{ row.dataset.config }}</code></td>
       <td>
         {% if row.contamination == "in_distribution" %}<span class="lb-badge contam-in" title="Model was trained on this config's source data">in-distribution</span>
