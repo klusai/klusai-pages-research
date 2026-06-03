@@ -38,11 +38,11 @@ figure.lb-figure figcaption {
 }
 
 /* Leak-rate bar (CSS only; numeric value kept inline & first for sortability) */
-td.leakcell { min-width: 9.5rem; }
-.leakbar-wrap { display: flex; align-items: center; gap: 0.5rem; justify-content: flex-end; }
-.leakbar-num { font-variant-numeric: tabular-nums; min-width: 3.1rem; text-align: right; }
+td.leakcell { min-width: 8rem; }
+.leakbar-wrap { display: flex; align-items: center; gap: 0.45rem; justify-content: flex-end; }
+.leakbar-num { font-variant-numeric: tabular-nums; min-width: 2.9rem; text-align: right; }
 .leakbar-track {
-  flex: 1 1 auto; height: 0.62rem; min-width: 4rem; border-radius: 999px;
+  flex: 1 1 auto; height: 0.62rem; min-width: 2.6rem; border-radius: 999px;
   background: var(--surface-alt); overflow: hidden;
 }
 .leakbar-fill { display: block; height: 100%; border-radius: 999px; }
@@ -68,7 +68,7 @@ details.lb-details p { font-size: 0.9rem; }
    so the transform doesn't interfere with the inner scroll container's sticky header), force
    single-line rows, and bound height so the page stays compact and each table is viewport-framable. */
 .lb-breakout {
-  width: min(1100px, calc(100vw - 3rem));
+  width: min(1180px, calc(100vw - 3rem));
   position: relative; left: 50%; transform: translateX(-50%);
   margin: 1.1rem 0;
 }
@@ -141,7 +141,7 @@ thereby leaked (lower is better).
       <th data-type="num">Leak rate</th>
       <th data-type="num">95% CI</th>
       <th data-type="num">IDs missed</th>
-      <th data-type="num">Quasi-identifiers leaked</th>
+      <th data-type="num">Quasi-identifiers</th>
     </tr>
   </thead>
   <tbody>
