@@ -105,10 +105,15 @@ are curated from AI4Privacy and remapped to the KP taxonomy.
 **The Romanian track.** Romanian is absent from AI4Privacy and is a strong test of locale-specific
 identifiers (CNP, RO IBAN/CUI, county-coded formats) that English-primary models have never seen. We
 release two Romanian configs. `ro-synthetic-v1` is a development track of template-generated
-documents. `ro-realskeleton-v1` is the citable track: documents that reproduce the *structure* of
-real Romanian official document types (a CNAS discharge letter, a services contract, a sworn
-declaration, an administrative letter) populated with procedurally-generated identifiers —
-valid-checksum CNPs with consistent dates of birth, RO IBAN/CUI/CI, county addresses. The skeletons
+documents. `ro-realskeleton-v1` is the contamination-free realistic-context track (still
+`config_status = dev`, pending the validation noted in §5): documents that reproduce the *structure* of
+real Romanian official document types, drawn from **two independent template families** — an
+official-correspondence family (clinical / legal / administrative: e.g. a CNAS discharge letter, a
+services contract, a sworn declaration, an administrative letter) and an academic-registry family
+(higher-education student records) — populated with procedurally-generated identifiers —
+valid-checksum CNPs with consistent dates of birth, RO IBAN/CUI/CI, county addresses. The two
+families share no skeleton text (5-gram Jaccard 0.0000), so the dissociation can be checked on each
+independently (§5). The skeletons
 are original KlusAI-authored documents that imitate the *functional layout* of these document types
 (headings, field order, boilerplate) without copying any source text; for genuinely official texts,
 Law 8/1996 art. 9(b) additionally places them outside copyright. They are released under the suite's
@@ -234,6 +239,24 @@ no detectable difference where the leak-rates are equal (both 0%), which is the 
 rather than evidence for either system. These tests share the per-subject CNP unit of the leak-rate
 metric and inherit its scope: <code>ro-realskeleton-v1</code>, development track, pending the
 native-speaker and inter-annotator-agreement validation noted above.
+
+**Replication across two independent template families.** The dissociation is not an artefact of a
+single authored skeleton family. We split `ro-realskeleton-v1` into **two template families that
+share no skeleton text (5-gram Jaccard 0.0000)** — an official-correspondence family (clinical /
+legal / administrative; 190 distinct CNP subjects) and an academic-registry family (higher-education
+student records; 250 distinct CNP subjects) — and re-run the difference-of-proportions test (typed-detector
+leak-rate minus protector leak-rate) per family, with a Newcombe (1998) hybrid-score 95% interval on
+the difference. The protector kp-deid leaks **0% of CNPs in both families** (Wilson 95% upper bound
+0.0198 in the official-correspondence family, 0.0151 in the academic-registry family — both within
+the pre-registered ≤0.02 target). The dissociation **holds in both families**: every type-accurate
+detector with a non-trivial leak has a per-family Newcombe interval that excludes 0 — in the
+official-correspondence family, spaCy (+0.92, 95% CI 0.87–0.95), GLiNER2 (+0.28, 0.22–0.35),
+GLiNER (+0.28, 0.22–0.35), tabularisai (+0.37, 0.30–0.44) and OpenMed (+0.25, 0.19–0.32); in the
+academic-registry family, GLiNER (+1.00, 0.98–1.00), privacy-filter (+0.98, 0.96–0.99), GLiNER2 and
+presidio (+0.90, 0.85–0.93 each), spaCy (+0.89, 0.84–0.92) and OpenMed (+0.67, 0.61–0.72). The
+contrast survives independently on two skeleton sets that share no template text — strengthening the
+"detection F1 does not track CNP protection" reading while the track's `config_status = dev` scope
+(pending native-speaker + IAA validation) is unchanged.
 
 On the synthetic track leakage is ≤1.9% for all models (OpenMed
 1.9%, privacy-filter 0.1%, GLiNER and tabularisai 0%): templated CNPs are trivially caught, which is
