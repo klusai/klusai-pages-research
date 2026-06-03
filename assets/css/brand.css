@@ -271,7 +271,9 @@ main { display: block; }
 /* ---- Cards ---- */
 .card-grid { display: grid; gap: 1rem; }
 .card-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
-@media (max-width: 820px) { .card-grid.cols-3 { grid-template-columns: 1fr; } }
+.card-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 1100px) { .card-grid.cols-4 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 820px) { .card-grid.cols-3, .card-grid.cols-4 { grid-template-columns: 1fr; } }
 .card {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 16px; padding: 1.4rem 1.5rem; box-shadow: var(--shadow);
