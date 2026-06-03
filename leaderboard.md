@@ -61,6 +61,25 @@ details.lb-details { margin: 0.8rem 0 1.2rem; border: 1px solid var(--border); b
 details.lb-details > summary { cursor: pointer; font-weight: 600; padding: 0.6rem 0; }
 details.lb-details[open] > summary { border-bottom: 1px solid var(--border); margin-bottom: 0.6rem; }
 details.lb-details p { font-size: 0.9rem; }
+
+/* ---- KLU-120: full-width, height-bounded data tables (single-line rows + sticky header) ----
+   The 8–10 column tables wrapped hard inside the 760px article column, tripling row height and
+   pushing right-hand columns off-screen. Break them out to full width (breakout on an OUTER wrapper
+   so the transform doesn't interfere with the inner scroll container's sticky header), force
+   single-line rows, and bound height so the page stays compact and each table is viewport-framable. */
+.lb-breakout {
+  width: min(1100px, calc(100vw - 3rem));
+  position: relative; left: 50%; transform: translateX(-50%);
+  margin: 1.1rem 0;
+}
+.lb-breakout .table-card { margin: 0; }
+.table-card.lb-tight table.lb td { white-space: nowrap; }
+.table-card.lb-tight table.lb th,
+.table-card.lb-tight table.lb td { padding-top: 0.42rem; padding-bottom: 0.42rem; }
+.table-card.lb-scroll { max-height: 70vh; overflow: auto; }
+.table-card.lb-scroll table.lb thead th {
+  position: sticky; top: 0; z-index: 2; background: var(--surface);
+}
 </style>
 
 <p class="eyebrow">Flagship benchmark</p>
@@ -110,7 +129,8 @@ discloses **date of birth + sex + place of birth**. The bar shows the leak rate 
 tiny/green ≈ protects); the table also counts national IDs left un-redacted and the quasi-identifiers
 thereby leaked (lower is better).
 
-<div class="table-card">
+<div class="lb-breakout">
+<div class="table-card lb-tight lb-scroll">
 <table id="leakage" class="lb">
   <thead>
     <tr>
@@ -162,6 +182,7 @@ thereby leaked (lower is better).
   </tbody>
 </table>
 </div>
+</div>
 
 <p class="lb-meta">
   The dissociation is the point: on realistic-structure Romanian documents
@@ -206,7 +227,8 @@ overlap and are not a fair test.
   Taxonomy v{{ tax_v }}
 </p>
 
-<div class="table-card">
+<div class="lb-breakout">
+<div class="table-card lb-tight lb-scroll">
 <table id="leaderboard" class="lb">
   <thead>
     <tr>
@@ -248,6 +270,7 @@ overlap and are not a fair test.
   {% endfor %}
   </tbody>
 </table>
+</div>
 </div>
 
 <p class="lb-meta">
