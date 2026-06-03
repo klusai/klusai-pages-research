@@ -20,8 +20,13 @@ permalink: /leaderboard/
 }
 .lb-stat b { color: var(--text); font-weight: 600; }
 
-/* Pareto figure — white card, theme-safe (mirrors .arxiv-figure-frame from _layouts/paper.html) */
-figure.lb-figure { margin: 1.2rem 0 1.6rem; text-align: center; }
+/* Pareto figure — white card, theme-safe (mirrors .arxiv-figure-frame from _layouts/paper.html).
+   Breaks out of the narrow (760px) article column into a full-width hero, centered on the viewport. */
+figure.lb-figure {
+  width: min(1080px, calc(100vw - 3rem));
+  position: relative; left: 50%; transform: translateX(-50%);
+  margin: 1.4rem 0 1.8rem; text-align: center;
+}
 figure.lb-figure .lb-figure-frame {
   background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 0.9rem;
   box-shadow: var(--shadow);
