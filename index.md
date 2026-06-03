@@ -34,20 +34,25 @@ list_title: "Latest posts"
       fiscale). The roadmap scales toward the full EU-24.
     </p>
     <p>
-      The headline finding: <strong>detection-F1 is not re-identification protection</strong>.
-      On contamination-free, realistic-structure documents, a higher detection-F1 does not mean
-      a model protects the person — each un-redacted national ID discloses several quasi-identifiers
-      at once (a Romanian CNP, for instance, decodes date of birth, sex, and county). The
-      dissociation now holds across <strong>three decode-bearing identifiers in three languages</strong>
-      (RO CNP, PL PESEL, IT codice fiscale), across <strong>two independent Romanian template
-      families</strong>, and is reproduced by independent third-party submissions on the public
-      board: spaCy, with no structured-ID recognizer, leaks <strong>89.0%</strong> of Romanian CNPs
-      at a detection-F1 of just 0.14, while GLiNER — the strongest detector on the track (F1 0.85) —
-      still leaks 30.2%. The contrast is KlusAI's reference de-identifier kp-deid, the
-      <strong>strongest protector that still detects — 0% CNP leakage at detection-F1 0.74</strong>. These are measured,
+      The headline finding: <strong>detection-F1 does not track re-identification protection —
+      demonstrated on decode-bearing national identifiers (RO CNP, PL PESEL, IT codice fiscale)</strong>.
+      The deeper mechanism is general but the proof is not yet: an aggregate detection-F1 can stay
+      high while a model misses the <em>rare, high-stakes tokens</em> that actually carry the
+      re-identification. National IDs are the clearest, <strong>provable</strong> case of that —
+      each un-redacted national ID deterministically discloses several quasi-identifiers at once (a
+      Romanian CNP, for instance, decodes date of birth, sex, and county) — not the whole of it.
+      On contamination-free, realistic-structure documents the dissociation holds across
+      <strong>three decode-bearing identifiers in three languages</strong> (RO CNP, PL PESEL, IT
+      codice fiscale), across <strong>two independent Romanian template families</strong>, and is
+      reproduced by independent third-party submissions on the public board: spaCy, with no
+      structured-ID recognizer, leaks <strong>89.0%</strong> of Romanian CNPs at a detection-F1 of
+      just 0.14, while GLiNER — the strongest detector on the track (F1 0.85) — still leaks 30.2%.
+      The contrast is KlusAI's reference de-identifier kp-deid, the <strong>strongest protector
+      that still detects — 0% CNP leakage at detection-F1 0.74</strong>. These are measured,
       contamination-controlled signals on development-track gold (<code>config_status = dev</code>),
       pending native-speaker and inter-annotator-agreement validation — a finding, not yet a
-      validated or citable claim.
+      validated or citable claim. Extending the measure to quasi-identifier-combination
+      re-identification is in progress, so the broad reading remains a hypothesis under test.
     </p>
   </div>
 </section>

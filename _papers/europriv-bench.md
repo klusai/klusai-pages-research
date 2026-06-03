@@ -14,7 +14,7 @@ leaderboard: "/leaderboard/"
 cite_order: [tab, ai4privacy, mapa, multigrascco, meddocan, openai, openmed, tabularisai, gliner, piiranha, ratbench, gliner2pii, spy, medprivbench, privacibench, piibench, deusser]
 cover_title: "EuroPriv-Bench"
 cover_sub: "Pan-European de-identification benchmark · 7 languages · re-identification-risk metric"
-tldr: "Detection F1 doesn't predict privacy: the weakest PII detector leaks the fewest Romanian national IDs (1.4%), while the strongest leak 26–35%. A unified, openly-licensed pan-European de-identification benchmark that scores re-identification risk — not just detection F1."
+tldr: "Detection F1 doesn't predict privacy on decode-bearing national identifiers: the weakest PII detector leaks the fewest Romanian national IDs (1.4%), while the strongest leak 26–35%. Aggregate F1 stays high while a model misses the rare, high-stakes tokens that carry the re-identification — national IDs are the clearest provable case. A unified, openly-licensed pan-European de-identification benchmark that scores re-identification risk — not just detection F1."
 tags: [De-identification, Re-identification risk, Romanian CNP, GDPR taxonomy, 7 languages]
 abstract: >-
   Privacy-focused NLP for European languages is served by fragmented resources: the Text
@@ -336,8 +336,14 @@ and tabularisai separate), so the protective effect we report is privacy-filter'
 not a graded one across detectors. (iii) OpenMed and tabularisai
 were trained on AI4Privacy, the source of our general-text gold, so part of their general-text lead
 reflects in-distribution advantage — the Romanian track, which no baseline has seen, is the cleaner
-signal. (iv) The re-identification finding rests on one identifier type (the Romanian CNP) in one
-language; we make no claim it generalizes to all identifiers or languages without further evidence.
+signal. (iv) The re-identification finding is demonstrated on decode-bearing national identifiers (the
+Romanian CNP, and — in the live leaderboard beyond this four-system study — Polish PESEL and Italian
+codice fiscale); we make no claim it generalizes to all identifiers or languages without further
+evidence. The deeper reading — that an aggregate detection F1 can stay high while a model misses the
+*rare, high-stakes tokens* that carry the re-identification — is general in principle, but national
+identifiers are the clearest *provable* case of it, not the whole of it; extending the measure to
+quasi-identifier-combination re-identification is in progress, so the broad claim is a hypothesis
+under test rather than a settled result.
 (v) The anonymization/utility and membership-inference tracks are specified but not yet populated;
 the present metric is re-identification *leakage*, hence the title.
 
