@@ -26,7 +26,8 @@
     });
   });
 
-  // Default: sort by F1 descending.
+  // Default: sort by F1 descending (best-first). Seed data-asc="true" so the
+  // click toggles to descending on first load.
   var f1 = table.querySelector("thead th.f1");
-  if (f1) f1.click();
+  if (f1) { f1.setAttribute("data-asc", "true"); f1.click(); }
 })();
