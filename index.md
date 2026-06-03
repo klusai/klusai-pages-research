@@ -10,7 +10,8 @@ list_title: "Latest posts"
     <p class="lead">
       The open research hub of KlusAI — benchmarks, datasets, models and papers for
       PII/PHI detection, anonymization, and re-identification-risk evaluation across
-      European languages (7 live, scaling to 20), spanning the legal and clinical domains.
+      European languages (8 published: ro, en, pl, de, fr, es, it, nl — scaling toward
+      EU-24), spanning the legal and clinical domains.
     </p>
     <div class="cta-row">
       <a class="btn btn-primary" href="{{ '/leaderboard/' | relative_url }}">See the live leaderboard →</a>
@@ -26,14 +27,27 @@ list_title: "Latest posts"
     <p>
       EuroPriv-Bench is the first <em>unified</em> pan-European de-identification benchmark.
       Unlike prior work that reports only detection-F1 on English, it measures
-      <strong>privacy-utility / re-identification risk</strong> on a single GDPR-aligned
-      taxonomy across European languages (7 live, scaling to 20), spanning legal and clinical text.
+      <strong>re-identification risk</strong> alongside detection on a single GDPR-aligned
+      taxonomy. Eight languages are published — ro, en, pl, de, fr, es, it, nl — with
+      general-text tracks plus contamination-controlled, decode-bearing real-skeleton tracks
+      for Romanian (CNP), Polish (PESEL), and Italian (codice fiscale), and the roadmap
+      scales toward the full EU-24.
     </p>
     <p>
-      The headline finding: <strong>detection-F1 is not privacy</strong>. On realistic-structure
-      Romanian documents, the model with the <em>best</em> detection F1 leaks the <em>most</em>
-      national IDs — and each un-redacted Romanian CNP discloses a person's date of birth, sex,
-      and county. A high F1 score does not mean a model protects privacy.
+      The headline finding: <strong>detection-F1 is not re-identification protection</strong>.
+      On contamination-free, realistic-structure documents, a higher detection-F1 does not mean
+      a model protects the person — each un-redacted national ID discloses several quasi-identifiers
+      at once (a Romanian CNP, for instance, decodes date of birth, sex, and county). The
+      dissociation now holds across <strong>three decode-bearing identifiers in three languages</strong>
+      (RO CNP, PL PESEL, IT codice fiscale), across <strong>two independent Romanian template
+      families</strong>, and is reproduced by independent third-party submissions on the public
+      board: spaCy, with no structured-ID recognizer, leaks <strong>89.0%</strong> of Romanian CNPs
+      at a detection-F1 of just 0.14, while GLiNER — the strongest detector on the track (F1 0.85) —
+      still leaks 30.2%. The contrast is KlusAI's reference de-identifier kp-deid, the
+      <strong>best protector on the board at 0% CNP leakage</strong>. These are measured,
+      contamination-controlled signals on development-track gold (<code>config_status = dev</code>),
+      pending native-speaker and inter-annotator-agreement validation — a finding, not yet a
+      validated or citable claim.
     </p>
   </div>
 </section>
@@ -44,14 +58,27 @@ list_title: "Latest posts"
       <p class="eyebrow">Artifacts</p>
       <h2>Open from day one</h2>
     </div>
-    <div class="card-grid cols-3">
+    <div class="card-grid cols-4">
       <div class="card">
         <div class="icon-tile">HF</div>
         <div>
           <h3>Benchmark</h3>
-          <p>EuroPriv-Bench — versioned, provenance-tracked, openly redistributable.</p>
+          <p>EuroPriv-Bench — versioned, provenance-tracked, openly redistributable. The live
+          leaderboard is open for external submissions.</p>
           <div class="chip-row">
             <a class="chip chip-accent" href="https://huggingface.co/datasets/klusai/europriv-bench">Hugging Face ↗</a>
+            <a class="chip chip-muted" href="{{ '/leaderboard/#how-to-submit' | relative_url }}">Submit a model →</a>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="icon-tile">kp</div>
+        <div>
+          <h3>Models</h3>
+          <p>The KlusAI Privacy (kp-*) family — kp-deid-mdeberta-280m is the best protector on
+          the board at 0% CNP leakage.</p>
+          <div class="chip-row">
+            <a class="chip chip-accent" href="https://huggingface.co/klusai/kp-deid-mdeberta-280m">Hugging Face ↗</a>
           </div>
         </div>
       </div>
@@ -69,9 +96,10 @@ list_title: "Latest posts"
         <div class="icon-tile">arXiv</div>
         <div>
           <h3>Papers</h3>
-          <p>Preprints with reproducible numbers that trace back to a commit.</p>
+          <p>The EuroPriv-Bench preprint — reproducible numbers that trace back to a commit.
+          In-progress working paper; arXiv pending.</p>
           <div class="chip-row">
-            <span class="chip chip-muted">Coming soon</span>
+            <a class="chip chip-accent" href="{{ '/papers/europriv-bench/' | relative_url }}">Read the paper →</a>
           </div>
         </div>
       </div>
