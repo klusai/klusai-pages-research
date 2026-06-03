@@ -80,6 +80,21 @@ details.lb-details p { font-size: 0.9rem; }
 .table-card.lb-scroll table.lb thead th {
   position: sticky; top: 0; z-index: 2; background: var(--surface);
 }
+
+/* ---- KLU-120 mobile (<=760px): keep the figure legible, avoid two-axis scroll boxes ---- */
+@media (max-width: 760px) {
+  /* The wide 2:1 dissociation figure shrinks below legibility at phone widths — let it scroll
+     horizontally at a readable minimum size instead of squashing every point label. */
+  figure.lb-figure .lb-figure-frame { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  figure.lb-figure img { min-width: 620px; }
+  /* The detection table's desktop height-cap + sticky header would become an awkward two-axis
+     scroll box on a phone; on mobile give it natural height and horizontal-only scroll (the page
+     scrolls vertically as normal). */
+  .table-card.lb-scroll { max-height: none; }
+  .table-card.lb-scroll table.lb thead th { position: static; }
+  /* Smooth momentum scrolling for the horizontally-scrollable table cards on touch devices. */
+  .table-card { -webkit-overflow-scrolling: touch; }
+}
 </style>
 
 <p class="eyebrow">Flagship benchmark</p>
