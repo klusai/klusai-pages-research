@@ -167,8 +167,12 @@ thereby leaked (lower is better).
   The dissociation is the point: on realistic-structure Romanian documents
   (<code>ro-realskeleton-v1</code>) the model with the <em>best</em> detection F1 leaks ~30% of
   CNPs, while a purpose-built protector redacts every one. The same pattern repeats zero-shot on the
-  Polish PESEL and Italian Codice Fiscale tracks. A high F1 score does not mean a model protects
-  privacy — which is why this benchmark leads with leakage. All tracks are still
+  Polish PESEL and Italian Codice Fiscale tracks. The mechanism is general — aggregate detection F1
+  can stay high while a model misses the rare, high-stakes tokens that carry the re-identification —
+  and <strong>decode-bearing national identifiers (RO CNP, PL PESEL, IT codice fiscale)</strong> are
+  the clearest, provable case of it, which is why this benchmark leads with leakage. Extending the
+  measure to quasi-identifier-combination re-identification is in progress, so the broad reading is a
+  hypothesis under test rather than a settled law. All tracks are still
   <span class="lb-badge status-dev">dev</span> (pending native-speaker / inter-annotator-agreement
   validation) — read their leak rates as strong early signals, not yet validated headline results.
 </p>
