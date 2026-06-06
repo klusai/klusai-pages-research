@@ -13,9 +13,9 @@ code: "https://github.com/klusai/europriv-bench"
 leaderboard: "/leaderboard/"
 cite_order: [tab, ai4privacy, mapa, multigrascco, meddocan, openai, openmed, tabularisai, gliner, piiranha, ratbench, gliner2pii, spy, medprivbench, privacibench, piibench, deusser]
 cover_title: "EuroPriv-Bench"
-cover_sub: "Pan-European de-identification benchmark · 7 languages · re-identification-risk metric"
+cover_sub: "Pan-European de-identification benchmark · 8 languages (3 decode-bearing real-skeleton re-id tracks) · re-identification-risk metric"
 tldr: "Detection F1 doesn't predict privacy on decode-bearing national identifiers: the weakest PII detector leaks the fewest Romanian national IDs (1.4%), while the strongest leak 26–35%. Aggregate F1 stays high while a model misses the rare, high-stakes tokens that carry the re-identification — national IDs are the clearest provable case. A unified, openly-licensed pan-European de-identification benchmark that scores re-identification risk — not just detection F1."
-tags: [De-identification, Re-identification risk, Romanian CNP, GDPR taxonomy, 7 languages]
+tags: [De-identification, Re-identification risk, Romanian CNP, GDPR taxonomy, 8 languages]
 abstract: >-
   Privacy-focused NLP for European languages is served by fragmented resources: the Text
   Anonymization Benchmark provides privacy–utility metrics but is English- and legal-only;
@@ -71,10 +71,12 @@ breadth, (b) both legal and clinical text, (c) one harmonized GDPR-aligned taxon
 re-identification-risk metric, in a reproducible, openly-licensed leaderboard. Our
 claim is explicitly "first *unified*", not "first": we re-use and subsume the prior art (§6). We
 contribute a harmonized taxonomy with a documented crosswalk to six external schemes (§2); a
-cleanly-licensed, reproducible benchmark over six European languages and a Romanian legal/clinical
-track in both synthetic and realistic-document form (§3); and a national-identifier
-re-identification-risk metric that exposes a dissociation between detection accuracy and privacy
-protection (§4–5).
+cleanly-licensed, reproducible benchmark over eight published European languages (ro, en, pl, de,
+fr, es, it, nl — seven with general-text tracks, scaling toward EU-24), with decode-bearing
+real-skeleton re-identification tracks in three languages (RO CNP, PL PESEL, IT codice fiscale) and
+a Romanian legal-domain real-skeleton track, in both synthetic and realistic-document form (all
+`config_status = dev`, pending validation; §3); and a national-identifier re-identification-risk
+metric that exposes a dissociation between detection accuracy and privacy protection (§4–5).
 
 ## The KP Taxonomy
 
@@ -118,6 +120,15 @@ are original KlusAI-authored documents that imitate the *functional layout* of t
 (headings, field order, boilerplate) without copying any source text; for genuinely official texts,
 Law 8/1996 art. 9(b) additionally places them outside copyright. They are released under the suite's
 open license. No identifier is derived from a real data subject; all are procedurally generated.
+
+**Polish, Italian, and legal-domain real-skeleton tracks.** The same real-skeleton construction
+extends the decode-bearing channel to two further national-ID schemes — `pl-realskeleton-v1`
+(Polish PESEL) and `it-realskeleton-v1` (Italian codice fiscale) — and to a Romanian legal-domain
+real-skeleton track (`legal-realskeleton-v1`, structure-only). All are KlusAI-authored skeletons
+populated with valid-checksum, procedurally-generated identifiers, carry `config_status = dev`
+(pending the validation noted in §5), and contain no real data subjects. Together with the Romanian
+track this gives **three decode-bearing real-skeleton re-identification tracks (RO CNP, PL PESEL, IT
+codice fiscale)** across the suite's eight published languages.
 
 **Provenance.** Every result row records the harness version, taxonomy version, dataset config and
 split, model id, and timestamp, so any number traces to an exact configuration. Synthetic training
@@ -343,7 +354,11 @@ evidence. The deeper reading — that an aggregate detection F1 can stay high wh
 *rare, high-stakes tokens* that carry the re-identification — is general in principle, but national
 identifiers are the clearest *provable* case of it, not the whole of it; extending the measure to
 quasi-identifier-combination re-identification is in progress, so the broad claim is a hypothesis
-under test rather than a settled result.
+under test rather than a settled result. A second, name-in-context mechanism — the *residual
+distinctiveness* of a person name left in its surrounding context — is measured on the same
+development-track gold (`config_status = dev`); we report it as residual quasi-identifier
+distinctiveness, **not** a re-identification rate, which we reserve for the deterministic national-ID
+channel.
 (v) The anonymization/utility and membership-inference tracks are specified but not yet populated;
 the present metric is re-identification *leakage*, hence the title.
 
