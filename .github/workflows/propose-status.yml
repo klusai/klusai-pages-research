@@ -1,0 +1,60 @@
+# Proposes a refreshed roadmap "Status & updates" section from the EuroPriv-Bench
+# Linear project — public-safe (RES-35, bounded PoC).
+#
+# This is a PROPOSER, not an auto-committer. It runs scripts/gen_status.py in
+# --dry-run mode and uploads the proposed section + diff as a build artifact so
+# a human can review and apply it. It deliberately does NOT modify roadmap.md
+# (propose, don't clobber), unlike sync-leaderboard which commits a data file.
+#
+# DEPENDENCY: reading Linear requires a read token exposed as an Actions secret
+# (LINEAR_TOKEN). That enablement is gated on RES-62 (org-level Actions
+# secrets/permissions). Until then this workflow is manual-only (workflow_dispatch)
+# and falls back to the checked-in sample fixture if the secret is absent. The
+# loop-maintained hand-written section stands in the meantime.
+name: propose-status
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  propose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch EuroPriv-Bench issues from Linear
+        env:
+          LINEAR_TOKEN: ${{ secrets.LINEAR_TOKEN }}
+        run: |
+          if [ -z "${LINEAR_TOKEN:-}" ]; then
+            echo "::warning::LINEAR_TOKEN not set (gated on RES-62) — using the checked-in sample fixture."
+            cp scripts/sample_linear_issues.json linear_issues.json
+            exit 0
+          fi
+          # Read-only: pull the project's issues (id/title/state/milestone) via the Linear GraphQL API.
+          # Project: EuroPriv-Bench — Privacy Models Program (team Research).
+          curl -fsS https://api.linear.app/graphql \
+            -H "Authorization: ${LINEAR_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d '{"query":"query{project(id:\"51b5c184-0a6e-4d1d-a21a-83915689ac77\"){issues(first:250){nodes{identifier title state{type name} projectMilestone{name}}}}}"}' \
+            | python3 -c "import json,sys; d=json.load(sys.stdin)['data']['project']['issues']['nodes']; json.dump({'issues':[{'id':n['identifier'],'title':n['title'],'statusType':n['state']['type'],'status':n['state']['name'],'milestone':(n.get('projectMilestone') or {}).get('name')} for n in d]}, open('linear_issues.json','w'))"
+
+      - name: Generate + verify public-safe (self-test then dry-run)
+        run: |
+          python3 scripts/gen_status.py --self-test
+          python3 scripts/gen_status.py --issues linear_issues.json --emit-json --json-out status.generated.json --dry-run | tee status.diff.txt
+
+      - name: Upload proposed status section + diff
+        uses: actions/upload-artifact@v4
+        with:
+          name: proposed-status
+          path: |
+            status.generated.json
+            status.diff.txt
