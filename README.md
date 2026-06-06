@@ -1,4 +1,6 @@
-# klusai.github.io — KlusAI Research hub
+# klusai-pages-research — KlusAI Research hub
+
+> **Repo rename:** `klusai.github.io` → `klusai-pages-research` (June 2026). GitHub redirects old clone URLs. Custom domain unchanged.
 
 Public research site for the KlusAI privacy-models program. Served at
 **https://research.klusai.com** (GitHub Pages + custom domain). The company/product
@@ -45,4 +47,4 @@ In CI this happens daily via `.github/workflows/sync-leaderboard.yml` (needs the
 
 1. **Make the repo public** (Settings → General → Danger Zone) so Pages can publish.
 2. **Settings → Pages** → Source: deploy from `main`; Custom domain: `research.klusai.com`; Enforce HTTPS.
-3. **DNS** at the klusai.com provider: `research CNAME klusai.github.io.`
+3. **DNS** at the klusai.com provider: `research CNAME klusai.github.io.` (unchanged after repo rename)
