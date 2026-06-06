@@ -9,11 +9,18 @@
 
 GitHub redirects old clone URLs. Custom domains unchanged (`CNAME` + DNS).
 
+**Local workspace** (after `~/codespace` rename on 2026-06-06):
+
+```bash
+~/codespace/klusai-pages-research   # was klusai.github.io
+~/codespace/klusai-pages-get        # was get
+```
+
 **Clone:**
 
 ```bash
-git clone git@github.com:klusai/klusai-pages-research.git
-git clone git@github.com:klusai/klusai-pages-get.git
+git clone git@github.com:klusai/klusai-pages-research.git ~/codespace/klusai-pages-research
+git clone git@github.com:klusai/klusai-pages-get.git ~/codespace/klusai-pages-get
 ```
 
 Part of the `klusai-pages-*` convention — see [Repo & Pages Naming](https://linear.app/klusai/document/repo-and-pages-naming-aa21a50e445f) on the Research team in Linear.
