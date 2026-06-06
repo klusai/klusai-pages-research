@@ -2,6 +2,8 @@
 
 > **Repo rename:** `klusai.github.io` → `klusai-pages-research` (June 2026). GitHub redirects old clone URLs. Custom domain unchanged.
 
+> **Visibility:** `klusai-pages-*` repos are **private** (org policy). The site at research.klusai.com stays public via GitHub Pages on GitHub Team.
+
 Public research site for the KlusAI privacy-models program. Served at
 **https://research.klusai.com** (GitHub Pages + custom domain). The company/product
 site lives separately at [klusai.com](https://klusai.com).
@@ -45,6 +47,6 @@ In CI this happens daily via `.github/workflows/sync-leaderboard.yml` (needs the
 
 ## One-time setup (GitHub UI — needs org admin)
 
-1. **Make the repo public** (Settings → General → Danger Zone) so Pages can publish.
+1. **Keep the repo private** — all `klusai-pages-*` repos are private; GitHub Team publishes Pages from private repos.
 2. **Settings → Pages** → Source: deploy from `main`; Custom domain: `research.klusai.com`; Enforce HTTPS.
 3. **DNS** at the klusai.com provider: `research CNAME klusai.github.io.` (unchanged after repo rename)

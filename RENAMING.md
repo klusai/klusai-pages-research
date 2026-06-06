@@ -25,4 +25,8 @@ git clone git@github.com:klusai/klusai-pages-get.git ~/codespace/klusai-pages-ge
 
 Part of the `klusai-pages-*` convention — see [Repo & Pages Naming](https://linear.app/klusai/document/repo-and-pages-naming-aa21a50e445f) on the Research team in Linear.
 
+## Visibility
+
+All `klusai-pages-*` repos are **private** (org policy). Custom domains stay public via GitHub Pages (GitHub Team). Open-science **code** lives in `europriv-bench`, `klusai-models`, etc. — not in pages repos.
+
 Renaming removes the special `klusai.github.io` org homepage slot. That is intentional — the org site is klusai.com (WebOS), not GitHub Pages.
