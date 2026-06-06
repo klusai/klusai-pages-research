@@ -21,8 +21,8 @@ about.md         program overview
 _data/           leaderboard.json (synced from europriv-bench)
 _posts/          release notes / announcements
 assets/          leaderboard sort JS + theme overrides
-scripts/         sync_leaderboard.sh
-.github/         daily leaderboard sync workflow
+scripts/         sync_leaderboard.sh, gen_status.py (+ sample_linear_issues.json)
+.github/         daily leaderboard sync + status-proposer workflows
 CNAME            research.klusai.com
 ```
 
@@ -44,6 +44,33 @@ The leaderboard renders from `_data/leaderboard.json`. Refresh it from a sibling
 
 In CI this happens daily via `.github/workflows/sync-leaderboard.yml` (needs the
 `EUROPRIV_TOKEN` secret while `europriv-bench` is private).
+
+## Status & updates section (PoC — RES-35)
+
+`scripts/gen_status.py` auto-generates the roadmap's **Status & updates** section
+from the EuroPriv-Bench program tracker (Done → ✓ Shipped, In Progress / In Review
+→ ▶, next public Todo → →). It is **public-safe by construction**: every issue is
+mapped to curated public-facing prose via an allow-list (unmatched issues are
+dropped, never echoed), and a final redaction guard refuses to emit any internal
+issue IDs, process/tooling tokens, or unreleased numbers.
+
+```bash
+# Prove the redaction guard rejects leaky input
+./scripts/gen_status.py --self-test
+
+# Render the proposed public section from a Linear issues dump (or the sample)
+./scripts/gen_status.py --issues scripts/sample_linear_issues.json
+
+# Diff the proposal against the live hand-written section (does NOT touch roadmap.md)
+./scripts/gen_status.py --issues scripts/sample_linear_issues.json --dry-run
+```
+
+This is a **bounded PoC**: it *proposes* a section (and can `--emit-json` a
+`_data/status.generated.json`), but it never overwrites the live roadmap. The CI
+proposer (`.github/workflows/propose-status.yml`, manual-only) uploads the diff as
+a build artifact for human review. Live Linear access needs a `LINEAR_TOKEN` Actions
+secret, which is gated on **RES-62**; until then the loop-maintained hand-written
+section stands and the workflow falls back to the checked-in sample fixture.
 
 ## One-time setup (GitHub UI — needs org admin)
 

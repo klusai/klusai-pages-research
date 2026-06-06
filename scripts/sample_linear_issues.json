@@ -1,0 +1,557 @@
+{
+  "issues": [
+    {
+      "id": "RES-35",
+      "title": "Auto-generate the roadmap \"Status & updates\" section from Linear (public-safe)",
+      "statusType": "started",
+      "status": "In Progress",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-25",
+      "title": "Add DE/FR/NL national-ID validators to europriv_bench (migrate KLU-102 local checksums to the single source of truth)",
+      "statusType": "started",
+      "status": "In Progress",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-23",
+      "title": "Sync the EuroPriv-Bench paper front-matter's stale \"7 languages\" count to current breadth",
+      "statusType": "started",
+      "status": "In Progress",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-19",
+      "title": "Held-out general eval saturates (control F1≈1.0) — build a discriminating held-out general set",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-79",
+      "title": "Pre-publication prior-art rescan — does \"first unified\" still hold?",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-78",
+      "title": "Paper 1 → arXiv + Zenodo DOI (title reconciliation + CITATION.cff)",
+      "statusType": "started",
+      "status": "In Review",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-77",
+      "title": "Review: native-speaker + IAA sign-off for ro-realskeleton (gates \"citable-validated\")",
+      "statusType": "started",
+      "status": "In Progress",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-76",
+      "title": "Harness-emitted Wilson CIs for leakage metrics",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-75",
+      "title": "Governance: externalize the taxonomy crosswalk to conf/taxonomy.yaml + GOVERNANCE.md",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-74",
+      "title": "[Epic] Track C: anonymization + downstream-utility metrics",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-73",
+      "title": "MLX-fit spike: validate mDeBERTa-v3 LoRA token-classification on Mac Studio (+ CPU fallback decision)",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-72",
+      "title": "[Epic] Multi-jurisdiction legal track (EUR-Lex / MultiEURLEX real-skeleton, ≥3 languages)",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-71",
+      "title": "klusai-models: resolve transformers pin conflict (hf extra >=5.0 vs mlx-lm's 4.57.6)",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-70",
+      "title": "[Epic] Leaderboard-as-product v2 (per-track tabs, per-language/domain views, CI badges)",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-69",
+      "title": "LocalePack abstraction (RO refactor + EN + PL packs, checksum self-tests)",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-68",
+      "title": "[Epic] Synthetic-to-real drift metric + comparability contract",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-67",
+      "title": "Submission protocol doc + artifact-evaluation plan",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-66",
+      "title": "[Epic] Papers: Paper 1 → ARR/EMNLP; Paper 2 (drift) → dataset venue; Paper 3 draft",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-65",
+      "title": "National-ID validator registry + country-dispatched national_id_leakage (RO/PL/IT)",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-64",
+      "title": "synthetic.generate() stage-A + release_dataset.py + license CI gate; publish ds-kp-general-{ro,en,pl}-50k",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-63",
+      "title": "[Epic] Finetune breadth: XLM-R-560m + MoE continue-finetune across T1 + coverage-aware \"protector\" objective",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-62",
+      "title": "Ops: enable Pages \"Enforce HTTPS\" + org-level Actions secrets/permissions for CI",
+      "statusType": "unstarted",
+      "status": "Todo",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-61",
+      "title": "Ship kp-deid-mdeberta-280m: train/eval/adapter + publish + score on RO real-skeleton",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-60",
+      "title": "[Epic] kp-anon pseudonymizer (LoRA) + SDK v0.2 (deidentify / pseudonymize)",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-59",
+      "title": "Leaderboard schema 3: contamination + config_status fields",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-58",
+      "title": "[Epic] Legal + clinical synthesis (stage-B narrative gen) + real-skeleton for ≥3 more languages + T2 packs",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-57",
+      "title": "Benchmark PyTorch-MPS (Metal) vs CPU for mDeBERTa-v3 LoRA on the Mac Studio",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-56",
+      "title": "Review: re-identification results on PL/IT — sanity + paper-worthiness",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-55",
+      "title": "H2 retrospective → re-baseline H3 scope from real results",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-54",
+      "title": "Submission CI v1 — no-secrets sandbox + reproduction gate + PR/issue templates",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-53",
+      "title": "Decision gate: DigitalOcean GPU-burst budget (owner · cap · deadline)",
+      "statusType": "unstarted",
+      "status": "Todo",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-52",
+      "title": "[Epic] Complete EU-24 + 4 non-EU coverage; subsume a TAB / MEDDOCAN / MAPA split in-harness",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H3 · Completeness & v1.0 (~9–24 mo)"
+    },
+    {
+      "id": "RES-51",
+      "title": "Full kp-deid-mdeberta-280m run — M3 Ultra first (MPS/MLX), burst to DO GPU only if insufficient",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-50",
+      "title": "[Epic] Track D: membership-inference / privacy-leakage (if unblocked)",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H3 · Completeness & v1.0 (~9–24 mo)"
+    },
+    {
+      "id": "RES-49",
+      "title": "Max-utilization Mac training profile: saturate the M3 Ultra (batch / precision / workers) — power draw is the KPI",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-48",
+      "title": "[Epic] EuroPriv-Bench v1.0: freeze + Zenodo DOI + contamination-audit report",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H3 · Completeness & v1.0 (~9–24 mo)"
+    },
+    {
+      "id": "RES-47",
+      "title": "H1 retrospective → re-baseline H2 from real results",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-46",
+      "title": "Fix duplicate-CNP in RO clinical skeleton (CASS field) → correct gold CNP count + re-score the board",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-45",
+      "title": "[Epic] Datasets: T3 packs → 28 total; drift reported across EU-24; contributable locale-pack path",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H3 · Completeness & v1.0 (~9–24 mo)"
+    },
+    {
+      "id": "RES-44",
+      "title": "Replicate protection on a 2nd ID + language: pl-realskeleton-v1 config + score kp-deid PESEL leak",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-43",
+      "title": "[Epic] Papers: Paper 4 (privacy-utility + MIA, split) + Paper 5 (position) flex buffer",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H3 · Completeness & v1.0 (~9–24 mo)"
+    },
+    {
+      "id": "RES-42",
+      "title": "Decision gate: is a from-scratch model justified? (evidence-based go/no-go)",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H3 · Completeness & v1.0 (~9–24 mo)"
+    },
+    {
+      "id": "RES-41",
+      "title": "Score kp-deid-mdeberta-280m across the 6 EU general configs + ro-synthetic (honest in-/cross-domain labels)",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-40",
+      "title": "H3 v1.0 readiness review",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H3 · Completeness & v1.0 (~9–24 mo)"
+    },
+    {
+      "id": "RES-39",
+      "title": "First third-party leaderboard submission via the no-secrets CI (e.g. Presidio adapter) — moat KPI",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-38",
+      "title": "[Epic] kp-deid breadth: T2/T3 + EU-completeness wedge; clinical kp-deid on credentialed gold",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H3 · Completeness & v1.0 (~9–24 mo)"
+    },
+    {
+      "id": "RES-37",
+      "title": "klusai-privacy SDK: extract_pii() + flip DEFAULT_MODEL → kp-deid-mdeberta-280m",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-36",
+      "title": "Operating ritual: biweekly triage + leaderboard refresh + re-prioritize from results",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": null
+    },
+    {
+      "id": "RES-34",
+      "title": "Blog ledger — postable milestones (Posted ↔ Pending), keep the blog tracking reality",
+      "statusType": "unstarted",
+      "status": "Todo",
+      "milestone": null
+    },
+    {
+      "id": "RES-33",
+      "title": "Fix kp-deid training eval split (implausible ~7e-10 eval loss = trivial/leaky split)",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-32",
+      "title": "Pareto-frontier figure (F1 vs CNP-leak, all models) + McNemar significance — Paper-3 prep",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-31",
+      "title": "Publish pl-realskeleton-v1 config to HF hub (run publish_pl_realskeleton.py) after datasets PR #3 merges",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-30",
+      "title": "Submission serial-run: narrow the skip-on-unavailable-config except so real eval errors fail loud",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-29",
+      "title": "Embed the Pareto dissociation figure + McNemar into the EuroPriv-Bench paper (Paper 1)",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-28",
+      "title": "Re-push kp-deid-mdeberta-280m HF model card with corrected per-subject numbers (1123)",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-27",
+      "title": "[Deferred] MLX-native DeBERTa-v2 TRAINING path (production) — feasibility proven by KLU-46",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-26",
+      "title": "europriv-bench: expose a public char-offset+score prediction accessor (SDK shouldn't use KpModelAdapter._pipeline())",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-24",
+      "title": "MLX-native DeBERTa-v2 encoder + token-classification training on the M3 Ultra",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-22",
+      "title": "europriv-bench: bundle conf/taxonomy.yaml for wheel installs (or fix misleading comment)",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H1 · Foundation & first credibility (~0–3 mo)"
+    },
+    {
+      "id": "RES-21",
+      "title": "T1 LocalePack framework + 5 packs (de/fr/es/it/nl) — generate + validate (IT first); publish split to KLU-107",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-20",
+      "title": "Publish the 5 T1 datasets (ds-kp-general-{de,fr,es,it,nl}-50k) to HF",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-18",
+      "title": "Grow the network: recruit a 2nd + 3rd third-party leaderboard submission (moat KPI ≥2)",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-17",
+      "title": "QI-combination re-id v2: PURR@τ + cleanly-licensed reference-population module + census-calibrated generator",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-16",
+      "title": "Publish the queued blog post — \"the leaderboard is open: first external submission\"",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-15",
+      "title": "Add a 2nd independent template family to the RO real-skeleton — harden the dissociation past a single family",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-14",
+      "title": "Root-cause kp-anon's ~2.3% substitution leak vs blanket-mask 0% (partial-fragment survival?)",
+      "statusType": "backlog",
+      "status": "Backlog",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-13",
+      "title": "it-realskeleton-v1 — 3rd decode-bearing identifier + language (codice fiscale)",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-12",
+      "title": "Retire the single-template-family caveat on public surfaces (roadmap + paper) — dissociation now holds across 2 RO families",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-11",
+      "title": "Synthetic→real drift metric — quantify the synthetic-context vs real-context gap (Paper 2 contribution)",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-10",
+      "title": "Track C scaffolding — anonymization/utility track: spec + metrics + redaction baseline",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-9",
+      "title": "Refresh the research.klusai.com home page (index.md) — stale since program start",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-8",
+      "title": "Leaderboard UX: lead with re-id leakage, embed the Pareto visual, make it punchy for non-experts",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-7",
+      "title": "Rescope public re-id framing: scope the dissociation to decode-bearing identifiers + the rare-entity mechanism (don't imply universality)",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-6",
+      "title": "Leaderboard tables: full-width, single-line rows, no horizontal cutoff, bounded long table (kill the vertical scroll)",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-5",
+      "title": "kp-deid v2 — multilingual protector trained on ro/en/pl + T1 (de/fr/es/it/nl) on the Mac, corrected split",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-4",
+      "title": "Broaden re-identification leakage beyond decode-bearing national IDs (QI-combination re-id + name-in-context)",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-3",
+      "title": "Paper 3 draft — the detection≠re-id dissociation + open protector (skeleton, gated on validation)",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-2",
+      "title": "kp-anon — a Mac-trainable anonymizer on the privacy-utility frontier (upgrade Track C from stub to result)",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    },
+    {
+      "id": "RES-1",
+      "title": "Legal-domain real-skeleton track (cleanly-licensed, EUR-Lex/ECHR structure-only) — the under-served domain bet",
+      "statusType": "completed",
+      "status": "Done",
+      "milestone": "H2 · Network effect & breadth (~3–9 mo)"
+    }
+  ]
+}
