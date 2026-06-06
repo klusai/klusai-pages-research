@@ -1,9 +1,10 @@
 # Pulls the latest leaderboard.json from the europriv-bench repo and commits it
 # so the site re-renders with fresh numbers. Runs on a schedule and on demand.
 #
-# Requires a repo secret EUROPRIV_TOKEN (a PAT or fine-grained token with
-# read access to klusai/europriv-bench) while that repo is private. Once the
-# benchmark repo is public, you can drop the token and use the raw URL directly.
+# europriv-bench is currently PUBLIC, so the leaderboard is fetched over the raw
+# URL with no token required. If europriv-bench is ever made private again, set a
+# repo secret EUROPRIV_TOKEN (a fine-grained token with read access to
+# klusai/europriv-bench) and the authenticated fallback below will use it.
 name: sync-leaderboard
 
 on:
@@ -21,14 +22,28 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Fetch leaderboard from europriv-bench
+        # Prefer the public raw URL (no token needed while europriv-bench is public).
+        # Fall back to the authenticated GitHub API if EUROPRIV_TOKEN is set — this
+        # keeps the sync working if the benchmark repo is made private again.
         env:
-          GH_TOKEN: ${{ secrets.EUROPRIV_TOKEN }}
+          EUROPRIV_TOKEN: ${{ secrets.EUROPRIV_TOKEN }}
         run: |
-          gh api \
-            repos/klusai/europriv-bench/contents/baselines/leaderboard.json \
-            -H "Accept: application/vnd.github.raw" \
-            > _data/leaderboard.json
-          python3 -c "import json; json.load(open('_data/leaderboard.json'))"
+          set -euo pipefail
+          RAW_URL="https://raw.githubusercontent.com/klusai/europriv-bench/main/baselines/leaderboard.json"
+          if curl -fsSL "$RAW_URL" -o _data/leaderboard.json; then
+            echo "Fetched leaderboard via public raw URL."
+          elif [ -n "${EUROPRIV_TOKEN:-}" ]; then
+            echo "Public fetch failed; falling back to authenticated GitHub API."
+            GH_TOKEN="$EUROPRIV_TOKEN" gh api \
+              repos/klusai/europriv-bench/contents/baselines/leaderboard.json \
+              -H "Accept: application/vnd.github.raw" \
+              > _data/leaderboard.json
+          else
+            echo "::error::Could not fetch europriv-bench leaderboard. The repo may be private — set the EUROPRIV_TOKEN secret with read access to klusai/europriv-bench."
+            exit 1
+          fi
+          # Fail loudly if the JSON is malformed — better than shipping a broken table.
+          python3 -c "import json; d=json.load(open('_data/leaderboard.json')); print('ok:', sum(len(v) for v in d['entries'].values()), 'rows')"
 
       - name: Commit if changed
         run: |
