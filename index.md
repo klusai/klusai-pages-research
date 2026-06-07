@@ -1,6 +1,6 @@
 ---
 layout: home
-title: "Research"
+title: "KlusAI Research"
 list_title: "Latest posts"
 ---
 <section class="hero">
