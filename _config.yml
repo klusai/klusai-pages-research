@@ -7,6 +7,15 @@ author:
   name: KlusAI
   email: research@klusai.com
 lang: en
+tagline: Open privacy models for European languages
+twitter:
+  card: summary_large_image
+# og:image for every page — jekyll-seo-tag reads page.image (not site.image),
+# so inject the default share card across all pages via Jekyll defaults.
+defaults:
+  - scope: { path: "" }
+    values:
+      image: /assets/og-research.png
 
 show_excerpts: true
 
@@ -25,6 +34,7 @@ collections:
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
+  - jekyll-sitemap
 
 # Program-wide links reused across pages
 klusai:
