@@ -33,6 +33,11 @@ bundle install
 bundle exec jekyll serve     # http://127.0.0.1:4000
 ```
 
+On the shared Mac Studio, run **`pages-preview`** in this repo for a GitHub Pages
+parity preview reachable from your laptop / Claude-in-Chrome over the tailnet (it
+prints a Tailnet URL). Installed via `kai services install pages-preview` (see
+`klusai-infra`).
+
 ## Updating the leaderboard
 
 The leaderboard renders from `_data/leaderboard.json`. Refresh it from a sibling
