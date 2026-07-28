@@ -5,7 +5,7 @@ list_title: "Latest posts"
 ---
 <section class="hero">
   <div class="wrap">
-    <p class="badge">Applied Research · AI Services · Ventures</p>
+    <p class="badge">EU-Sovereign AI Platform · Applied Research · Vertical Products</p>
     <h1>Privacy-preserving NLP for<br><span class="accent-word">European languages</span></h1>
     <p class="lead">
       The open research hub of KlusAI — benchmarks, datasets, models and papers for
