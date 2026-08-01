@@ -121,6 +121,10 @@ list_title: "Latest posts"
       <li><strong>Release notes &amp; methodology</strong> — the technical story behind each artifact.</li>
       <li><strong>Paper companions</strong> — reproducible numbers tracing back to a commit.</li>
     </ul>
-    <p>For the company and product, see <a href="https://klusai.com">klusai.com</a>.</p>
+    <p>
+      For the company, see <a href="https://klusai.com">klusai.com</a>.
+      For the platform, see <a href="https://klusai.com/platform/">kOS</a>,
+      our EU-sovereign AI platform.
+    </p>
   </div>
 </section>
