@@ -1,0 +1,25 @@
+{%- comment -%}
+  Per-site Plausible tracker.
+
+  Each site sets its OWN id in _config.yml:
+
+      plausible_script_id: pa-xxxxxxxxxxxxxxxxxxxxx
+
+  Keyed per site because a Plausible site *is* a domain. There is deliberately
+  NO default id: an unset value renders nothing at all.
+
+  The fallback IS the bug. klusai.com, lex, med and razorbridge.eu shared one id
+  for months, which filed every vertical's traffic under the marketing site while
+  their own dashboards read "Setup pending" — the numbers weren't missing, they
+  were silently mixed into the numbers the positioning work is read from
+  (klusai-webos#864, fixed 2026-08-10). An untracked site shows an empty
+  dashboard, which is obvious; contamination is invisible.
+{%- endcomment -%}
+{%- if site.plausible_script_id -%}
+  <!-- Privacy-friendly analytics by Plausible -->
+  <script async src="https://plausible.io/js/{{ site.plausible_script_id }}.js"></script>
+  <script>
+    window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+    plausible.init()
+  </script>
+{%- endif -%}
