@@ -36,6 +36,12 @@ plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
 
+# This site's own Plausible site id. Public by design (it ships in the <script
+# src> of every page). Must be research.klusai.com's id and nothing else —
+# _includes/analytics.html renders no tracker at all when unset, rather than
+# falling back to another site's id and filing this traffic under it.
+plausible_script_id: pa-8zjnns7rsD74EHfftWQvX
+
 # Program-wide links reused across pages
 klusai:
   flagship_hf: "https://huggingface.co/datasets/klusai/europriv-bench"
