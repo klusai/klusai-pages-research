@@ -1,0 +1,20 @@
+{%- comment -%}
+  Plausible, opt-in per site. Set `plausible_script_id` in the site's _config.yml
+  to the id Plausible minted for THAT domain — a Plausible site is a domain, and
+  the id is public (it ships in the page source), so it belongs in config rather
+  than a secret.
+
+  Deliberately silent when the id is unset: a site with no id gets no tracker at
+  all. Never add a fallback id here. A shared fallback once filed three hosts'
+  traffic under klusai.com, and an empty dashboard is visible in a way that
+  contaminated numbers are not.
+{%- endcomment -%}
+{%- if site.plausible_script_id -%}
+<script async src="https://plausible.io/js/{{ site.plausible_script_id }}.js"></script>
+<script>
+  /* Queue shim + init, as the current Plausible snippet requires: it buffers
+     calls made before the async script lands. */
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},
+  plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()
+</script>
+{%- endif -%}

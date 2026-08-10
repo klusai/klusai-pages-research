@@ -8,6 +8,10 @@ author:
   email: research@klusai.com
 lang: en
 tagline: Open privacy models for European languages
+
+# Plausible id for research.klusai.com and no other host. Public by design (it
+# ships in the page source); _includes/analytics.html emits nothing if unset.
+plausible_script_id: pa-8zjnns7rsD74EHfftWQvX
 twitter:
   card: summary_large_image
 # og:image for every page — jekyll-seo-tag reads page.image (not site.image),
