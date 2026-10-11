@@ -101,24 +101,22 @@ details.lb-details p { font-size: 0.9rem; }
 
 # EuroPriv-Bench Leaderboard
 
-<p class="lb-headline">Detection ≠ protection: on realistic Romanian documents the highest-F1 detector still leaks ~30% of national IDs (CNPs), while the model that protects best leaks 0%.</p>
+<p class="lb-headline">Detection ≠ protection: compare leakage on each config, not just detection F1.</p>
 
 <p class="lb-tldr">
 For privacy, the number that matters is <strong>re-identification leakage</strong> — how many decode-bearing
 national IDs a model leaves un-redacted — not detection F1. A leaked ID silently discloses identifying
 attributes (a Romanian CNP encodes date of birth, sex and county), so the best detector is <em>not</em>
-necessarily the best protector. Everything below is <span class="lb-badge status-dev">dev</span> (pending
-native-speaker / inter-annotator-agreement sign-off) — read it as a strong early signal, not a validated,
-citable result.
+necessarily the best protector. Config status is shown on each row: development results and
+externally annotated gold have different evidence boundaries. Programme panel validation is in
+progress; no existing row is promoted by this page.
 </p>
 
-<div class="lb-statband">
-  <span class="lb-stat"><b>8</b> models</span>
-  <span class="lb-stat"><b>3</b> decode-bearing national IDs (CNP · PESEL · Codice Fiscale)</span>
-  <span class="lb-stat"><b>3</b> leakage tracks: RO · PL · IT</span>
-  <span class="lb-stat">detection across <b>8</b> languages</span>
-  <span class="lb-stat">re-id leak rate <b>0%–96%</b></span>
-</div>
+<p><strong>October update:</strong> <code>klusai/kp-deid-xlmr-560m-legal</code> is a legal specialist.
+Its TAB DIRECT result does not establish general privacy protection: on <code>ro-synthetic-v1</code>
+it misses every CNP. Both results, with confidence intervals and subject counts, are below.
+See the <a href="/results/models/2026/10/11/october-update.html">October update</a> for the
+comparison with stock Presidio, seed counts and CPU timing limits.</p>
 
 <figure class="lb-figure">
   <div class="lb-figure-frame">
@@ -130,11 +128,60 @@ citable result.
   </div>
   <figcaption>
     Detection–protection dissociation: detection F1 (x) vs CNP re-identification leak rate (y) on
-    <code>ro-realskeleton-v1</code>, <code>dev</code> split, n=1123 CNPs. Higher F1 does not imply lower leakage.
+    <code>ro-realskeleton-v1</code>, <code>dev</code> status, n=1123 CNPs. Historical figure;
+    the newly synced 560m legal rows appear in the tables below. Higher F1 does not imply lower leakage.
   </figcaption>
 </figure>
 
-## Re-identification leakage — the metric that matters
+## TAB direct-identifier leakage — legal specialist
+
+TAB is external English legal gold. This table renders the uniform board's
+`tab_reid_leakage` rows; models without that metric in the synced data are omitted.
+The historical metric checks whether any token is redacted in every occurrence of a direct
+identifier. It can count partial masking as success, so it is a proxy rather than a complete
+residual-removal guarantee or measured attacker re-identification probability.
+Rates and Wilson confidence intervals are percentages; n counts DIRECT subjects, not documents.
+The legal row is the seed0 checkpoint; its CI does not measure training-seed uncertainty.
+
+<div class="lb-breakout">
+<div class="table-card lb-tight lb-scroll">
+<table id="tab-leakage" class="lb">
+  <thead>
+    <tr>
+      <th>Model</th>
+      <th>Track</th>
+      <th>Contamination</th>
+      <th>Config status</th>
+      <th>DIRECT leak rate</th>
+      <th>95% CI</th>
+      <th>Subjects leaked / n</th>
+      <th>Documents</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for kv in site.data.leaderboard.entries %}
+    {% for row in kv[1] %}
+    {% assign tab = row.scores.tab_reid_leakage %}
+    {% if tab %}
+    <tr>
+      <td><code>{{ row.model_id | escape }}</code></td>
+      <td><code>{{ row.dataset.config | escape }}</code></td>
+      <td>{{ row.contamination | default: "unknown" | escape }}</td>
+      <td>{% include config-status.html status=row.config_status %}</td>
+      <td>{{ tab.direct_leak_rate | times: 100 | round: 2 }}%</td>
+      <td>{{ tab.direct_leak_rate_ci_low | times: 100 | round: 2 }}–{{ tab.direct_leak_rate_ci_high | times: 100 | round: 2 }}%</td>
+      <td>{{ tab.direct_subjects_leaked | round: 0 }} / {{ tab.direct_subjects_total | round: 0 }}</td>
+      <td>{{ row.n }}</td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+</div>
+
+## National-ID leakage — by config
 
 Detection F1 is not privacy. EuroPriv-Bench measures **re-identification leakage**: a missed
 (un-redacted) national ID deterministically discloses identifying attributes — on the Romanian
@@ -152,10 +199,10 @@ thereby leaked (lower is better).
       <th data-type="text">Model</th>
       <th data-type="text">Track</th>
       <th data-type="text">Contamination</th>
-      <th data-type="text">Validation</th>
+      <th data-type="text">Config status</th>
       <th data-type="num">Leak rate</th>
       <th data-type="num">95% CI</th>
-      <th data-type="num">IDs missed</th>
+      <th data-type="num">IDs missed / n</th>
       <th data-type="num">Quasi-identifiers</th>
     </tr>
   </thead>
@@ -164,7 +211,7 @@ thereby leaked (lower is better).
     {% for row in kv[1] %}
     {% assign leak = row.scores.cnp_leakage | default: row.scores.national_id_leakage %}
     {% if leak %}
-    {% if row.scores.cnp_leakage %}{% assign ids_missed = leak.cnp_missed %}{% else %}{% assign ids_missed = leak.decode_bearing_missed %}{% endif %}
+    {% if row.scores.cnp_leakage %}{% assign ids_missed = leak.cnp_missed %}{% assign ids_total = leak.cnp_total %}{% else %}{% assign ids_missed = leak.decode_bearing_missed %}{% assign ids_total = leak.decode_bearing_total %}{% endif %}
     {% assign leak_pct = leak.leak_rate | times: 100 %}
     <tr>
       <td><code>{{ row.model_id }}</code></td>
@@ -175,8 +222,7 @@ thereby leaked (lower is better).
         {% else %}<span class="lb-badge contam-unknown" title="Train/eval overlap not established">unknown</span>{% endif %}
       </td>
       <td>
-        {% if row.config_status == "citable-validated" %}<span class="lb-badge status-citable" title="Passed native-speaker / inter-annotator-agreement sign-off — citable as a validated result">citable</span>
-        {% else %}<span class="lb-badge status-dev" title="Development config — not yet validated, must not be cited as a validated benchmark result">dev</span>{% endif %}
+        {% include config-status.html status=row.config_status %}
       </td>
       <td class="leakcell">
         <span class="leakbar-wrap">
@@ -187,8 +233,8 @@ thereby leaked (lower is better).
           </span>
         </span>
       </td>
-      <td>{{ leak.leak_rate_ci_low | times: 100 | round: 1 }}–{{ leak.leak_rate_ci_high | times: 100 | round: 1 }}</td>
-      <td>{{ ids_missed | round: 0 }}</td>
+      <td>{{ leak.leak_rate_ci_low | times: 100 | round: 2 }}–{{ leak.leak_rate_ci_high | times: 100 | round: 2 }}%</td>
+      <td>{{ ids_missed | round: 0 }} / {{ ids_total | round: 0 }}</td>
       <td>{{ leak.leaked_quasi_identifiers | round: 0 }}</td>
     </tr>
     {% endif %}
@@ -200,17 +246,10 @@ thereby leaked (lower is better).
 </div>
 
 <p class="lb-meta">
-  The dissociation is the point: on realistic-structure Romanian documents
-  (<code>ro-realskeleton-v1</code>) the model with the <em>best</em> detection F1 leaks ~30% of
-  CNPs, while a purpose-built protector redacts every one. The same pattern repeats zero-shot on the
-  Polish PESEL and Italian Codice Fiscale tracks. The mechanism is general — aggregate detection F1
-  can stay high while a model misses the rare, high-stakes tokens that carry the re-identification —
-  and <strong>decode-bearing national identifiers (RO CNP, PL PESEL, IT codice fiscale)</strong> are
-  the clearest, provable case of it, which is why this benchmark leads with leakage. Extending the
-  measure to quasi-identifier-combination re-identification is in progress, so the broad reading is a
-  hypothesis under test rather than a settled law. All tracks are still
-  <span class="lb-badge status-dev">dev</span> (pending native-speaker / inter-annotator-agreement
-  validation) — read their leak rates as strong early signals, not yet validated headline results.
+  National-ID leak rates and Wilson confidence intervals are percentages; n counts identifier
+  subjects. Development configs remain <code>dev</code> while panel validation is in progress.
+  A zero point estimate is not proof of zero risk. Compare models on the same held-out config;
+  a specialist's result does not establish performance across languages or domains.
 </p>
 
 ## Detection scores — by model and language
@@ -227,12 +266,15 @@ overlap and are not a fair test.
   trained on that config's source data — an <span class="lb-badge contam-in">in-distribution</span> score
   is inflated by train/eval overlap (e.g. a perfect 100/100/100 is a memorisation artefact, not a win),
   while a <span class="lb-badge contam-clean">clean held-out</span> score is a fair test.
-  <strong>Validation</strong> shows whether a config has passed native-speaker / inter-annotator-agreement
-  (IAA) sign-off: only a <span class="lb-badge status-citable">citable</span> row may be cited as a
-  validated result. Everything is currently <span class="lb-badge status-dev">dev</span> — not yet citable.</p>
+  <strong>Config status</strong> preserves the source's <code>config_status</code> value.
+  <code>dev</code> means validation is incomplete; <code>real-external-gold</code> identifies
+  externally annotated real data. Future <code>panel-validated</code> rows must pass the
+  pre-registered LLM-panel protocol; that label does not imply native-speaker review.
+  Legacy <code>citable-validated</code> rows retain their source status and protocol.
+  Unknown values remain visible, without inferred validation.</p>
   <p>Each row reports entity-level precision / recall / F1 (×100) under the unified KlusAI privacy
   taxonomy. Results carry full provenance (model id, dataset config/split, harness &amp; taxonomy version,
-  timestamp) in the <a href="https://github.com/klusai">source repository</a>.</p>
+  timestamp) in the <a href="https://github.com/klusai/europriv-bench/blob/main/baselines/leaderboard.json">source repository</a>.</p>
 </details>
 
 {% assign bench_v = "" %}{% for kv in site.data.leaderboard.entries %}{% if bench_v == "" %}{% assign bench_v = kv[1][0].europriv_bench_version %}{% assign tax_v = kv[1][0].taxonomy_version %}{% endif %}{% endfor %}
@@ -249,6 +291,7 @@ overlap and are not a fair test.
     <tr>
       <th data-type="text">Model</th>
       <th data-type="text">Adapter</th>
+      <th data-type="text">Track</th>
       <th data-type="text">Lang</th>
       <th data-type="text">Domain</th>
       <th data-type="num">Precision</th>
@@ -256,7 +299,7 @@ overlap and are not a fair test.
       <th data-type="num" class="f1">F1</th>
       <th data-type="num">n</th>
       <th data-type="text">Contamination</th>
-      <th data-type="text">Validation</th>
+      <th data-type="text">Config status</th>
     </tr>
   </thead>
   <tbody>
@@ -265,6 +308,7 @@ overlap and are not a fair test.
     <tr{% if row.contamination == "in_distribution" %} class="row-indist"{% endif %}>
       <td><code>{{ row.model_id }}</code></td>
       <td>{{ row.adapter }}</td>
+      <td><code>{{ row.dataset.config | escape }}</code></td>
       <td>{{ row.languages[0] }}</td>
       <td>{{ row.domain }}</td>
       <td>{{ row.scores.entity_f1.precision | times: 100 | round: 1 }}</td>
@@ -277,8 +321,7 @@ overlap and are not a fair test.
         {% else %}<span class="lb-badge contam-unknown" title="Train/eval overlap not established">unknown</span>{% endif %}
       </td>
       <td>
-        {% if row.config_status == "citable-validated" %}<span class="lb-badge status-citable" title="Passed native-speaker / inter-annotator-agreement sign-off — citable as a validated result">citable</span>
-        {% else %}<span class="lb-badge status-dev" title="Development config — not yet validated, must not be cited as a validated benchmark result">dev</span>{% endif %}
+        {% include config-status.html status=row.config_status %}
       </td>
     </tr>
     {% endfor %}
@@ -292,7 +335,7 @@ overlap and are not a fair test.
   Each row reports entity-level precision / recall / F1 (×100) under the unified KlusAI
   privacy taxonomy. Results carry full provenance (model id, dataset config/split,
   harness &amp; taxonomy version, timestamp) in the
-  <a href="https://github.com/klusai">source repository</a>.
+  <a href="https://github.com/klusai/europriv-bench/blob/main/baselines/leaderboard.json">source repository</a>.
 </p>
 
 ## How to submit

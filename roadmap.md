@@ -4,8 +4,65 @@ title: "Research Roadmap"
 permalink: /roadmap/
 eyebrow: "Privacy Models Program"
 lede: "How EuroPriv-Bench becomes the neutral, open scorekeeper of European privacy NLP — across benchmark, models, datasets, and papers."
-status: "Living plan · updated 2026-06-07"
+status: "Living plan · updated 2026-10-11"
 ---
+
+## Status — October 2026
+
+*Updated 2026-10-11. The programme restarted on this date. This section supersedes the
+June plan and its human-review gates below; that plan remains as a historical record.*
+
+The next horizon is **a deployment-grade privacy layer for EU AI gateway traffic**.
+That is a research target, not a deployment or product claim. We are replacing human-gated
+steps with **pre-registered LLM-panel validation**, labelled `panel-validated` only after
+its protocol passes. This label describes model-panel review, never native-speaker
+validation. Panel validation is still in progress; existing `dev` rows are not promoted.
+
+**Done — merged evidence**
+
+- The legal checkpoint `klusai/kp-deid-xlmr-560m-legal` is on the uniform board
+  ([europriv-bench #47](https://github.com/klusai/europriv-bench/pull/47)). Its TAB
+  direct-identifier leak rate is **9.47% [6.50–13.61]**, versus stock Presidio's
+  **50.0% [44.01–55.99]** (95% Wilson CIs; 127 documents, 264 DIRECT subjects;
+  legal seed0 and one baseline run). This is a scoped held-out result with disjoint CIs.
+  On `ro-synthetic-v1`, the same specialist leaks **100% [99.62–100.00]** of CNPs
+  (1,500 documents, 1,017 subjects, one checkpoint). That failure is on the board too;
+  the config remains `dev` and is marked `in_distribution` in the source.
+- The [merged CPU study](https://github.com/klusai/klusai-models/blob/1f5296c843e32910c3bada14b8c58e3d5383ddf4/docs/north-star-gap.md)
+  records p95 **148 ms** for the 280m and **284 ms** for the 560m legal checkpoint
+  (unrounded: 147.97 [142.55–157.88] and 284.41 [206.66–347.89] ms;
+  95% input-bootstrap CIs, 200 chat-length inputs, one timed pass per seed0 checkpoint).
+  These are local CPU adapter timings, excluding transport, queues and redaction operators.
+
+**In progress**
+
+- MoE fine-tune GPU wave.
+- Gateway-traffic benchmark.
+- Pre-registered LLM-panel validation.
+
+**Next — acceptance lines, not achieved results**
+
+- **Leak rate:** lower residual leakage than the pinned Presidio-based deployment baseline,
+  with disjoint confidence intervals on held-out gateway configurations. Stock Presidio's
+  TAB result does not establish this. Freeze the full-residual metric and report each
+  language, subject count and training-seed count.
+- **Utility:** no worse over-redaction than that same baseline, supported by a paired
+  bootstrap interval for the difference, alongside downstream task utility. Detection F1
+  alone does not establish utility preservation.
+- **CPU latency:** agree the latency/load contract, then measure end-to-end p95 and
+  throughput with CIs on the same workload and deployment hardware. Local adapter timing
+  does not establish gateway capacity.
+
+**Not yet verified:** a general privacy model, gateway integration, the deployment-baseline
+comparison, utility preservation, deployment CPU capacity, or completed panel validation.
+The TAB metric is a partial-redaction proxy, not measured attacker re-identification
+probability. See the [October update](/results/models/2026/10/11/october-update.html)
+for the result boundaries and the [leaderboard](/leaderboard/) for config-level evidence.
+
+## Historical plan — June 2026
+
+*The horizons, status snapshots and validation gates below describe the earlier plan.
+The October status above is the current programme direction.*
 
 ## North star
 
