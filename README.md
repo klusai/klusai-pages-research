@@ -38,6 +38,30 @@ parity preview reachable from your laptop / Claude-in-Chrome over the tailnet (i
 prints a Tailnet URL). Installed via `kai services install pages-preview` (see
 `klusai-infra`).
 
+## PR checks and auto-merge
+
+With Ruby 3.2, run `bundle install` then `make check`. This builds with the
+`github-pages` gem in production/safe mode, rejects Liquid syntax and filter
+errors, and checks generated internal links and assets with HTMLProofer (no
+external URL requests). Optional Liquid variables stay optional. To put build
+output outside the checkout, use `make check SITE_DEST=/path/to/scratch/site`.
+
+The PR/main workflow reports the `test` job. Auto-merge follows the
+`klusai/europriv-bench` pattern: it stays inactive unless main visibly requires
+`test`, honors draft/hold/review gates, and never checks out PR code in its
+privileged workflow. Repository admins must enable squash and auto-merge and
+configure required checks before it can arm; keep "Require branches to be up to
+date" off for parity with that pattern.
+
+Before requiring `test`, arrange a narrowly scoped bypass for a dedicated sync
+GitHub App and use its installation token in `sync-leaderboard`, or migrate sync
+to a PR flow using an App token so it triggers PR checks. Its existing
+`GITHUB_TOKEN` direct push has no passing check on the new commit and would
+otherwise be blocked. A direct-push bypass must cover required status checks,
+not just required PRs; verify the branch-summary API still exposes required
+`test` to the guard if using rulesets. These workflows do not change branch
+protection or the existing sync job.
+
 ## Updating the leaderboard
 
 The leaderboard renders from `_data/leaderboard.json`. Refresh it from a sibling

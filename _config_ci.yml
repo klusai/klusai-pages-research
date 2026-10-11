@@ -1,0 +1,8 @@
+# Fail on Liquid syntax/render errors; optional theme/data fields remain optional.
+repository: klusai/klusai-pages-research
+# Custom-domain Pages site, also avoids metadata API discovery in local worktrees.
+baseurl: ""
+liquid:
+  error_mode: strict
+  strict_filters: true
+strict_front_matter: true
