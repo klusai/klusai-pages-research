@@ -33,31 +33,48 @@ validation. Panel validation is still in progress; existing `dev` rows are not p
   (unrounded: 147.97 [142.55–157.88] and 284.41 [206.66–347.89] ms;
   95% input-bootstrap CIs, 200 chat-length inputs, one timed pass per seed0 checkpoint).
   These are local CPU adapter timings, excluding transport, queues and redaction operators.
+- The eight-language chat-style gateway benchmark and separate stock Presidio / Presidio-based
+  deployment-baseline comparisons are scored. The synthetic test configurations remain **`dev`**;
+  independent review and semantic disjointness are pending.
+- The gateway-trained 280m has three scored training seeds. Each passes the numerical privacy
+  and stricter no-increase over-redaction checks against both baselines on every gateway language.
+  Non-gateway regressions remain; this is not a general-model or scoped contract win.
+- The gateway-trained MoE has merged seed-0 scores and a **contract v3 loss**: Polish and German
+  over-redaction regress against other registered model comparators, despite improvements against
+  the two Presidio baselines. The earlier strict-utility calibration also remains a loss.
+- Contract v3 prospectively allows a paired utility-delta CI upper bound of **+1.0 percentage point**;
+  privacy, seed, zero-floor, review and load requirements stay fixed. Historical verdicts are retained.
+  The [first gateway results](/results/models/2026/10/11/privacy-on-gateway-traffic-first-results.html)
+  give every language's residual-leak and over-redaction estimates, CIs, denominators and source pins.
+  Gateway-trained models remain private and are **not yet released**.
 
 **In progress**
 
-- MoE fine-tune GPU wave.
-- Gateway-traffic benchmark.
 - Pre-registered LLM-panel validation.
+- Independent gateway-gold review and semantic disjointness checks.
+- Remaining MoE seed replication and over-redaction work; preserving the encoder's non-gateway quality.
 
 **Next — acceptance lines, not achieved results**
 
 - **Leak rate:** lower residual leakage than the pinned Presidio-based deployment baseline,
-  with disjoint confidence intervals on held-out gateway configurations. Stock Presidio's
-  TAB result does not establish this. Freeze the full-residual metric and report each
-  language, subject count and training-seed count.
-- **Utility:** no worse over-redaction than that same baseline, supported by a paired
-  bootstrap interval for the difference, alongside downstream task utility. Detection F1
-  alone does not establish utility preservation.
-- **CPU latency:** agree the latency/load contract, then measure end-to-end p95 and
+  with disjoint confidence intervals and negative paired cluster-bootstrap deltas on reviewed,
+  disjoint held-out gateway configurations for every required language and training seed.
+  The full-residual metric is frozen; numerical passes on the current `dev` set await review.
+- **Utility:** under v3, the paired over-redaction delta's 95% CI upper bound must be at most
+  +1.0 percentage point against each registered comparator, per configuration and seed, with
+  legacy national-ID zero floors preserved. Downstream task utility still needs measurement;
+  character retention alone does not establish it.
+- **CPU latency:** apply the frozen latency/load contract and measure end-to-end p95 and
   throughput with CIs on the same workload and deployment hardware. Local adapter timing
   does not establish gateway capacity.
 
-**Not yet verified:** a general privacy model, gateway integration, the deployment-baseline
-comparison, utility preservation, deployment CPU capacity, or completed panel validation.
+**Not yet verified:** a general privacy model, a scoped gateway contract win, gateway integration,
+semantic utility preservation, deployment CPU capacity, or completed independent/panel validation.
 The TAB metric is a partial-redaction proxy, not measured attacker re-identification
-probability. See the [October update](/results/models/2026/10/11/october-update.html)
-for the result boundaries and the [leaderboard](/leaderboard/) for config-level evidence.
+probability; the new gateway results use exact-character residual leakage instead. See the
+[gateway results](/results/models/2026/10/11/privacy-on-gateway-traffic-first-results.html)
+for current evidence and the [October update](/results/models/2026/10/11/october-update.html)
+for the earlier legal-specialist and local CPU measurements.
 
 ## Historical plan — June 2026
 
