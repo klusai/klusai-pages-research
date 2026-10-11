@@ -1,5 +1,5 @@
-# Pulls the latest leaderboard.json from the europriv-bench repo and commits it
-# so the site re-renders with fresh numbers. Runs on a schedule and on demand.
+# Pulls leaderboard.json into an automerge PR; main still requires test.
+# Explicit dispatches let GITHUB_TOKEN run CI and arm guarded auto-merge.
 #
 # europriv-bench is currently PUBLIC, so the leaderboard is fetched over the raw
 # URL with no token required. If europriv-bench is ever made private again, set a
@@ -14,12 +14,51 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: sync-leaderboard
+  cancel-in-progress: false
 
 jobs:
   sync:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Reuse an open sync PR or start a branch from main
+        id: branch
+        run: |
+          set -euo pipefail
+          # Only this repository's reserved sync branches; never a fork PR.
+          gh pr list --base main --state open --limit 100 \
+            --json number,headRefName,isCrossRepository > "$RUNNER_TEMP/open-prs.json"
+          jq '[.[] | select(.isCrossRepository == false and
+            (.headRefName | startswith("automation/sync-leaderboard-")))]' \
+            "$RUNNER_TEMP/open-prs.json" > "$RUNNER_TEMP/sync-prs.json"
+          if [ "$(jq length "$RUNNER_TEMP/sync-prs.json")" -gt 1 ]; then
+            echo "::error::Multiple sync PRs are open; resolve duplicates before syncing."
+            exit 1
+          fi
+          pr_number=$(jq -r '.[0].number // empty' "$RUNNER_TEMP/sync-prs.json")
+          if [ -n "$pr_number" ]; then
+            branch=$(jq -r '.[0].headRefName' "$RUNNER_TEMP/sync-prs.json")
+            git fetch origin "refs/heads/$branch"
+            git switch -c "$branch" FETCH_HEAD
+          else
+            branch="automation/sync-leaderboard-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+            git switch -c "$branch"
+          fi
+          echo "name=$branch" >> "$GITHUB_OUTPUT"
+          echo "pr_number=$pr_number" >> "$GITHUB_OUTPUT"
 
       - name: Fetch leaderboard from europriv-bench
         # Prefer the public raw URL (no token needed while europriv-bench is public).
@@ -45,14 +84,45 @@ jobs:
           # Fail loudly if the JSON is malformed — better than shipping a broken table.
           python3 -c "import json; d=json.load(open('_data/leaderboard.json')); print('ok:', sum(len(v) for v in d['entries'].values()), 'rows')"
 
-      - name: Commit if changed
+      - name: Push update and create or reuse an automerge PR
+        id: pr
+        env:
+          BRANCH: ${{ steps.branch.outputs.name }}
+          PR_NUMBER: ${{ steps.branch.outputs.pr_number }}
         run: |
+          set -euo pipefail
           if ! git diff --quiet -- _data/leaderboard.json; then
             git config user.name "klusai-bot"
             git config user.email "research@klusai.com"
             git add _data/leaderboard.json
             git commit -m "chore: sync EuroPriv-Bench leaderboard"
-            git push
-          else
+            git push origin "HEAD:refs/heads/$BRANCH"
+          elif [ -z "$PR_NUMBER" ]; then
             echo "No leaderboard changes."
+            exit 0
           fi
+          if [ -z "$PR_NUMBER" ]; then
+            cat > "$RUNNER_TEMP/pr-body.md" <<'EOF'
+          Refresh the EuroPriv-Bench leaderboard from its published source.
+
+          CI is explicitly dispatched on this branch because this PR is created
+          with GITHUB_TOKEN. Guarded auto-merge still requires main's `test` check.
+          EOF
+            pr_url=$(gh pr create --base main --head "$BRANCH" \
+              --title "chore: sync EuroPriv-Bench leaderboard" --label automerge \
+              --body-file "$RUNNER_TEMP/pr-body.md")
+            PR_NUMBER=$(gh pr view "$pr_url" --json number --jq .number)
+          fi
+          echo "number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch CI and guarded auto-merge
+        if: steps.pr.outputs.number != ''
+        env:
+          BRANCH: ${{ steps.branch.outputs.name }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        run: |
+          set -euo pipefail
+          # Also retry these dispatches when a pending PR's data has not changed.
+          # The CI run's test check belongs to the PR head SHA, not main.
+          gh workflow run ci.yml --ref "$BRANCH"
+          gh workflow run auto-merge.yml --ref main -f "pr_number=$PR_NUMBER"

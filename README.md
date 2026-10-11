@@ -38,6 +38,40 @@ parity preview reachable from your laptop / Claude-in-Chrome over the tailnet (i
 prints a Tailnet URL). Installed via `kai services install pages-preview` (see
 `klusai-infra`).
 
+## PR checks and auto-merge
+
+With Ruby 3.2, run `bundle install` then `make check`. This builds with the
+`github-pages` gem in production/safe mode, rejects Liquid syntax and filter
+errors, and checks generated internal links and assets with HTMLProofer (no
+external URL requests). Optional Liquid variables stay optional. To put build
+output outside the checkout, use `make check SITE_DEST=/path/to/scratch/site`.
+
+The PR/main workflow reports the `test` job. Auto-merge follows the
+`klusai/europriv-bench` pattern: it stays inactive unless main visibly requires
+`test`, honors draft/hold/review gates, and never checks out PR code in its
+privileged workflow. Repository admins must enable squash and auto-merge and
+configure required checks before it can arm; keep "Require branches to be up to
+date" off for parity with that pattern.
+
+Keep main protected with required `test`. Leaderboard sync pushes only to an
+`automation/sync-leaderboard-*` branch and opens a PR labelled `automerge`, reusing
+the open sync PR on later runs. Runs are serialized and duplicate sync PRs fail
+closed; existing `hold`/`needs-review` labels and draft status remain effective.
+
+Sync uses `GITHUB_TOKEN` with contents, pull-requests and actions write permissions.
+Token-created PR events do not automatically run unattended workflows (some
+GitHub configurations offer approval-required runs), so sync explicitly invokes
+`workflow_dispatch` for `ci.yml` on the PR branch and `auto-merge.yml` on main.
+The `test` check therefore belongs to the PR head commit; privileged auto-merge
+only reads PR metadata and retains the required-`test` guard. Dispatch is retried
+even if a pending PR's data is unchanged. No protection bypass or extra token is
+needed. See GitHub's [workflow-trigger documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow).
+
+Before enabling sync, merge these workflows into main, create the `automerge`
+label if absent, and allow GitHub Actions to create pull requests in repository
+settings (subject to organization policy). Hosted dispatch/check association and
+auto-merge must be verified after deployment; local checks cannot exercise them.
+
 ## Updating the leaderboard
 
 The leaderboard renders from `_data/leaderboard.json`. Refresh it from a sibling
