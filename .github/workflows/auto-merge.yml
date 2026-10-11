@@ -7,6 +7,13 @@ name: Auto-merge
 # Unlike the original, fail closed unless active protection requiring `test` is visible.
 # No checkout: pull_request_target must never execute code from the PR.
 on:
+  # Sync dispatches the trusted main-branch workflow; no PR code is executed.
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request to evaluate with the usual protection and eligibility guards
+        required: true
+        type: number
   pull_request_target:
     branches: [main]
     types: [opened, reopened, synchronize, labeled, unlabeled, ready_for_review, converted_to_draft, edited]
@@ -16,21 +23,26 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: auto-merge-${{ github.event.pull_request.number }}
+  group: auto-merge-${{ github.event.pull_request.number || inputs.pr_number }}
   cancel-in-progress: false
 
 jobs:
   auto-merge:
+    if: github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GH_REPO: ${{ github.repository }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
     steps:
       - name: Require active branch protection
         id: protection
         run: |
+          if ! [[ "$PR_NUMBER" =~ ^[1-9][0-9]*$ ]]; then
+            echo "::error::Expected a positive pull request number."
+            exit 1
+          fi
           # The branch summary needs Contents: read, unlike /protection (Administration: read).
           # Unknown, unavailable, disabled, or unrelated requirements must never arm auto-merge.
           if gh api "repos/$GH_REPO/branches/main" > "$RUNNER_TEMP/branch.json" &&
@@ -101,4 +113,3 @@ jobs:
       - name: Disable auto-merge for held PRs
         if: steps.protection.outputs.active == 'true' && steps.gate.outputs.eligible == 'false'
         run: gh pr merge "$PR_NUMBER" --repo "$GH_REPO" --disable-auto
-

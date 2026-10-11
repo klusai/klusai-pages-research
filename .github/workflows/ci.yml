@@ -1,6 +1,8 @@
 name: CI
 
 on:
+  # GITHUB_TOKEN-created sync PRs need an explicit run on their head branch.
+  workflow_dispatch:
   pull_request:
   push:
     branches: [main]

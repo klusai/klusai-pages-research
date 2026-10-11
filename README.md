@@ -53,14 +53,24 @@ privileged workflow. Repository admins must enable squash and auto-merge and
 configure required checks before it can arm; keep "Require branches to be up to
 date" off for parity with that pattern.
 
-Before requiring `test`, arrange a narrowly scoped bypass for a dedicated sync
-GitHub App and use its installation token in `sync-leaderboard`, or migrate sync
-to a PR flow using an App token so it triggers PR checks. Its existing
-`GITHUB_TOKEN` direct push has no passing check on the new commit and would
-otherwise be blocked. A direct-push bypass must cover required status checks,
-not just required PRs; verify the branch-summary API still exposes required
-`test` to the guard if using rulesets. These workflows do not change branch
-protection or the existing sync job.
+Keep main protected with required `test`. Leaderboard sync pushes only to an
+`automation/sync-leaderboard-*` branch and opens a PR labelled `automerge`, reusing
+the open sync PR on later runs. Runs are serialized and duplicate sync PRs fail
+closed; existing `hold`/`needs-review` labels and draft status remain effective.
+
+Sync uses `GITHUB_TOKEN` with contents, pull-requests and actions write permissions.
+Token-created PR events do not automatically run unattended workflows (some
+GitHub configurations offer approval-required runs), so sync explicitly invokes
+`workflow_dispatch` for `ci.yml` on the PR branch and `auto-merge.yml` on main.
+The `test` check therefore belongs to the PR head commit; privileged auto-merge
+only reads PR metadata and retains the required-`test` guard. Dispatch is retried
+even if a pending PR's data is unchanged. No protection bypass or extra token is
+needed. See GitHub's [workflow-trigger documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow).
+
+Before enabling sync, merge these workflows into main, create the `automerge`
+label if absent, and allow GitHub Actions to create pull requests in repository
+settings (subject to organization policy). Hosted dispatch/check association and
+auto-merge must be verified after deployment; local checks cannot exercise them.
 
 ## Updating the leaderboard
 
