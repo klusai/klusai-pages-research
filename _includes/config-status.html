@@ -1,0 +1,13 @@
+{% assign status = include.status | default: "unknown" %}
+{% case status %}
+{% when "panel-validated" %}
+<span class="lb-badge status-citable" title="Passed the pre-registered LLM-panel protocol; this label describes panel review">panel-validated</span>
+{% when "citable-validated" %}
+<span class="lb-badge status-citable" title="Legacy validated status recorded by the source; see its validation protocol">citable-validated</span>
+{% when "real-external-gold" %}
+<span class="lb-badge" title="Real, externally annotated gold; distinct from programme panel validation">real-external-gold</span>
+{% when "dev" %}
+<span class="lb-badge status-dev" title="Development config; validation has not passed">dev</span>
+{% else %}
+<span class="lb-badge status-dev" title="See source provenance; no validation inferred">{{ status | escape }}</span>
+{% endcase %}
